@@ -1,12 +1,29 @@
 # Core dependencies
-ollama>=0.1.20
+fastapi>=0.103.1
+uvicorn>=0.23.2
+python-multipart>=0.0.6  # For FastAPI file uploads
+
+# PDF processing
+pdfplumber>=0.10.2
 PyPDF2>=3.0.0
-python-markdown>=3.4.0
+pypdf>=3.15.1  # Modern version of PDF library
+
+# OCR support
+pytesseract>=0.3.10
+Pillow>=10.0.0  # Required for image processing
+
+# Document conversion
 python-docx>=0.8.11
+markdown>=3.4.4
+
+# Vector database
+chromadb>=0.4.13
+
+# AI integration
+ollama>=0.1.4
+
+# Data processing
 numpy>=1.24.0
 
-# Optional dependencies for enhanced functionality
-# For OCR capabilities (if using ocrmypdf)
-# ocrmypdf>=14.0.0
-# pytesseract>=0.3.10
-# Pillow>=9.4.0
+# Optional but recommended packages
+# ocrmypdf>=15.4.0  # Uncomment if using OCR for scanned documents
