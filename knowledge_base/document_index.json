@@ -1,0 +1,4548 @@
+{
+    "documents": [
+        {
+            "id": "doc_1",
+            "original": "/home/joker/Documents/BPD/task_1722838794_Inability to recognize when someone is not m.pdf",
+            "text_path": "converted_files/task_1722838794_Inability to recognize when someone is not m.txt",
+            "processed_date": "2025-03-11T08:28:00.945725",
+            "chunks": []
+        },
+        {
+            "id": "doc_2",
+            "original": "/home/joker/Documents/BPD/task_1722839430_bipolar depression with psychotic episodes m.pdf",
+            "text_path": "converted_files/task_1722839430_bipolar depression with psychotic episodes m.txt",
+            "processed_date": "2025-03-11T08:28:00.999484",
+            "chunks": []
+        },
+        {
+            "id": "doc_3",
+            "original": "/home/joker/Documents/BPD/task_1722835132_Psychotic episodes.pdf",
+            "text_path": "converted_files/task_1722835132_Psychotic episodes.txt",
+            "processed_date": "2025-03-11T08:28:01.054935",
+            "chunks": []
+        },
+        {
+            "id": "doc_4",
+            "original": "/home/joker/Documents/BPD/task_1722840910_Best treatments for bipolar depression with .pdf",
+            "text_path": "converted_files/task_1722840910_Best treatments for bipolar depression with .txt",
+            "processed_date": "2025-03-11T08:28:01.115432",
+            "chunks": []
+        },
+        {
+            "id": "doc_5",
+            "original": "/home/joker/Documents/BPD/task_1722834438_Abilify and its side effects.pdf",
+            "text_path": "converted_files/task_1722834438_Abilify and its side effects.txt",
+            "processed_date": "2025-03-11T08:28:01.163309",
+            "chunks": []
+        },
+        {
+            "id": "doc_6",
+            "original": "/home/joker/Documents/BPD/task_1722838130_Antipsychotics and alcohol use.pdf",
+            "text_path": "converted_files/task_1722838130_Antipsychotics and alcohol use.txt",
+            "processed_date": "2025-03-11T08:28:01.196657",
+            "chunks": []
+        },
+        {
+            "id": "doc_7",
+            "original": "/home/joker/Documents/BPD/task_1722837352_Effects of birthcontrol on psychotic episode.pdf",
+            "text_path": "converted_files/task_1722837352_Effects of birthcontrol on psychotic episode.txt",
+            "processed_date": "2025-03-11T08:28:01.225630",
+            "chunks": []
+        },
+        {
+            "id": "doc_8",
+            "original": "/home/joker/Documents/BPD/task_1722833749_Bipolar depression with psychotic episodes -.pdf",
+            "text_path": "converted_files/task_1722833749_Bipolar depression with psychotic episodes -.txt",
+            "processed_date": "2025-03-11T08:28:01.372836",
+            "chunks": []
+        },
+        {
+            "id": "doc_9",
+            "original": "/home/joker/Documents/BPD/task_1722837254_Effects of birthcontrol on bipolar disorder.pdf",
+            "text_path": "converted_files/task_1722837254_Effects of birthcontrol on bipolar disorder.txt",
+            "processed_date": "2025-03-11T08:28:01.398522",
+            "chunks": []
+        },
+        {
+            "id": "doc_10",
+            "original": "/home/joker/Documents/BPD/task_1722834876_Antipsychotics and side effects.pdf",
+            "text_path": "converted_files/task_1722834876_Antipsychotics and side effects.txt",
+            "processed_date": "2025-03-11T08:28:01.478289",
+            "chunks": []
+        },
+        {
+            "id": "doc_11",
+            "original": "/home/joker/Documents/BPD/task_1722839182_Psychotic episode manifestations and symptom.pdf",
+            "text_path": "converted_files/task_1722839182_Psychotic episode manifestations and symptom.txt",
+            "processed_date": "2025-03-11T08:28:01.536316",
+            "chunks": []
+        },
+        {
+            "id": "doc_12",
+            "original": "/home/joker/Documents/BPD/task_1722835786_Birth control and bipolar disorder.pdf",
+            "text_path": "converted_files/task_1722835786_Birth control and bipolar disorder.txt",
+            "processed_date": "2025-03-11T08:28:01.582382",
+            "chunks": []
+        },
+        {
+            "id": "doc_13",
+            "original": "/home/joker/Documents/BPD/task_1722835978_Effects of weight on antipsychotics.pdf",
+            "text_path": "converted_files/task_1722835978_Effects of weight on antipsychotics.txt",
+            "processed_date": "2025-03-11T08:28:01.896230",
+            "chunks": []
+        },
+        {
+            "id": "doc_14",
+            "original": "/home/joker/Documents/BPD/task_1722840400_Bipolar with psychotic symptoms.pdf",
+            "text_path": "converted_files/task_1722840400_Bipolar with psychotic symptoms.txt",
+            "processed_date": "2025-03-11T08:28:01.946460",
+            "chunks": []
+        },
+        {
+            "id": "doc_15",
+            "original": "/home/joker/Documents/BPD/task_1722838627_Delusions of sobriety.pdf",
+            "text_path": "converted_files/task_1722838627_Delusions of sobriety.txt",
+            "processed_date": "2025-03-11T08:28:01.980267",
+            "chunks": []
+        },
+        {
+            "id": "doc_16",
+            "original": "/home/joker/Documents/BPD/task_1722838316_Antipsychotics and THC.pdf",
+            "text_path": "converted_files/task_1722838316_Antipsychotics and THC.txt",
+            "processed_date": "2025-03-11T08:28:02.009540",
+            "chunks": []
+        },
+        {
+            "id": "doc_17",
+            "original": "/home/joker/Documents/BPD/task_1722835367_Bipolar disorder.pdf",
+            "text_path": "converted_files/task_1722835367_Bipolar disorder.txt",
+            "processed_date": "2025-03-11T08:28:02.059968",
+            "chunks": []
+        },
+        {
+            "id": "doc_18",
+            "original": "/home/joker/Documents/BPD/task_1722838433_Comorbidities of bipolar disorder.pdf",
+            "text_path": "converted_files/task_1722838433_Comorbidities of bipolar disorder.txt",
+            "processed_date": "2025-03-11T08:28:02.090771",
+            "chunks": []
+        },
+        {
+            "id": "doc_19",
+            "original": "/home/joker/Documents/BPD/task_1722840177_Mania.pdf",
+            "text_path": "converted_files/task_1722840177_Mania.txt",
+            "processed_date": "2025-03-11T08:28:02.142134",
+            "chunks": []
+        },
+        {
+            "id": "doc_20",
+            "original": "/home/joker/Documents/BPD/task_1722837951_Bipolar disorder and delusions of sobriety.pdf",
+            "text_path": "converted_files/task_1722837951_Bipolar disorder and delusions of sobriety.txt",
+            "processed_date": "2025-03-11T08:28:02.170904",
+            "chunks": []
+        },
+        {
+            "id": "doc_21",
+            "original": "/home/joker/Documents/BPD/task_1722835562_Antipsychotics and birthcontrol.pdf",
+            "text_path": "converted_files/task_1722835562_Antipsychotics and birthcontrol.txt",
+            "processed_date": "2025-03-11T08:28:02.225125",
+            "chunks": []
+        },
+        {
+            "id": "doc_22",
+            "original": "/home/joker/Documents/BPD/task_1722836073_Effects on weight in bipolar disorder.pdf",
+            "text_path": "converted_files/task_1722836073_Effects on weight in bipolar disorder.txt",
+            "processed_date": "2025-03-11T08:28:02.246074",
+            "chunks": []
+        },
+        {
+            "id": "doc_23",
+            "original": "/home/joker/Documents/BPD/task_1722834176_Bipolar Depression.pdf",
+            "text_path": "converted_files/task_1722834176_Bipolar Depression.txt",
+            "processed_date": "2025-03-11T08:28:02.308066",
+            "chunks": []
+        },
+        {
+            "id": "doc_24",
+            "original": "/home/joker/Documents/BPD/task_1722839692_Interactions between antipsychotics trazadon.pdf",
+            "text_path": "converted_files/task_1722839692_Interactions between antipsychotics trazadon.txt",
+            "processed_date": "2025-03-11T08:28:02.351951",
+            "chunks": []
+        },
+        {
+            "id": "doc_25",
+            "original": "/home/joker/Documents/BPD/task_1722838794_Inability to recognize when someone is not m.pdf",
+            "text_path": "converted_files/task_1722838794_Inability to recognize when someone is not m.txt",
+            "processed_date": "2025-03-11T08:32:29.288035",
+            "chunks": [
+                {
+                    "chunk_id": "doc_25_chunk_0",
+                    "file": "knowledge_base/doc_25_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_1",
+                    "file": "knowledge_base/doc_25_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_2",
+                    "file": "knowledge_base/doc_25_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_3",
+                    "file": "knowledge_base/doc_25_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_4",
+                    "file": "knowledge_base/doc_25_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_5",
+                    "file": "knowledge_base/doc_25_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_6",
+                    "file": "knowledge_base/doc_25_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_7",
+                    "file": "knowledge_base/doc_25_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_8",
+                    "file": "knowledge_base/doc_25_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_9",
+                    "file": "knowledge_base/doc_25_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_10",
+                    "file": "knowledge_base/doc_25_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_11",
+                    "file": "knowledge_base/doc_25_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_12",
+                    "file": "knowledge_base/doc_25_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_13",
+                    "file": "knowledge_base/doc_25_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_14",
+                    "file": "knowledge_base/doc_25_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_15",
+                    "file": "knowledge_base/doc_25_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_16",
+                    "file": "knowledge_base/doc_25_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_17",
+                    "file": "knowledge_base/doc_25_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_18",
+                    "file": "knowledge_base/doc_25_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_19",
+                    "file": "knowledge_base/doc_25_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_20",
+                    "file": "knowledge_base/doc_25_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_21",
+                    "file": "knowledge_base/doc_25_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_22",
+                    "file": "knowledge_base/doc_25_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_23",
+                    "file": "knowledge_base/doc_25_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_24",
+                    "file": "knowledge_base/doc_25_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_25",
+                    "file": "knowledge_base/doc_25_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_26",
+                    "file": "knowledge_base/doc_25_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_27",
+                    "file": "knowledge_base/doc_25_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_28",
+                    "file": "knowledge_base/doc_25_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_29",
+                    "file": "knowledge_base/doc_25_chunk_29.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_30",
+                    "file": "knowledge_base/doc_25_chunk_30.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_31",
+                    "file": "knowledge_base/doc_25_chunk_31.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_32",
+                    "file": "knowledge_base/doc_25_chunk_32.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_33",
+                    "file": "knowledge_base/doc_25_chunk_33.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_34",
+                    "file": "knowledge_base/doc_25_chunk_34.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_35",
+                    "file": "knowledge_base/doc_25_chunk_35.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_36",
+                    "file": "knowledge_base/doc_25_chunk_36.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_37",
+                    "file": "knowledge_base/doc_25_chunk_37.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_38",
+                    "file": "knowledge_base/doc_25_chunk_38.json"
+                },
+                {
+                    "chunk_id": "doc_25_chunk_39",
+                    "file": "knowledge_base/doc_25_chunk_39.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_26",
+            "original": "/home/joker/Documents/BPD/task_1722839430_bipolar depression with psychotic episodes m.pdf",
+            "text_path": "converted_files/task_1722839430_bipolar depression with psychotic episodes m.txt",
+            "processed_date": "2025-03-11T08:32:29.905386",
+            "chunks": [
+                {
+                    "chunk_id": "doc_26_chunk_0",
+                    "file": "knowledge_base/doc_26_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_1",
+                    "file": "knowledge_base/doc_26_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_2",
+                    "file": "knowledge_base/doc_26_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_3",
+                    "file": "knowledge_base/doc_26_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_4",
+                    "file": "knowledge_base/doc_26_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_5",
+                    "file": "knowledge_base/doc_26_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_6",
+                    "file": "knowledge_base/doc_26_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_7",
+                    "file": "knowledge_base/doc_26_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_8",
+                    "file": "knowledge_base/doc_26_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_9",
+                    "file": "knowledge_base/doc_26_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_10",
+                    "file": "knowledge_base/doc_26_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_11",
+                    "file": "knowledge_base/doc_26_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_12",
+                    "file": "knowledge_base/doc_26_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_13",
+                    "file": "knowledge_base/doc_26_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_14",
+                    "file": "knowledge_base/doc_26_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_15",
+                    "file": "knowledge_base/doc_26_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_16",
+                    "file": "knowledge_base/doc_26_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_17",
+                    "file": "knowledge_base/doc_26_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_18",
+                    "file": "knowledge_base/doc_26_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_19",
+                    "file": "knowledge_base/doc_26_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_20",
+                    "file": "knowledge_base/doc_26_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_21",
+                    "file": "knowledge_base/doc_26_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_22",
+                    "file": "knowledge_base/doc_26_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_23",
+                    "file": "knowledge_base/doc_26_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_24",
+                    "file": "knowledge_base/doc_26_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_25",
+                    "file": "knowledge_base/doc_26_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_26",
+                    "file": "knowledge_base/doc_26_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_27",
+                    "file": "knowledge_base/doc_26_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_28",
+                    "file": "knowledge_base/doc_26_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_29",
+                    "file": "knowledge_base/doc_26_chunk_29.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_30",
+                    "file": "knowledge_base/doc_26_chunk_30.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_31",
+                    "file": "knowledge_base/doc_26_chunk_31.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_32",
+                    "file": "knowledge_base/doc_26_chunk_32.json"
+                },
+                {
+                    "chunk_id": "doc_26_chunk_33",
+                    "file": "knowledge_base/doc_26_chunk_33.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_27",
+            "original": "/home/joker/Documents/BPD/task_1722835132_Psychotic episodes.pdf",
+            "text_path": "converted_files/task_1722835132_Psychotic episodes.txt",
+            "processed_date": "2025-03-11T08:32:30.555754",
+            "chunks": [
+                {
+                    "chunk_id": "doc_27_chunk_0",
+                    "file": "knowledge_base/doc_27_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_1",
+                    "file": "knowledge_base/doc_27_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_2",
+                    "file": "knowledge_base/doc_27_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_3",
+                    "file": "knowledge_base/doc_27_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_4",
+                    "file": "knowledge_base/doc_27_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_5",
+                    "file": "knowledge_base/doc_27_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_6",
+                    "file": "knowledge_base/doc_27_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_7",
+                    "file": "knowledge_base/doc_27_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_8",
+                    "file": "knowledge_base/doc_27_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_9",
+                    "file": "knowledge_base/doc_27_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_10",
+                    "file": "knowledge_base/doc_27_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_11",
+                    "file": "knowledge_base/doc_27_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_12",
+                    "file": "knowledge_base/doc_27_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_13",
+                    "file": "knowledge_base/doc_27_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_14",
+                    "file": "knowledge_base/doc_27_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_15",
+                    "file": "knowledge_base/doc_27_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_16",
+                    "file": "knowledge_base/doc_27_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_17",
+                    "file": "knowledge_base/doc_27_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_18",
+                    "file": "knowledge_base/doc_27_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_19",
+                    "file": "knowledge_base/doc_27_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_20",
+                    "file": "knowledge_base/doc_27_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_21",
+                    "file": "knowledge_base/doc_27_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_22",
+                    "file": "knowledge_base/doc_27_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_23",
+                    "file": "knowledge_base/doc_27_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_24",
+                    "file": "knowledge_base/doc_27_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_25",
+                    "file": "knowledge_base/doc_27_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_26",
+                    "file": "knowledge_base/doc_27_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_27",
+                    "file": "knowledge_base/doc_27_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_28",
+                    "file": "knowledge_base/doc_27_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_29",
+                    "file": "knowledge_base/doc_27_chunk_29.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_30",
+                    "file": "knowledge_base/doc_27_chunk_30.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_31",
+                    "file": "knowledge_base/doc_27_chunk_31.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_32",
+                    "file": "knowledge_base/doc_27_chunk_32.json"
+                },
+                {
+                    "chunk_id": "doc_27_chunk_33",
+                    "file": "knowledge_base/doc_27_chunk_33.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_28",
+            "original": "/home/joker/Documents/BPD/task_1722840910_Best treatments for bipolar depression with .pdf",
+            "text_path": "converted_files/task_1722840910_Best treatments for bipolar depression with .txt",
+            "processed_date": "2025-03-11T08:32:31.239216",
+            "chunks": [
+                {
+                    "chunk_id": "doc_28_chunk_0",
+                    "file": "knowledge_base/doc_28_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_1",
+                    "file": "knowledge_base/doc_28_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_2",
+                    "file": "knowledge_base/doc_28_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_3",
+                    "file": "knowledge_base/doc_28_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_4",
+                    "file": "knowledge_base/doc_28_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_5",
+                    "file": "knowledge_base/doc_28_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_6",
+                    "file": "knowledge_base/doc_28_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_7",
+                    "file": "knowledge_base/doc_28_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_8",
+                    "file": "knowledge_base/doc_28_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_9",
+                    "file": "knowledge_base/doc_28_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_10",
+                    "file": "knowledge_base/doc_28_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_11",
+                    "file": "knowledge_base/doc_28_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_12",
+                    "file": "knowledge_base/doc_28_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_13",
+                    "file": "knowledge_base/doc_28_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_14",
+                    "file": "knowledge_base/doc_28_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_15",
+                    "file": "knowledge_base/doc_28_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_16",
+                    "file": "knowledge_base/doc_28_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_17",
+                    "file": "knowledge_base/doc_28_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_18",
+                    "file": "knowledge_base/doc_28_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_19",
+                    "file": "knowledge_base/doc_28_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_20",
+                    "file": "knowledge_base/doc_28_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_21",
+                    "file": "knowledge_base/doc_28_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_22",
+                    "file": "knowledge_base/doc_28_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_23",
+                    "file": "knowledge_base/doc_28_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_24",
+                    "file": "knowledge_base/doc_28_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_25",
+                    "file": "knowledge_base/doc_28_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_26",
+                    "file": "knowledge_base/doc_28_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_27",
+                    "file": "knowledge_base/doc_28_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_28",
+                    "file": "knowledge_base/doc_28_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_29",
+                    "file": "knowledge_base/doc_28_chunk_29.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_30",
+                    "file": "knowledge_base/doc_28_chunk_30.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_31",
+                    "file": "knowledge_base/doc_28_chunk_31.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_32",
+                    "file": "knowledge_base/doc_28_chunk_32.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_33",
+                    "file": "knowledge_base/doc_28_chunk_33.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_34",
+                    "file": "knowledge_base/doc_28_chunk_34.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_35",
+                    "file": "knowledge_base/doc_28_chunk_35.json"
+                },
+                {
+                    "chunk_id": "doc_28_chunk_36",
+                    "file": "knowledge_base/doc_28_chunk_36.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_29",
+            "original": "/home/joker/Documents/BPD/task_1722834438_Abilify and its side effects.pdf",
+            "text_path": "converted_files/task_1722834438_Abilify and its side effects.txt",
+            "processed_date": "2025-03-11T08:32:31.750755",
+            "chunks": [
+                {
+                    "chunk_id": "doc_29_chunk_0",
+                    "file": "knowledge_base/doc_29_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_1",
+                    "file": "knowledge_base/doc_29_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_2",
+                    "file": "knowledge_base/doc_29_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_3",
+                    "file": "knowledge_base/doc_29_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_4",
+                    "file": "knowledge_base/doc_29_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_5",
+                    "file": "knowledge_base/doc_29_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_6",
+                    "file": "knowledge_base/doc_29_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_7",
+                    "file": "knowledge_base/doc_29_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_8",
+                    "file": "knowledge_base/doc_29_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_9",
+                    "file": "knowledge_base/doc_29_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_10",
+                    "file": "knowledge_base/doc_29_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_11",
+                    "file": "knowledge_base/doc_29_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_12",
+                    "file": "knowledge_base/doc_29_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_13",
+                    "file": "knowledge_base/doc_29_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_14",
+                    "file": "knowledge_base/doc_29_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_15",
+                    "file": "knowledge_base/doc_29_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_16",
+                    "file": "knowledge_base/doc_29_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_17",
+                    "file": "knowledge_base/doc_29_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_18",
+                    "file": "knowledge_base/doc_29_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_19",
+                    "file": "knowledge_base/doc_29_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_20",
+                    "file": "knowledge_base/doc_29_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_21",
+                    "file": "knowledge_base/doc_29_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_22",
+                    "file": "knowledge_base/doc_29_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_23",
+                    "file": "knowledge_base/doc_29_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_24",
+                    "file": "knowledge_base/doc_29_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_29_chunk_25",
+                    "file": "knowledge_base/doc_29_chunk_25.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_30",
+            "original": "/home/joker/Documents/BPD/task_1722838130_Antipsychotics and alcohol use.pdf",
+            "text_path": "converted_files/task_1722838130_Antipsychotics and alcohol use.txt",
+            "processed_date": "2025-03-11T08:32:31.993193",
+            "chunks": [
+                {
+                    "chunk_id": "doc_30_chunk_0",
+                    "file": "knowledge_base/doc_30_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_30_chunk_1",
+                    "file": "knowledge_base/doc_30_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_30_chunk_2",
+                    "file": "knowledge_base/doc_30_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_30_chunk_3",
+                    "file": "knowledge_base/doc_30_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_30_chunk_4",
+                    "file": "knowledge_base/doc_30_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_30_chunk_5",
+                    "file": "knowledge_base/doc_30_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_30_chunk_6",
+                    "file": "knowledge_base/doc_30_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_30_chunk_7",
+                    "file": "knowledge_base/doc_30_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_30_chunk_8",
+                    "file": "knowledge_base/doc_30_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_30_chunk_9",
+                    "file": "knowledge_base/doc_30_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_30_chunk_10",
+                    "file": "knowledge_base/doc_30_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_30_chunk_11",
+                    "file": "knowledge_base/doc_30_chunk_11.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_31",
+            "original": "/home/joker/Documents/BPD/task_1722837352_Effects of birthcontrol on psychotic episode.pdf",
+            "text_path": "converted_files/task_1722837352_Effects of birthcontrol on psychotic episode.txt",
+            "processed_date": "2025-03-11T08:32:32.182385",
+            "chunks": [
+                {
+                    "chunk_id": "doc_31_chunk_0",
+                    "file": "knowledge_base/doc_31_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_31_chunk_1",
+                    "file": "knowledge_base/doc_31_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_31_chunk_2",
+                    "file": "knowledge_base/doc_31_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_31_chunk_3",
+                    "file": "knowledge_base/doc_31_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_31_chunk_4",
+                    "file": "knowledge_base/doc_31_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_31_chunk_5",
+                    "file": "knowledge_base/doc_31_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_31_chunk_6",
+                    "file": "knowledge_base/doc_31_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_31_chunk_7",
+                    "file": "knowledge_base/doc_31_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_31_chunk_8",
+                    "file": "knowledge_base/doc_31_chunk_8.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_32",
+            "original": "/home/joker/Documents/BPD/task_1722833749_Bipolar depression with psychotic episodes -.pdf",
+            "text_path": "converted_files/task_1722833749_Bipolar depression with psychotic episodes -.txt",
+            "processed_date": "2025-03-11T08:32:34.290920",
+            "chunks": [
+                {
+                    "chunk_id": "doc_32_chunk_0",
+                    "file": "knowledge_base/doc_32_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_1",
+                    "file": "knowledge_base/doc_32_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_2",
+                    "file": "knowledge_base/doc_32_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_3",
+                    "file": "knowledge_base/doc_32_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_4",
+                    "file": "knowledge_base/doc_32_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_5",
+                    "file": "knowledge_base/doc_32_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_6",
+                    "file": "knowledge_base/doc_32_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_7",
+                    "file": "knowledge_base/doc_32_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_8",
+                    "file": "knowledge_base/doc_32_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_9",
+                    "file": "knowledge_base/doc_32_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_10",
+                    "file": "knowledge_base/doc_32_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_11",
+                    "file": "knowledge_base/doc_32_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_12",
+                    "file": "knowledge_base/doc_32_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_13",
+                    "file": "knowledge_base/doc_32_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_14",
+                    "file": "knowledge_base/doc_32_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_15",
+                    "file": "knowledge_base/doc_32_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_16",
+                    "file": "knowledge_base/doc_32_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_17",
+                    "file": "knowledge_base/doc_32_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_18",
+                    "file": "knowledge_base/doc_32_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_19",
+                    "file": "knowledge_base/doc_32_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_20",
+                    "file": "knowledge_base/doc_32_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_21",
+                    "file": "knowledge_base/doc_32_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_22",
+                    "file": "knowledge_base/doc_32_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_23",
+                    "file": "knowledge_base/doc_32_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_24",
+                    "file": "knowledge_base/doc_32_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_25",
+                    "file": "knowledge_base/doc_32_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_26",
+                    "file": "knowledge_base/doc_32_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_27",
+                    "file": "knowledge_base/doc_32_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_28",
+                    "file": "knowledge_base/doc_32_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_29",
+                    "file": "knowledge_base/doc_32_chunk_29.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_30",
+                    "file": "knowledge_base/doc_32_chunk_30.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_31",
+                    "file": "knowledge_base/doc_32_chunk_31.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_32",
+                    "file": "knowledge_base/doc_32_chunk_32.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_33",
+                    "file": "knowledge_base/doc_32_chunk_33.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_34",
+                    "file": "knowledge_base/doc_32_chunk_34.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_35",
+                    "file": "knowledge_base/doc_32_chunk_35.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_36",
+                    "file": "knowledge_base/doc_32_chunk_36.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_37",
+                    "file": "knowledge_base/doc_32_chunk_37.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_38",
+                    "file": "knowledge_base/doc_32_chunk_38.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_39",
+                    "file": "knowledge_base/doc_32_chunk_39.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_40",
+                    "file": "knowledge_base/doc_32_chunk_40.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_41",
+                    "file": "knowledge_base/doc_32_chunk_41.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_42",
+                    "file": "knowledge_base/doc_32_chunk_42.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_43",
+                    "file": "knowledge_base/doc_32_chunk_43.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_44",
+                    "file": "knowledge_base/doc_32_chunk_44.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_45",
+                    "file": "knowledge_base/doc_32_chunk_45.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_46",
+                    "file": "knowledge_base/doc_32_chunk_46.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_47",
+                    "file": "knowledge_base/doc_32_chunk_47.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_48",
+                    "file": "knowledge_base/doc_32_chunk_48.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_49",
+                    "file": "knowledge_base/doc_32_chunk_49.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_50",
+                    "file": "knowledge_base/doc_32_chunk_50.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_51",
+                    "file": "knowledge_base/doc_32_chunk_51.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_52",
+                    "file": "knowledge_base/doc_32_chunk_52.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_53",
+                    "file": "knowledge_base/doc_32_chunk_53.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_54",
+                    "file": "knowledge_base/doc_32_chunk_54.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_55",
+                    "file": "knowledge_base/doc_32_chunk_55.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_56",
+                    "file": "knowledge_base/doc_32_chunk_56.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_57",
+                    "file": "knowledge_base/doc_32_chunk_57.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_58",
+                    "file": "knowledge_base/doc_32_chunk_58.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_59",
+                    "file": "knowledge_base/doc_32_chunk_59.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_60",
+                    "file": "knowledge_base/doc_32_chunk_60.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_61",
+                    "file": "knowledge_base/doc_32_chunk_61.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_62",
+                    "file": "knowledge_base/doc_32_chunk_62.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_63",
+                    "file": "knowledge_base/doc_32_chunk_63.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_64",
+                    "file": "knowledge_base/doc_32_chunk_64.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_65",
+                    "file": "knowledge_base/doc_32_chunk_65.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_66",
+                    "file": "knowledge_base/doc_32_chunk_66.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_67",
+                    "file": "knowledge_base/doc_32_chunk_67.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_68",
+                    "file": "knowledge_base/doc_32_chunk_68.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_69",
+                    "file": "knowledge_base/doc_32_chunk_69.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_70",
+                    "file": "knowledge_base/doc_32_chunk_70.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_71",
+                    "file": "knowledge_base/doc_32_chunk_71.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_72",
+                    "file": "knowledge_base/doc_32_chunk_72.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_73",
+                    "file": "knowledge_base/doc_32_chunk_73.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_74",
+                    "file": "knowledge_base/doc_32_chunk_74.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_75",
+                    "file": "knowledge_base/doc_32_chunk_75.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_76",
+                    "file": "knowledge_base/doc_32_chunk_76.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_77",
+                    "file": "knowledge_base/doc_32_chunk_77.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_78",
+                    "file": "knowledge_base/doc_32_chunk_78.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_79",
+                    "file": "knowledge_base/doc_32_chunk_79.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_80",
+                    "file": "knowledge_base/doc_32_chunk_80.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_81",
+                    "file": "knowledge_base/doc_32_chunk_81.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_82",
+                    "file": "knowledge_base/doc_32_chunk_82.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_83",
+                    "file": "knowledge_base/doc_32_chunk_83.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_84",
+                    "file": "knowledge_base/doc_32_chunk_84.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_85",
+                    "file": "knowledge_base/doc_32_chunk_85.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_86",
+                    "file": "knowledge_base/doc_32_chunk_86.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_87",
+                    "file": "knowledge_base/doc_32_chunk_87.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_88",
+                    "file": "knowledge_base/doc_32_chunk_88.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_89",
+                    "file": "knowledge_base/doc_32_chunk_89.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_90",
+                    "file": "knowledge_base/doc_32_chunk_90.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_91",
+                    "file": "knowledge_base/doc_32_chunk_91.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_92",
+                    "file": "knowledge_base/doc_32_chunk_92.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_93",
+                    "file": "knowledge_base/doc_32_chunk_93.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_94",
+                    "file": "knowledge_base/doc_32_chunk_94.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_95",
+                    "file": "knowledge_base/doc_32_chunk_95.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_96",
+                    "file": "knowledge_base/doc_32_chunk_96.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_97",
+                    "file": "knowledge_base/doc_32_chunk_97.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_98",
+                    "file": "knowledge_base/doc_32_chunk_98.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_99",
+                    "file": "knowledge_base/doc_32_chunk_99.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_100",
+                    "file": "knowledge_base/doc_32_chunk_100.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_101",
+                    "file": "knowledge_base/doc_32_chunk_101.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_102",
+                    "file": "knowledge_base/doc_32_chunk_102.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_103",
+                    "file": "knowledge_base/doc_32_chunk_103.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_104",
+                    "file": "knowledge_base/doc_32_chunk_104.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_105",
+                    "file": "knowledge_base/doc_32_chunk_105.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_106",
+                    "file": "knowledge_base/doc_32_chunk_106.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_107",
+                    "file": "knowledge_base/doc_32_chunk_107.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_108",
+                    "file": "knowledge_base/doc_32_chunk_108.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_109",
+                    "file": "knowledge_base/doc_32_chunk_109.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_110",
+                    "file": "knowledge_base/doc_32_chunk_110.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_111",
+                    "file": "knowledge_base/doc_32_chunk_111.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_112",
+                    "file": "knowledge_base/doc_32_chunk_112.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_113",
+                    "file": "knowledge_base/doc_32_chunk_113.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_114",
+                    "file": "knowledge_base/doc_32_chunk_114.json"
+                },
+                {
+                    "chunk_id": "doc_32_chunk_115",
+                    "file": "knowledge_base/doc_32_chunk_115.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_33",
+            "original": "/home/joker/Documents/BPD/task_1722837254_Effects of birthcontrol on bipolar disorder.pdf",
+            "text_path": "converted_files/task_1722837254_Effects of birthcontrol on bipolar disorder.txt",
+            "processed_date": "2025-03-11T08:32:34.490217",
+            "chunks": [
+                {
+                    "chunk_id": "doc_33_chunk_0",
+                    "file": "knowledge_base/doc_33_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_33_chunk_1",
+                    "file": "knowledge_base/doc_33_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_33_chunk_2",
+                    "file": "knowledge_base/doc_33_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_33_chunk_3",
+                    "file": "knowledge_base/doc_33_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_33_chunk_4",
+                    "file": "knowledge_base/doc_33_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_33_chunk_5",
+                    "file": "knowledge_base/doc_33_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_33_chunk_6",
+                    "file": "knowledge_base/doc_33_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_33_chunk_7",
+                    "file": "knowledge_base/doc_33_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_33_chunk_8",
+                    "file": "knowledge_base/doc_33_chunk_8.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_34",
+            "original": "/home/joker/Documents/BPD/task_1722834876_Antipsychotics and side effects.pdf",
+            "text_path": "converted_files/task_1722834876_Antipsychotics and side effects.txt",
+            "processed_date": "2025-03-11T08:32:35.305047",
+            "chunks": [
+                {
+                    "chunk_id": "doc_34_chunk_0",
+                    "file": "knowledge_base/doc_34_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_1",
+                    "file": "knowledge_base/doc_34_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_2",
+                    "file": "knowledge_base/doc_34_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_3",
+                    "file": "knowledge_base/doc_34_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_4",
+                    "file": "knowledge_base/doc_34_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_5",
+                    "file": "knowledge_base/doc_34_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_6",
+                    "file": "knowledge_base/doc_34_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_7",
+                    "file": "knowledge_base/doc_34_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_8",
+                    "file": "knowledge_base/doc_34_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_9",
+                    "file": "knowledge_base/doc_34_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_10",
+                    "file": "knowledge_base/doc_34_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_11",
+                    "file": "knowledge_base/doc_34_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_12",
+                    "file": "knowledge_base/doc_34_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_13",
+                    "file": "knowledge_base/doc_34_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_14",
+                    "file": "knowledge_base/doc_34_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_15",
+                    "file": "knowledge_base/doc_34_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_16",
+                    "file": "knowledge_base/doc_34_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_17",
+                    "file": "knowledge_base/doc_34_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_18",
+                    "file": "knowledge_base/doc_34_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_19",
+                    "file": "knowledge_base/doc_34_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_20",
+                    "file": "knowledge_base/doc_34_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_21",
+                    "file": "knowledge_base/doc_34_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_22",
+                    "file": "knowledge_base/doc_34_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_23",
+                    "file": "knowledge_base/doc_34_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_24",
+                    "file": "knowledge_base/doc_34_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_25",
+                    "file": "knowledge_base/doc_34_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_26",
+                    "file": "knowledge_base/doc_34_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_27",
+                    "file": "knowledge_base/doc_34_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_28",
+                    "file": "knowledge_base/doc_34_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_29",
+                    "file": "knowledge_base/doc_34_chunk_29.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_30",
+                    "file": "knowledge_base/doc_34_chunk_30.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_31",
+                    "file": "knowledge_base/doc_34_chunk_31.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_32",
+                    "file": "knowledge_base/doc_34_chunk_32.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_33",
+                    "file": "knowledge_base/doc_34_chunk_33.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_34",
+                    "file": "knowledge_base/doc_34_chunk_34.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_35",
+                    "file": "knowledge_base/doc_34_chunk_35.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_36",
+                    "file": "knowledge_base/doc_34_chunk_36.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_37",
+                    "file": "knowledge_base/doc_34_chunk_37.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_38",
+                    "file": "knowledge_base/doc_34_chunk_38.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_39",
+                    "file": "knowledge_base/doc_34_chunk_39.json"
+                },
+                {
+                    "chunk_id": "doc_34_chunk_40",
+                    "file": "knowledge_base/doc_34_chunk_40.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_35",
+            "original": "/home/joker/Documents/BPD/task_1722839182_Psychotic episode manifestations and symptom.pdf",
+            "text_path": "converted_files/task_1722839182_Psychotic episode manifestations and symptom.txt",
+            "processed_date": "2025-03-11T08:32:35.957723",
+            "chunks": [
+                {
+                    "chunk_id": "doc_35_chunk_0",
+                    "file": "knowledge_base/doc_35_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_1",
+                    "file": "knowledge_base/doc_35_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_2",
+                    "file": "knowledge_base/doc_35_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_3",
+                    "file": "knowledge_base/doc_35_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_4",
+                    "file": "knowledge_base/doc_35_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_5",
+                    "file": "knowledge_base/doc_35_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_6",
+                    "file": "knowledge_base/doc_35_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_7",
+                    "file": "knowledge_base/doc_35_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_8",
+                    "file": "knowledge_base/doc_35_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_9",
+                    "file": "knowledge_base/doc_35_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_10",
+                    "file": "knowledge_base/doc_35_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_11",
+                    "file": "knowledge_base/doc_35_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_12",
+                    "file": "knowledge_base/doc_35_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_13",
+                    "file": "knowledge_base/doc_35_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_14",
+                    "file": "knowledge_base/doc_35_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_15",
+                    "file": "knowledge_base/doc_35_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_16",
+                    "file": "knowledge_base/doc_35_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_17",
+                    "file": "knowledge_base/doc_35_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_18",
+                    "file": "knowledge_base/doc_35_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_19",
+                    "file": "knowledge_base/doc_35_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_20",
+                    "file": "knowledge_base/doc_35_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_21",
+                    "file": "knowledge_base/doc_35_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_22",
+                    "file": "knowledge_base/doc_35_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_23",
+                    "file": "knowledge_base/doc_35_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_24",
+                    "file": "knowledge_base/doc_35_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_25",
+                    "file": "knowledge_base/doc_35_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_26",
+                    "file": "knowledge_base/doc_35_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_27",
+                    "file": "knowledge_base/doc_35_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_28",
+                    "file": "knowledge_base/doc_35_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_29",
+                    "file": "knowledge_base/doc_35_chunk_29.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_30",
+                    "file": "knowledge_base/doc_35_chunk_30.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_31",
+                    "file": "knowledge_base/doc_35_chunk_31.json"
+                },
+                {
+                    "chunk_id": "doc_35_chunk_32",
+                    "file": "knowledge_base/doc_35_chunk_32.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_36",
+            "original": "/home/joker/Documents/BPD/task_1722835786_Birth control and bipolar disorder.pdf",
+            "text_path": "converted_files/task_1722835786_Birth control and bipolar disorder.txt",
+            "processed_date": "2025-03-11T08:32:36.510817",
+            "chunks": [
+                {
+                    "chunk_id": "doc_36_chunk_0",
+                    "file": "knowledge_base/doc_36_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_1",
+                    "file": "knowledge_base/doc_36_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_2",
+                    "file": "knowledge_base/doc_36_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_3",
+                    "file": "knowledge_base/doc_36_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_4",
+                    "file": "knowledge_base/doc_36_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_5",
+                    "file": "knowledge_base/doc_36_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_6",
+                    "file": "knowledge_base/doc_36_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_7",
+                    "file": "knowledge_base/doc_36_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_8",
+                    "file": "knowledge_base/doc_36_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_9",
+                    "file": "knowledge_base/doc_36_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_10",
+                    "file": "knowledge_base/doc_36_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_11",
+                    "file": "knowledge_base/doc_36_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_12",
+                    "file": "knowledge_base/doc_36_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_13",
+                    "file": "knowledge_base/doc_36_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_14",
+                    "file": "knowledge_base/doc_36_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_15",
+                    "file": "knowledge_base/doc_36_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_16",
+                    "file": "knowledge_base/doc_36_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_17",
+                    "file": "knowledge_base/doc_36_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_18",
+                    "file": "knowledge_base/doc_36_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_19",
+                    "file": "knowledge_base/doc_36_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_20",
+                    "file": "knowledge_base/doc_36_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_21",
+                    "file": "knowledge_base/doc_36_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_22",
+                    "file": "knowledge_base/doc_36_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_23",
+                    "file": "knowledge_base/doc_36_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_24",
+                    "file": "knowledge_base/doc_36_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_25",
+                    "file": "knowledge_base/doc_36_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_26",
+                    "file": "knowledge_base/doc_36_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_27",
+                    "file": "knowledge_base/doc_36_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_28",
+                    "file": "knowledge_base/doc_36_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_36_chunk_29",
+                    "file": "knowledge_base/doc_36_chunk_29.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_37",
+            "original": "/home/joker/Documents/BPD/task_1722835978_Effects of weight on antipsychotics.pdf",
+            "text_path": "converted_files/task_1722835978_Effects of weight on antipsychotics.txt",
+            "processed_date": "2025-03-11T08:32:41.263638",
+            "chunks": [
+                {
+                    "chunk_id": "doc_37_chunk_0",
+                    "file": "knowledge_base/doc_37_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_1",
+                    "file": "knowledge_base/doc_37_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_2",
+                    "file": "knowledge_base/doc_37_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_3",
+                    "file": "knowledge_base/doc_37_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_4",
+                    "file": "knowledge_base/doc_37_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_5",
+                    "file": "knowledge_base/doc_37_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_6",
+                    "file": "knowledge_base/doc_37_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_7",
+                    "file": "knowledge_base/doc_37_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_8",
+                    "file": "knowledge_base/doc_37_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_9",
+                    "file": "knowledge_base/doc_37_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_10",
+                    "file": "knowledge_base/doc_37_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_11",
+                    "file": "knowledge_base/doc_37_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_12",
+                    "file": "knowledge_base/doc_37_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_13",
+                    "file": "knowledge_base/doc_37_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_14",
+                    "file": "knowledge_base/doc_37_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_15",
+                    "file": "knowledge_base/doc_37_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_16",
+                    "file": "knowledge_base/doc_37_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_17",
+                    "file": "knowledge_base/doc_37_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_18",
+                    "file": "knowledge_base/doc_37_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_19",
+                    "file": "knowledge_base/doc_37_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_20",
+                    "file": "knowledge_base/doc_37_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_21",
+                    "file": "knowledge_base/doc_37_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_22",
+                    "file": "knowledge_base/doc_37_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_23",
+                    "file": "knowledge_base/doc_37_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_24",
+                    "file": "knowledge_base/doc_37_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_25",
+                    "file": "knowledge_base/doc_37_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_26",
+                    "file": "knowledge_base/doc_37_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_27",
+                    "file": "knowledge_base/doc_37_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_28",
+                    "file": "knowledge_base/doc_37_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_29",
+                    "file": "knowledge_base/doc_37_chunk_29.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_30",
+                    "file": "knowledge_base/doc_37_chunk_30.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_31",
+                    "file": "knowledge_base/doc_37_chunk_31.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_32",
+                    "file": "knowledge_base/doc_37_chunk_32.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_33",
+                    "file": "knowledge_base/doc_37_chunk_33.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_34",
+                    "file": "knowledge_base/doc_37_chunk_34.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_35",
+                    "file": "knowledge_base/doc_37_chunk_35.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_36",
+                    "file": "knowledge_base/doc_37_chunk_36.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_37",
+                    "file": "knowledge_base/doc_37_chunk_37.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_38",
+                    "file": "knowledge_base/doc_37_chunk_38.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_39",
+                    "file": "knowledge_base/doc_37_chunk_39.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_40",
+                    "file": "knowledge_base/doc_37_chunk_40.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_41",
+                    "file": "knowledge_base/doc_37_chunk_41.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_42",
+                    "file": "knowledge_base/doc_37_chunk_42.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_43",
+                    "file": "knowledge_base/doc_37_chunk_43.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_44",
+                    "file": "knowledge_base/doc_37_chunk_44.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_45",
+                    "file": "knowledge_base/doc_37_chunk_45.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_46",
+                    "file": "knowledge_base/doc_37_chunk_46.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_47",
+                    "file": "knowledge_base/doc_37_chunk_47.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_48",
+                    "file": "knowledge_base/doc_37_chunk_48.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_49",
+                    "file": "knowledge_base/doc_37_chunk_49.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_50",
+                    "file": "knowledge_base/doc_37_chunk_50.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_51",
+                    "file": "knowledge_base/doc_37_chunk_51.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_52",
+                    "file": "knowledge_base/doc_37_chunk_52.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_53",
+                    "file": "knowledge_base/doc_37_chunk_53.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_54",
+                    "file": "knowledge_base/doc_37_chunk_54.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_55",
+                    "file": "knowledge_base/doc_37_chunk_55.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_56",
+                    "file": "knowledge_base/doc_37_chunk_56.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_57",
+                    "file": "knowledge_base/doc_37_chunk_57.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_58",
+                    "file": "knowledge_base/doc_37_chunk_58.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_59",
+                    "file": "knowledge_base/doc_37_chunk_59.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_60",
+                    "file": "knowledge_base/doc_37_chunk_60.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_61",
+                    "file": "knowledge_base/doc_37_chunk_61.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_62",
+                    "file": "knowledge_base/doc_37_chunk_62.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_63",
+                    "file": "knowledge_base/doc_37_chunk_63.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_64",
+                    "file": "knowledge_base/doc_37_chunk_64.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_65",
+                    "file": "knowledge_base/doc_37_chunk_65.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_66",
+                    "file": "knowledge_base/doc_37_chunk_66.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_67",
+                    "file": "knowledge_base/doc_37_chunk_67.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_68",
+                    "file": "knowledge_base/doc_37_chunk_68.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_69",
+                    "file": "knowledge_base/doc_37_chunk_69.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_70",
+                    "file": "knowledge_base/doc_37_chunk_70.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_71",
+                    "file": "knowledge_base/doc_37_chunk_71.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_72",
+                    "file": "knowledge_base/doc_37_chunk_72.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_73",
+                    "file": "knowledge_base/doc_37_chunk_73.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_74",
+                    "file": "knowledge_base/doc_37_chunk_74.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_75",
+                    "file": "knowledge_base/doc_37_chunk_75.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_76",
+                    "file": "knowledge_base/doc_37_chunk_76.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_77",
+                    "file": "knowledge_base/doc_37_chunk_77.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_78",
+                    "file": "knowledge_base/doc_37_chunk_78.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_79",
+                    "file": "knowledge_base/doc_37_chunk_79.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_80",
+                    "file": "knowledge_base/doc_37_chunk_80.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_81",
+                    "file": "knowledge_base/doc_37_chunk_81.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_82",
+                    "file": "knowledge_base/doc_37_chunk_82.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_83",
+                    "file": "knowledge_base/doc_37_chunk_83.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_84",
+                    "file": "knowledge_base/doc_37_chunk_84.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_85",
+                    "file": "knowledge_base/doc_37_chunk_85.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_86",
+                    "file": "knowledge_base/doc_37_chunk_86.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_87",
+                    "file": "knowledge_base/doc_37_chunk_87.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_88",
+                    "file": "knowledge_base/doc_37_chunk_88.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_89",
+                    "file": "knowledge_base/doc_37_chunk_89.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_90",
+                    "file": "knowledge_base/doc_37_chunk_90.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_91",
+                    "file": "knowledge_base/doc_37_chunk_91.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_92",
+                    "file": "knowledge_base/doc_37_chunk_92.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_93",
+                    "file": "knowledge_base/doc_37_chunk_93.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_94",
+                    "file": "knowledge_base/doc_37_chunk_94.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_95",
+                    "file": "knowledge_base/doc_37_chunk_95.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_96",
+                    "file": "knowledge_base/doc_37_chunk_96.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_97",
+                    "file": "knowledge_base/doc_37_chunk_97.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_98",
+                    "file": "knowledge_base/doc_37_chunk_98.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_99",
+                    "file": "knowledge_base/doc_37_chunk_99.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_100",
+                    "file": "knowledge_base/doc_37_chunk_100.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_101",
+                    "file": "knowledge_base/doc_37_chunk_101.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_102",
+                    "file": "knowledge_base/doc_37_chunk_102.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_103",
+                    "file": "knowledge_base/doc_37_chunk_103.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_104",
+                    "file": "knowledge_base/doc_37_chunk_104.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_105",
+                    "file": "knowledge_base/doc_37_chunk_105.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_106",
+                    "file": "knowledge_base/doc_37_chunk_106.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_107",
+                    "file": "knowledge_base/doc_37_chunk_107.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_108",
+                    "file": "knowledge_base/doc_37_chunk_108.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_109",
+                    "file": "knowledge_base/doc_37_chunk_109.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_110",
+                    "file": "knowledge_base/doc_37_chunk_110.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_111",
+                    "file": "knowledge_base/doc_37_chunk_111.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_112",
+                    "file": "knowledge_base/doc_37_chunk_112.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_113",
+                    "file": "knowledge_base/doc_37_chunk_113.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_114",
+                    "file": "knowledge_base/doc_37_chunk_114.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_115",
+                    "file": "knowledge_base/doc_37_chunk_115.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_116",
+                    "file": "knowledge_base/doc_37_chunk_116.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_117",
+                    "file": "knowledge_base/doc_37_chunk_117.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_118",
+                    "file": "knowledge_base/doc_37_chunk_118.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_119",
+                    "file": "knowledge_base/doc_37_chunk_119.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_120",
+                    "file": "knowledge_base/doc_37_chunk_120.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_121",
+                    "file": "knowledge_base/doc_37_chunk_121.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_122",
+                    "file": "knowledge_base/doc_37_chunk_122.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_123",
+                    "file": "knowledge_base/doc_37_chunk_123.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_124",
+                    "file": "knowledge_base/doc_37_chunk_124.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_125",
+                    "file": "knowledge_base/doc_37_chunk_125.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_126",
+                    "file": "knowledge_base/doc_37_chunk_126.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_127",
+                    "file": "knowledge_base/doc_37_chunk_127.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_128",
+                    "file": "knowledge_base/doc_37_chunk_128.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_129",
+                    "file": "knowledge_base/doc_37_chunk_129.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_130",
+                    "file": "knowledge_base/doc_37_chunk_130.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_131",
+                    "file": "knowledge_base/doc_37_chunk_131.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_132",
+                    "file": "knowledge_base/doc_37_chunk_132.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_133",
+                    "file": "knowledge_base/doc_37_chunk_133.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_134",
+                    "file": "knowledge_base/doc_37_chunk_134.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_135",
+                    "file": "knowledge_base/doc_37_chunk_135.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_136",
+                    "file": "knowledge_base/doc_37_chunk_136.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_137",
+                    "file": "knowledge_base/doc_37_chunk_137.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_138",
+                    "file": "knowledge_base/doc_37_chunk_138.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_139",
+                    "file": "knowledge_base/doc_37_chunk_139.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_140",
+                    "file": "knowledge_base/doc_37_chunk_140.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_141",
+                    "file": "knowledge_base/doc_37_chunk_141.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_142",
+                    "file": "knowledge_base/doc_37_chunk_142.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_143",
+                    "file": "knowledge_base/doc_37_chunk_143.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_144",
+                    "file": "knowledge_base/doc_37_chunk_144.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_145",
+                    "file": "knowledge_base/doc_37_chunk_145.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_146",
+                    "file": "knowledge_base/doc_37_chunk_146.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_147",
+                    "file": "knowledge_base/doc_37_chunk_147.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_148",
+                    "file": "knowledge_base/doc_37_chunk_148.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_149",
+                    "file": "knowledge_base/doc_37_chunk_149.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_150",
+                    "file": "knowledge_base/doc_37_chunk_150.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_151",
+                    "file": "knowledge_base/doc_37_chunk_151.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_152",
+                    "file": "knowledge_base/doc_37_chunk_152.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_153",
+                    "file": "knowledge_base/doc_37_chunk_153.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_154",
+                    "file": "knowledge_base/doc_37_chunk_154.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_155",
+                    "file": "knowledge_base/doc_37_chunk_155.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_156",
+                    "file": "knowledge_base/doc_37_chunk_156.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_157",
+                    "file": "knowledge_base/doc_37_chunk_157.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_158",
+                    "file": "knowledge_base/doc_37_chunk_158.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_159",
+                    "file": "knowledge_base/doc_37_chunk_159.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_160",
+                    "file": "knowledge_base/doc_37_chunk_160.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_161",
+                    "file": "knowledge_base/doc_37_chunk_161.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_162",
+                    "file": "knowledge_base/doc_37_chunk_162.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_163",
+                    "file": "knowledge_base/doc_37_chunk_163.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_164",
+                    "file": "knowledge_base/doc_37_chunk_164.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_165",
+                    "file": "knowledge_base/doc_37_chunk_165.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_166",
+                    "file": "knowledge_base/doc_37_chunk_166.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_167",
+                    "file": "knowledge_base/doc_37_chunk_167.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_168",
+                    "file": "knowledge_base/doc_37_chunk_168.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_169",
+                    "file": "knowledge_base/doc_37_chunk_169.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_170",
+                    "file": "knowledge_base/doc_37_chunk_170.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_171",
+                    "file": "knowledge_base/doc_37_chunk_171.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_172",
+                    "file": "knowledge_base/doc_37_chunk_172.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_173",
+                    "file": "knowledge_base/doc_37_chunk_173.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_174",
+                    "file": "knowledge_base/doc_37_chunk_174.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_175",
+                    "file": "knowledge_base/doc_37_chunk_175.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_176",
+                    "file": "knowledge_base/doc_37_chunk_176.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_177",
+                    "file": "knowledge_base/doc_37_chunk_177.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_178",
+                    "file": "knowledge_base/doc_37_chunk_178.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_179",
+                    "file": "knowledge_base/doc_37_chunk_179.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_180",
+                    "file": "knowledge_base/doc_37_chunk_180.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_181",
+                    "file": "knowledge_base/doc_37_chunk_181.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_182",
+                    "file": "knowledge_base/doc_37_chunk_182.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_183",
+                    "file": "knowledge_base/doc_37_chunk_183.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_184",
+                    "file": "knowledge_base/doc_37_chunk_184.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_185",
+                    "file": "knowledge_base/doc_37_chunk_185.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_186",
+                    "file": "knowledge_base/doc_37_chunk_186.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_187",
+                    "file": "knowledge_base/doc_37_chunk_187.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_188",
+                    "file": "knowledge_base/doc_37_chunk_188.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_189",
+                    "file": "knowledge_base/doc_37_chunk_189.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_190",
+                    "file": "knowledge_base/doc_37_chunk_190.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_191",
+                    "file": "knowledge_base/doc_37_chunk_191.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_192",
+                    "file": "knowledge_base/doc_37_chunk_192.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_193",
+                    "file": "knowledge_base/doc_37_chunk_193.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_194",
+                    "file": "knowledge_base/doc_37_chunk_194.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_195",
+                    "file": "knowledge_base/doc_37_chunk_195.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_196",
+                    "file": "knowledge_base/doc_37_chunk_196.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_197",
+                    "file": "knowledge_base/doc_37_chunk_197.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_198",
+                    "file": "knowledge_base/doc_37_chunk_198.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_199",
+                    "file": "knowledge_base/doc_37_chunk_199.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_200",
+                    "file": "knowledge_base/doc_37_chunk_200.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_201",
+                    "file": "knowledge_base/doc_37_chunk_201.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_202",
+                    "file": "knowledge_base/doc_37_chunk_202.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_203",
+                    "file": "knowledge_base/doc_37_chunk_203.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_204",
+                    "file": "knowledge_base/doc_37_chunk_204.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_205",
+                    "file": "knowledge_base/doc_37_chunk_205.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_206",
+                    "file": "knowledge_base/doc_37_chunk_206.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_207",
+                    "file": "knowledge_base/doc_37_chunk_207.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_208",
+                    "file": "knowledge_base/doc_37_chunk_208.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_209",
+                    "file": "knowledge_base/doc_37_chunk_209.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_210",
+                    "file": "knowledge_base/doc_37_chunk_210.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_211",
+                    "file": "knowledge_base/doc_37_chunk_211.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_212",
+                    "file": "knowledge_base/doc_37_chunk_212.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_213",
+                    "file": "knowledge_base/doc_37_chunk_213.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_214",
+                    "file": "knowledge_base/doc_37_chunk_214.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_215",
+                    "file": "knowledge_base/doc_37_chunk_215.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_216",
+                    "file": "knowledge_base/doc_37_chunk_216.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_217",
+                    "file": "knowledge_base/doc_37_chunk_217.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_218",
+                    "file": "knowledge_base/doc_37_chunk_218.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_219",
+                    "file": "knowledge_base/doc_37_chunk_219.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_220",
+                    "file": "knowledge_base/doc_37_chunk_220.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_221",
+                    "file": "knowledge_base/doc_37_chunk_221.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_222",
+                    "file": "knowledge_base/doc_37_chunk_222.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_223",
+                    "file": "knowledge_base/doc_37_chunk_223.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_224",
+                    "file": "knowledge_base/doc_37_chunk_224.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_225",
+                    "file": "knowledge_base/doc_37_chunk_225.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_226",
+                    "file": "knowledge_base/doc_37_chunk_226.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_227",
+                    "file": "knowledge_base/doc_37_chunk_227.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_228",
+                    "file": "knowledge_base/doc_37_chunk_228.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_229",
+                    "file": "knowledge_base/doc_37_chunk_229.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_230",
+                    "file": "knowledge_base/doc_37_chunk_230.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_231",
+                    "file": "knowledge_base/doc_37_chunk_231.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_232",
+                    "file": "knowledge_base/doc_37_chunk_232.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_233",
+                    "file": "knowledge_base/doc_37_chunk_233.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_234",
+                    "file": "knowledge_base/doc_37_chunk_234.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_235",
+                    "file": "knowledge_base/doc_37_chunk_235.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_236",
+                    "file": "knowledge_base/doc_37_chunk_236.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_237",
+                    "file": "knowledge_base/doc_37_chunk_237.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_238",
+                    "file": "knowledge_base/doc_37_chunk_238.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_239",
+                    "file": "knowledge_base/doc_37_chunk_239.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_240",
+                    "file": "knowledge_base/doc_37_chunk_240.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_241",
+                    "file": "knowledge_base/doc_37_chunk_241.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_242",
+                    "file": "knowledge_base/doc_37_chunk_242.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_243",
+                    "file": "knowledge_base/doc_37_chunk_243.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_244",
+                    "file": "knowledge_base/doc_37_chunk_244.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_245",
+                    "file": "knowledge_base/doc_37_chunk_245.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_246",
+                    "file": "knowledge_base/doc_37_chunk_246.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_247",
+                    "file": "knowledge_base/doc_37_chunk_247.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_248",
+                    "file": "knowledge_base/doc_37_chunk_248.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_249",
+                    "file": "knowledge_base/doc_37_chunk_249.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_250",
+                    "file": "knowledge_base/doc_37_chunk_250.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_251",
+                    "file": "knowledge_base/doc_37_chunk_251.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_252",
+                    "file": "knowledge_base/doc_37_chunk_252.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_253",
+                    "file": "knowledge_base/doc_37_chunk_253.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_254",
+                    "file": "knowledge_base/doc_37_chunk_254.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_255",
+                    "file": "knowledge_base/doc_37_chunk_255.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_256",
+                    "file": "knowledge_base/doc_37_chunk_256.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_257",
+                    "file": "knowledge_base/doc_37_chunk_257.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_258",
+                    "file": "knowledge_base/doc_37_chunk_258.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_259",
+                    "file": "knowledge_base/doc_37_chunk_259.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_260",
+                    "file": "knowledge_base/doc_37_chunk_260.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_261",
+                    "file": "knowledge_base/doc_37_chunk_261.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_262",
+                    "file": "knowledge_base/doc_37_chunk_262.json"
+                },
+                {
+                    "chunk_id": "doc_37_chunk_263",
+                    "file": "knowledge_base/doc_37_chunk_263.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_38",
+            "original": "/home/joker/Documents/BPD/task_1722840400_Bipolar with psychotic symptoms.pdf",
+            "text_path": "converted_files/task_1722840400_Bipolar with psychotic symptoms.txt",
+            "processed_date": "2025-03-11T08:32:41.864683",
+            "chunks": [
+                {
+                    "chunk_id": "doc_38_chunk_0",
+                    "file": "knowledge_base/doc_38_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_1",
+                    "file": "knowledge_base/doc_38_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_2",
+                    "file": "knowledge_base/doc_38_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_3",
+                    "file": "knowledge_base/doc_38_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_4",
+                    "file": "knowledge_base/doc_38_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_5",
+                    "file": "knowledge_base/doc_38_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_6",
+                    "file": "knowledge_base/doc_38_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_7",
+                    "file": "knowledge_base/doc_38_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_8",
+                    "file": "knowledge_base/doc_38_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_9",
+                    "file": "knowledge_base/doc_38_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_10",
+                    "file": "knowledge_base/doc_38_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_11",
+                    "file": "knowledge_base/doc_38_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_12",
+                    "file": "knowledge_base/doc_38_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_13",
+                    "file": "knowledge_base/doc_38_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_14",
+                    "file": "knowledge_base/doc_38_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_15",
+                    "file": "knowledge_base/doc_38_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_16",
+                    "file": "knowledge_base/doc_38_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_17",
+                    "file": "knowledge_base/doc_38_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_18",
+                    "file": "knowledge_base/doc_38_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_19",
+                    "file": "knowledge_base/doc_38_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_20",
+                    "file": "knowledge_base/doc_38_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_21",
+                    "file": "knowledge_base/doc_38_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_22",
+                    "file": "knowledge_base/doc_38_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_23",
+                    "file": "knowledge_base/doc_38_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_24",
+                    "file": "knowledge_base/doc_38_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_25",
+                    "file": "knowledge_base/doc_38_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_26",
+                    "file": "knowledge_base/doc_38_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_27",
+                    "file": "knowledge_base/doc_38_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_28",
+                    "file": "knowledge_base/doc_38_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_29",
+                    "file": "knowledge_base/doc_38_chunk_29.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_30",
+                    "file": "knowledge_base/doc_38_chunk_30.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_31",
+                    "file": "knowledge_base/doc_38_chunk_31.json"
+                },
+                {
+                    "chunk_id": "doc_38_chunk_32",
+                    "file": "knowledge_base/doc_38_chunk_32.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_39",
+            "original": "/home/joker/Documents/BPD/task_1722838627_Delusions of sobriety.pdf",
+            "text_path": "converted_files/task_1722838627_Delusions of sobriety.txt",
+            "processed_date": "2025-03-11T08:32:42.114898",
+            "chunks": [
+                {
+                    "chunk_id": "doc_39_chunk_0",
+                    "file": "knowledge_base/doc_39_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_39_chunk_1",
+                    "file": "knowledge_base/doc_39_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_39_chunk_2",
+                    "file": "knowledge_base/doc_39_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_39_chunk_3",
+                    "file": "knowledge_base/doc_39_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_39_chunk_4",
+                    "file": "knowledge_base/doc_39_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_39_chunk_5",
+                    "file": "knowledge_base/doc_39_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_39_chunk_6",
+                    "file": "knowledge_base/doc_39_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_39_chunk_7",
+                    "file": "knowledge_base/doc_39_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_39_chunk_8",
+                    "file": "knowledge_base/doc_39_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_39_chunk_9",
+                    "file": "knowledge_base/doc_39_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_39_chunk_10",
+                    "file": "knowledge_base/doc_39_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_39_chunk_11",
+                    "file": "knowledge_base/doc_39_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_39_chunk_12",
+                    "file": "knowledge_base/doc_39_chunk_12.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_40",
+            "original": "/home/joker/Documents/BPD/task_1722838316_Antipsychotics and THC.pdf",
+            "text_path": "converted_files/task_1722838316_Antipsychotics and THC.txt",
+            "processed_date": "2025-03-11T08:32:42.326991",
+            "chunks": [
+                {
+                    "chunk_id": "doc_40_chunk_0",
+                    "file": "knowledge_base/doc_40_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_40_chunk_1",
+                    "file": "knowledge_base/doc_40_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_40_chunk_2",
+                    "file": "knowledge_base/doc_40_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_40_chunk_3",
+                    "file": "knowledge_base/doc_40_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_40_chunk_4",
+                    "file": "knowledge_base/doc_40_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_40_chunk_5",
+                    "file": "knowledge_base/doc_40_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_40_chunk_6",
+                    "file": "knowledge_base/doc_40_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_40_chunk_7",
+                    "file": "knowledge_base/doc_40_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_40_chunk_8",
+                    "file": "knowledge_base/doc_40_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_40_chunk_9",
+                    "file": "knowledge_base/doc_40_chunk_9.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_41",
+            "original": "/home/joker/Documents/BPD/task_1722835367_Bipolar disorder.pdf",
+            "text_path": "converted_files/task_1722835367_Bipolar disorder.txt",
+            "processed_date": "2025-03-11T08:32:42.844269",
+            "chunks": [
+                {
+                    "chunk_id": "doc_41_chunk_0",
+                    "file": "knowledge_base/doc_41_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_1",
+                    "file": "knowledge_base/doc_41_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_2",
+                    "file": "knowledge_base/doc_41_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_3",
+                    "file": "knowledge_base/doc_41_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_4",
+                    "file": "knowledge_base/doc_41_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_5",
+                    "file": "knowledge_base/doc_41_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_6",
+                    "file": "knowledge_base/doc_41_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_7",
+                    "file": "knowledge_base/doc_41_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_8",
+                    "file": "knowledge_base/doc_41_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_9",
+                    "file": "knowledge_base/doc_41_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_10",
+                    "file": "knowledge_base/doc_41_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_11",
+                    "file": "knowledge_base/doc_41_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_12",
+                    "file": "knowledge_base/doc_41_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_13",
+                    "file": "knowledge_base/doc_41_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_14",
+                    "file": "knowledge_base/doc_41_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_15",
+                    "file": "knowledge_base/doc_41_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_16",
+                    "file": "knowledge_base/doc_41_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_17",
+                    "file": "knowledge_base/doc_41_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_18",
+                    "file": "knowledge_base/doc_41_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_19",
+                    "file": "knowledge_base/doc_41_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_20",
+                    "file": "knowledge_base/doc_41_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_21",
+                    "file": "knowledge_base/doc_41_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_22",
+                    "file": "knowledge_base/doc_41_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_23",
+                    "file": "knowledge_base/doc_41_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_24",
+                    "file": "knowledge_base/doc_41_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_25",
+                    "file": "knowledge_base/doc_41_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_26",
+                    "file": "knowledge_base/doc_41_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_41_chunk_27",
+                    "file": "knowledge_base/doc_41_chunk_27.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_42",
+            "original": "/home/joker/Documents/BPD/task_1722838433_Comorbidities of bipolar disorder.pdf",
+            "text_path": "converted_files/task_1722838433_Comorbidities of bipolar disorder.txt",
+            "processed_date": "2025-03-11T08:32:43.064750",
+            "chunks": [
+                {
+                    "chunk_id": "doc_42_chunk_0",
+                    "file": "knowledge_base/doc_42_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_42_chunk_1",
+                    "file": "knowledge_base/doc_42_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_42_chunk_2",
+                    "file": "knowledge_base/doc_42_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_42_chunk_3",
+                    "file": "knowledge_base/doc_42_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_42_chunk_4",
+                    "file": "knowledge_base/doc_42_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_42_chunk_5",
+                    "file": "knowledge_base/doc_42_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_42_chunk_6",
+                    "file": "knowledge_base/doc_42_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_42_chunk_7",
+                    "file": "knowledge_base/doc_42_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_42_chunk_8",
+                    "file": "knowledge_base/doc_42_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_42_chunk_9",
+                    "file": "knowledge_base/doc_42_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_42_chunk_10",
+                    "file": "knowledge_base/doc_42_chunk_10.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_43",
+            "original": "/home/joker/Documents/BPD/task_1722840177_Mania.pdf",
+            "text_path": "converted_files/task_1722840177_Mania.txt",
+            "processed_date": "2025-03-11T08:32:43.562853",
+            "chunks": [
+                {
+                    "chunk_id": "doc_43_chunk_0",
+                    "file": "knowledge_base/doc_43_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_1",
+                    "file": "knowledge_base/doc_43_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_2",
+                    "file": "knowledge_base/doc_43_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_3",
+                    "file": "knowledge_base/doc_43_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_4",
+                    "file": "knowledge_base/doc_43_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_5",
+                    "file": "knowledge_base/doc_43_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_6",
+                    "file": "knowledge_base/doc_43_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_7",
+                    "file": "knowledge_base/doc_43_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_8",
+                    "file": "knowledge_base/doc_43_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_9",
+                    "file": "knowledge_base/doc_43_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_10",
+                    "file": "knowledge_base/doc_43_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_11",
+                    "file": "knowledge_base/doc_43_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_12",
+                    "file": "knowledge_base/doc_43_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_13",
+                    "file": "knowledge_base/doc_43_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_14",
+                    "file": "knowledge_base/doc_43_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_15",
+                    "file": "knowledge_base/doc_43_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_16",
+                    "file": "knowledge_base/doc_43_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_17",
+                    "file": "knowledge_base/doc_43_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_18",
+                    "file": "knowledge_base/doc_43_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_19",
+                    "file": "knowledge_base/doc_43_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_20",
+                    "file": "knowledge_base/doc_43_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_21",
+                    "file": "knowledge_base/doc_43_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_22",
+                    "file": "knowledge_base/doc_43_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_23",
+                    "file": "knowledge_base/doc_43_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_24",
+                    "file": "knowledge_base/doc_43_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_25",
+                    "file": "knowledge_base/doc_43_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_43_chunk_26",
+                    "file": "knowledge_base/doc_43_chunk_26.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_44",
+            "original": "/home/joker/Documents/BPD/task_1722837951_Bipolar disorder and delusions of sobriety.pdf",
+            "text_path": "converted_files/task_1722837951_Bipolar disorder and delusions of sobriety.txt",
+            "processed_date": "2025-03-11T08:32:43.782415",
+            "chunks": [
+                {
+                    "chunk_id": "doc_44_chunk_0",
+                    "file": "knowledge_base/doc_44_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_44_chunk_1",
+                    "file": "knowledge_base/doc_44_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_44_chunk_2",
+                    "file": "knowledge_base/doc_44_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_44_chunk_3",
+                    "file": "knowledge_base/doc_44_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_44_chunk_4",
+                    "file": "knowledge_base/doc_44_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_44_chunk_5",
+                    "file": "knowledge_base/doc_44_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_44_chunk_6",
+                    "file": "knowledge_base/doc_44_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_44_chunk_7",
+                    "file": "knowledge_base/doc_44_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_44_chunk_8",
+                    "file": "knowledge_base/doc_44_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_44_chunk_9",
+                    "file": "knowledge_base/doc_44_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_44_chunk_10",
+                    "file": "knowledge_base/doc_44_chunk_10.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_45",
+            "original": "/home/joker/Documents/BPD/task_1722835562_Antipsychotics and birthcontrol.pdf",
+            "text_path": "converted_files/task_1722835562_Antipsychotics and birthcontrol.txt",
+            "processed_date": "2025-03-11T08:32:44.417238",
+            "chunks": [
+                {
+                    "chunk_id": "doc_45_chunk_0",
+                    "file": "knowledge_base/doc_45_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_1",
+                    "file": "knowledge_base/doc_45_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_2",
+                    "file": "knowledge_base/doc_45_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_3",
+                    "file": "knowledge_base/doc_45_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_4",
+                    "file": "knowledge_base/doc_45_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_5",
+                    "file": "knowledge_base/doc_45_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_6",
+                    "file": "knowledge_base/doc_45_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_7",
+                    "file": "knowledge_base/doc_45_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_8",
+                    "file": "knowledge_base/doc_45_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_9",
+                    "file": "knowledge_base/doc_45_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_10",
+                    "file": "knowledge_base/doc_45_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_11",
+                    "file": "knowledge_base/doc_45_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_12",
+                    "file": "knowledge_base/doc_45_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_13",
+                    "file": "knowledge_base/doc_45_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_14",
+                    "file": "knowledge_base/doc_45_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_15",
+                    "file": "knowledge_base/doc_45_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_16",
+                    "file": "knowledge_base/doc_45_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_17",
+                    "file": "knowledge_base/doc_45_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_18",
+                    "file": "knowledge_base/doc_45_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_19",
+                    "file": "knowledge_base/doc_45_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_20",
+                    "file": "knowledge_base/doc_45_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_21",
+                    "file": "knowledge_base/doc_45_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_22",
+                    "file": "knowledge_base/doc_45_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_23",
+                    "file": "knowledge_base/doc_45_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_24",
+                    "file": "knowledge_base/doc_45_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_25",
+                    "file": "knowledge_base/doc_45_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_26",
+                    "file": "knowledge_base/doc_45_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_27",
+                    "file": "knowledge_base/doc_45_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_28",
+                    "file": "knowledge_base/doc_45_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_29",
+                    "file": "knowledge_base/doc_45_chunk_29.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_30",
+                    "file": "knowledge_base/doc_45_chunk_30.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_31",
+                    "file": "knowledge_base/doc_45_chunk_31.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_32",
+                    "file": "knowledge_base/doc_45_chunk_32.json"
+                },
+                {
+                    "chunk_id": "doc_45_chunk_33",
+                    "file": "knowledge_base/doc_45_chunk_33.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_46",
+            "original": "/home/joker/Documents/BPD/task_1722836073_Effects on weight in bipolar disorder.pdf",
+            "text_path": "converted_files/task_1722836073_Effects on weight in bipolar disorder.txt",
+            "processed_date": "2025-03-11T08:32:44.618632",
+            "chunks": [
+                {
+                    "chunk_id": "doc_46_chunk_0",
+                    "file": "knowledge_base/doc_46_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_46_chunk_1",
+                    "file": "knowledge_base/doc_46_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_46_chunk_2",
+                    "file": "knowledge_base/doc_46_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_46_chunk_3",
+                    "file": "knowledge_base/doc_46_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_46_chunk_4",
+                    "file": "knowledge_base/doc_46_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_46_chunk_5",
+                    "file": "knowledge_base/doc_46_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_46_chunk_6",
+                    "file": "knowledge_base/doc_46_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_46_chunk_7",
+                    "file": "knowledge_base/doc_46_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_46_chunk_8",
+                    "file": "knowledge_base/doc_46_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_46_chunk_9",
+                    "file": "knowledge_base/doc_46_chunk_9.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_47",
+            "original": "/home/joker/Documents/BPD/task_1722834176_Bipolar Depression.pdf",
+            "text_path": "converted_files/task_1722834176_Bipolar Depression.txt",
+            "processed_date": "2025-03-11T08:32:45.332457",
+            "chunks": [
+                {
+                    "chunk_id": "doc_47_chunk_0",
+                    "file": "knowledge_base/doc_47_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_1",
+                    "file": "knowledge_base/doc_47_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_2",
+                    "file": "knowledge_base/doc_47_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_3",
+                    "file": "knowledge_base/doc_47_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_4",
+                    "file": "knowledge_base/doc_47_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_5",
+                    "file": "knowledge_base/doc_47_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_6",
+                    "file": "knowledge_base/doc_47_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_7",
+                    "file": "knowledge_base/doc_47_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_8",
+                    "file": "knowledge_base/doc_47_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_9",
+                    "file": "knowledge_base/doc_47_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_10",
+                    "file": "knowledge_base/doc_47_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_11",
+                    "file": "knowledge_base/doc_47_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_12",
+                    "file": "knowledge_base/doc_47_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_13",
+                    "file": "knowledge_base/doc_47_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_14",
+                    "file": "knowledge_base/doc_47_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_15",
+                    "file": "knowledge_base/doc_47_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_16",
+                    "file": "knowledge_base/doc_47_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_17",
+                    "file": "knowledge_base/doc_47_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_18",
+                    "file": "knowledge_base/doc_47_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_19",
+                    "file": "knowledge_base/doc_47_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_20",
+                    "file": "knowledge_base/doc_47_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_21",
+                    "file": "knowledge_base/doc_47_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_22",
+                    "file": "knowledge_base/doc_47_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_23",
+                    "file": "knowledge_base/doc_47_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_24",
+                    "file": "knowledge_base/doc_47_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_25",
+                    "file": "knowledge_base/doc_47_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_26",
+                    "file": "knowledge_base/doc_47_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_27",
+                    "file": "knowledge_base/doc_47_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_28",
+                    "file": "knowledge_base/doc_47_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_29",
+                    "file": "knowledge_base/doc_47_chunk_29.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_30",
+                    "file": "knowledge_base/doc_47_chunk_30.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_31",
+                    "file": "knowledge_base/doc_47_chunk_31.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_32",
+                    "file": "knowledge_base/doc_47_chunk_32.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_33",
+                    "file": "knowledge_base/doc_47_chunk_33.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_34",
+                    "file": "knowledge_base/doc_47_chunk_34.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_35",
+                    "file": "knowledge_base/doc_47_chunk_35.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_36",
+                    "file": "knowledge_base/doc_47_chunk_36.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_37",
+                    "file": "knowledge_base/doc_47_chunk_37.json"
+                },
+                {
+                    "chunk_id": "doc_47_chunk_38",
+                    "file": "knowledge_base/doc_47_chunk_38.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_48",
+            "original": "/home/joker/Documents/BPD/task_1722839692_Interactions between antipsychotics trazadon.pdf",
+            "text_path": "converted_files/task_1722839692_Interactions between antipsychotics trazadon.txt",
+            "processed_date": "2025-03-11T08:32:45.868478",
+            "chunks": [
+                {
+                    "chunk_id": "doc_48_chunk_0",
+                    "file": "knowledge_base/doc_48_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_1",
+                    "file": "knowledge_base/doc_48_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_2",
+                    "file": "knowledge_base/doc_48_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_3",
+                    "file": "knowledge_base/doc_48_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_4",
+                    "file": "knowledge_base/doc_48_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_5",
+                    "file": "knowledge_base/doc_48_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_6",
+                    "file": "knowledge_base/doc_48_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_7",
+                    "file": "knowledge_base/doc_48_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_8",
+                    "file": "knowledge_base/doc_48_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_9",
+                    "file": "knowledge_base/doc_48_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_10",
+                    "file": "knowledge_base/doc_48_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_11",
+                    "file": "knowledge_base/doc_48_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_12",
+                    "file": "knowledge_base/doc_48_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_13",
+                    "file": "knowledge_base/doc_48_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_14",
+                    "file": "knowledge_base/doc_48_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_15",
+                    "file": "knowledge_base/doc_48_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_16",
+                    "file": "knowledge_base/doc_48_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_17",
+                    "file": "knowledge_base/doc_48_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_18",
+                    "file": "knowledge_base/doc_48_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_19",
+                    "file": "knowledge_base/doc_48_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_20",
+                    "file": "knowledge_base/doc_48_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_21",
+                    "file": "knowledge_base/doc_48_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_22",
+                    "file": "knowledge_base/doc_48_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_23",
+                    "file": "knowledge_base/doc_48_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_24",
+                    "file": "knowledge_base/doc_48_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_25",
+                    "file": "knowledge_base/doc_48_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_26",
+                    "file": "knowledge_base/doc_48_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_48_chunk_27",
+                    "file": "knowledge_base/doc_48_chunk_27.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_49",
+            "original": "/home/joker/Documents/conspiracies/mkultra.pdf",
+            "text_path": "converted_files/mkultra.txt",
+            "processed_date": "2025-03-11T08:38:06.162636",
+            "chunks": [
+                {
+                    "chunk_id": "doc_49_chunk_0",
+                    "file": "knowledge_base/doc_49_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_1",
+                    "file": "knowledge_base/doc_49_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_2",
+                    "file": "knowledge_base/doc_49_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_3",
+                    "file": "knowledge_base/doc_49_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_4",
+                    "file": "knowledge_base/doc_49_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_5",
+                    "file": "knowledge_base/doc_49_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_6",
+                    "file": "knowledge_base/doc_49_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_7",
+                    "file": "knowledge_base/doc_49_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_8",
+                    "file": "knowledge_base/doc_49_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_9",
+                    "file": "knowledge_base/doc_49_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_10",
+                    "file": "knowledge_base/doc_49_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_11",
+                    "file": "knowledge_base/doc_49_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_12",
+                    "file": "knowledge_base/doc_49_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_13",
+                    "file": "knowledge_base/doc_49_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_14",
+                    "file": "knowledge_base/doc_49_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_15",
+                    "file": "knowledge_base/doc_49_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_16",
+                    "file": "knowledge_base/doc_49_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_17",
+                    "file": "knowledge_base/doc_49_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_18",
+                    "file": "knowledge_base/doc_49_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_19",
+                    "file": "knowledge_base/doc_49_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_20",
+                    "file": "knowledge_base/doc_49_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_21",
+                    "file": "knowledge_base/doc_49_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_22",
+                    "file": "knowledge_base/doc_49_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_23",
+                    "file": "knowledge_base/doc_49_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_24",
+                    "file": "knowledge_base/doc_49_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_25",
+                    "file": "knowledge_base/doc_49_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_26",
+                    "file": "knowledge_base/doc_49_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_27",
+                    "file": "knowledge_base/doc_49_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_28",
+                    "file": "knowledge_base/doc_49_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_49_chunk_29",
+                    "file": "knowledge_base/doc_49_chunk_29.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_50",
+            "original": "/home/joker/Documents/conspiracies/conspiracy2.pdf",
+            "text_path": "converted_files/conspiracy2.txt",
+            "processed_date": "2025-03-11T08:38:06.498554",
+            "chunks": [
+                {
+                    "chunk_id": "doc_50_chunk_0",
+                    "file": "knowledge_base/doc_50_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_1",
+                    "file": "knowledge_base/doc_50_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_2",
+                    "file": "knowledge_base/doc_50_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_3",
+                    "file": "knowledge_base/doc_50_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_4",
+                    "file": "knowledge_base/doc_50_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_5",
+                    "file": "knowledge_base/doc_50_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_6",
+                    "file": "knowledge_base/doc_50_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_7",
+                    "file": "knowledge_base/doc_50_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_8",
+                    "file": "knowledge_base/doc_50_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_9",
+                    "file": "knowledge_base/doc_50_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_10",
+                    "file": "knowledge_base/doc_50_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_11",
+                    "file": "knowledge_base/doc_50_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_12",
+                    "file": "knowledge_base/doc_50_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_13",
+                    "file": "knowledge_base/doc_50_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_14",
+                    "file": "knowledge_base/doc_50_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_15",
+                    "file": "knowledge_base/doc_50_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_16",
+                    "file": "knowledge_base/doc_50_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_50_chunk_17",
+                    "file": "knowledge_base/doc_50_chunk_17.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_51",
+            "original": "/home/joker/Documents/conspiracies/bilderberggroup.pdf",
+            "text_path": "converted_files/bilderberggroup.txt",
+            "processed_date": "2025-03-11T08:38:06.962417",
+            "chunks": [
+                {
+                    "chunk_id": "doc_51_chunk_0",
+                    "file": "knowledge_base/doc_51_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_1",
+                    "file": "knowledge_base/doc_51_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_2",
+                    "file": "knowledge_base/doc_51_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_3",
+                    "file": "knowledge_base/doc_51_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_4",
+                    "file": "knowledge_base/doc_51_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_5",
+                    "file": "knowledge_base/doc_51_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_6",
+                    "file": "knowledge_base/doc_51_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_7",
+                    "file": "knowledge_base/doc_51_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_8",
+                    "file": "knowledge_base/doc_51_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_9",
+                    "file": "knowledge_base/doc_51_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_10",
+                    "file": "knowledge_base/doc_51_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_11",
+                    "file": "knowledge_base/doc_51_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_12",
+                    "file": "knowledge_base/doc_51_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_13",
+                    "file": "knowledge_base/doc_51_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_14",
+                    "file": "knowledge_base/doc_51_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_15",
+                    "file": "knowledge_base/doc_51_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_16",
+                    "file": "knowledge_base/doc_51_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_17",
+                    "file": "knowledge_base/doc_51_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_18",
+                    "file": "knowledge_base/doc_51_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_19",
+                    "file": "knowledge_base/doc_51_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_20",
+                    "file": "knowledge_base/doc_51_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_21",
+                    "file": "knowledge_base/doc_51_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_22",
+                    "file": "knowledge_base/doc_51_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_23",
+                    "file": "knowledge_base/doc_51_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_51_chunk_24",
+                    "file": "knowledge_base/doc_51_chunk_24.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_52",
+            "original": "/home/joker/Documents/conspiracies/chemtrail.pdf",
+            "text_path": "converted_files/chemtrail.txt",
+            "processed_date": "2025-03-11T08:38:07.037993",
+            "chunks": [
+                {
+                    "chunk_id": "doc_52_chunk_0",
+                    "file": "knowledge_base/doc_52_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_52_chunk_1",
+                    "file": "knowledge_base/doc_52_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_52_chunk_2",
+                    "file": "knowledge_base/doc_52_chunk_2.json"
+                }
+            ]
+        },
+        {
+            "id": "doc_53",
+            "original": "/home/joker/Documents/conspiracies/flatearth.pdf",
+            "text_path": "converted_files/flatearth.txt",
+            "processed_date": "2025-03-11T08:38:07.609556",
+            "chunks": [
+                {
+                    "chunk_id": "doc_53_chunk_0",
+                    "file": "knowledge_base/doc_53_chunk_0.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_1",
+                    "file": "knowledge_base/doc_53_chunk_1.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_2",
+                    "file": "knowledge_base/doc_53_chunk_2.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_3",
+                    "file": "knowledge_base/doc_53_chunk_3.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_4",
+                    "file": "knowledge_base/doc_53_chunk_4.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_5",
+                    "file": "knowledge_base/doc_53_chunk_5.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_6",
+                    "file": "knowledge_base/doc_53_chunk_6.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_7",
+                    "file": "knowledge_base/doc_53_chunk_7.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_8",
+                    "file": "knowledge_base/doc_53_chunk_8.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_9",
+                    "file": "knowledge_base/doc_53_chunk_9.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_10",
+                    "file": "knowledge_base/doc_53_chunk_10.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_11",
+                    "file": "knowledge_base/doc_53_chunk_11.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_12",
+                    "file": "knowledge_base/doc_53_chunk_12.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_13",
+                    "file": "knowledge_base/doc_53_chunk_13.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_14",
+                    "file": "knowledge_base/doc_53_chunk_14.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_15",
+                    "file": "knowledge_base/doc_53_chunk_15.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_16",
+                    "file": "knowledge_base/doc_53_chunk_16.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_17",
+                    "file": "knowledge_base/doc_53_chunk_17.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_18",
+                    "file": "knowledge_base/doc_53_chunk_18.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_19",
+                    "file": "knowledge_base/doc_53_chunk_19.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_20",
+                    "file": "knowledge_base/doc_53_chunk_20.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_21",
+                    "file": "knowledge_base/doc_53_chunk_21.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_22",
+                    "file": "knowledge_base/doc_53_chunk_22.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_23",
+                    "file": "knowledge_base/doc_53_chunk_23.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_24",
+                    "file": "knowledge_base/doc_53_chunk_24.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_25",
+                    "file": "knowledge_base/doc_53_chunk_25.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_26",
+                    "file": "knowledge_base/doc_53_chunk_26.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_27",
+                    "file": "knowledge_base/doc_53_chunk_27.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_28",
+                    "file": "knowledge_base/doc_53_chunk_28.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_29",
+                    "file": "knowledge_base/doc_53_chunk_29.json"
+                },
+                {
+                    "chunk_id": "doc_53_chunk_30",
+                    "file": "knowledge_base/doc_53_chunk_30.json"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+# Core dependencies
+ollama>=0.1.20
+PyPDF2>=3.0.0
+python-markdown>=3.4.0
+python-docx>=0.8.11
+numpy>=1.24.0
+
+# Optional dependencies for enhanced functionality
+# For OCR capabilities (if using ocrmypdf)
+# ocrmypdf>=14.0.0
+# pytesseract>=0.3.10
+# Pillow>=9.4.0
