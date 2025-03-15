@@ -1,3 +1,7 @@
+Hi guys! 
+
+I have actually decided to develop this application out further and will be licensing features. This is the free version! Ill be posting updates of the enhanced features with demonstrations when theyre complete. Until then, enjoy! 
+
 # **FlockParse - AI-Powered Document Intelligence Platform**
 
 ## **Overview**  
