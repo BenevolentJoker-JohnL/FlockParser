@@ -144,7 +144,12 @@ async def search(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-if __name__ == "__main__":
+def main():
+    """Entry point for console script."""
     os.makedirs("./uploads", exist_ok=True)
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+if __name__ == "__main__":
+    main()
 

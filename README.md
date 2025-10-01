@@ -118,7 +118,13 @@ Watch FlockParser in action: **372 seconds → 6 seconds (61.7x speedup)** throu
 # 1. Clone and install
 git clone https://github.com/BenevolentJoker-JohnL/FlockParser.git
 cd FlockParser
+
+# Option A: Install dependencies only
 pip install -r requirements.txt
+
+# Option B: Install as package (recommended - adds console commands)
+pip install -e .
+# This adds commands: flockparse, flockparse-webui, flockparse-api, flockparse-mcp
 
 # 2. Start Ollama and pull models
 ollama serve  # In a separate terminal
@@ -130,6 +136,12 @@ streamlit run flock_webui.py         # Web UI - easiest (recommended) ⭐
 python flockparsecli.py              # CLI - 100% local
 python flock_ai_api.py               # REST API - multi-user
 python flock_mcp_server.py           # MCP - Claude Desktop integration
+
+# Or if you installed with pip (Option B above):
+flockparse-webui                     # Web UI
+flockparse                           # CLI
+flockparse-api                       # REST API
+flockparse-mcp                       # MCP Server
 ```
 
 **💡 Pro tip:** Start with the Web UI to see distributed processing with real-time VRAM monitoring and node health dashboards.

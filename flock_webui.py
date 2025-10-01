@@ -440,3 +440,21 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+
+def main():
+    """Entry point for console script - runs Streamlit app."""
+    import sys
+    import subprocess
+
+    # Get the path to this file
+    script_path = __file__
+
+    # Run streamlit with this script
+    subprocess.run([sys.executable, "-m", "streamlit", "run", script_path, "--server.address=0.0.0.0"])
+
+
+if __name__ == "__main__":
+    # When run directly with python, streamlit has already loaded this file
+    # So we don't need to do anything here - streamlit handles execution
+    pass
