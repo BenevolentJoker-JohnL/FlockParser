@@ -150,6 +150,49 @@ python flockparsecli.py
 
 **First time?** Start with the Web UI (`streamlit run flock_webui.py`) - it's the easiest way to see distributed processing in action with a visual dashboard.
 
+---
+
+## **🌐 Setting Up Distributed Nodes**
+
+**Want the 60x speedup?** Set up multiple Ollama nodes across your network.
+
+### Quick Multi-Node Setup
+
+**On each additional machine:**
+
+```bash
+# 1. Install Ollama
+curl -fsSL https://ollama.com/install.sh | sh
+
+# 2. Configure for network access
+export OLLAMA_HOST=0.0.0.0:11434
+ollama serve
+
+# 3. Pull models
+ollama pull mxbai-embed-large
+ollama pull llama3.1:latest
+
+# 4. Allow firewall (if needed)
+sudo ufw allow 11434/tcp  # Linux
+```
+
+**FlockParser will automatically discover these nodes!**
+
+Check with:
+```bash
+python flockparsecli.py
+> lb_stats  # Shows all discovered nodes and their capabilities
+```
+
+**📖 Complete Guide:** See **[DISTRIBUTED_SETUP.md](DISTRIBUTED_SETUP.md)** for:
+- Step-by-step multi-machine setup
+- Network configuration and firewall rules
+- Troubleshooting node discovery
+- Example setups (budget home lab to professional clusters)
+- GPU router configuration for automatic optimization
+
+---
+
 ### **🔒 Privacy Levels by Interface:**
 - **Web UI (`flock_webui.py`)**: 🟢 100% local, runs in your browser
 - **CLI (`flockparsecli.py`)**: 🟢 100% local, zero external calls
@@ -867,6 +910,7 @@ This is **presence-based detection**, not utilization monitoring. It detects *if
 
 ### Core Documentation
 - **[📖 Architecture Deep Dive](docs/architecture.md)** - System design, routing algorithms, technical decisions
+- **[🌐 Distributed Setup Guide](DISTRIBUTED_SETUP.md)** - ⭐ **Set up your own multi-node cluster**
 - **[🐛 Error Handling Guide](ERROR_HANDLING.md)** - Troubleshooting common issues
 - **[🤝 Contributing Guide](CONTRIBUTING.md)** - How to contribute to the project
 - **[📋 Code of Conduct](CODE_OF_CONDUCT.md)** - Community guidelines
