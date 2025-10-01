@@ -111,7 +111,7 @@ Watch FlockParser in action: **372 seconds → 6 seconds (61.7x speedup)** throu
 
 **Requirements:**
 - Python 3.10 or later
-- Ollama 0.1.20+ (install from [ollama.ai](https://ollama.ai))
+- Ollama 0.1.20+ (install from [ollama.com](https://ollama.com))
 - 4GB+ RAM (8GB+ recommended for GPU nodes)
 
 ```bash
@@ -310,7 +310,7 @@ pip install -r requirements.txt
 
 ### **4. Install and Configure Ollama**  
 
-1. Install Ollama from [ollama.ai](https://ollama.ai)
+1. Install Ollama from [ollama.com](https://ollama.com)
 2. Start the Ollama service:
    ```bash
    ollama serve
@@ -551,7 +551,7 @@ The system will automatically scan your local network (/24 subnet) and detect an
 On each additional machine:
 ```bash
 # Install Ollama
-curl -fsSL https://ollama.ai/install.sh | sh
+curl -fsSL https://ollama.com/install.sh | sh
 
 # Pull the embedding model
 ollama pull mxbai-embed-large
