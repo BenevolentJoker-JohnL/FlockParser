@@ -9,9 +9,9 @@
 [![Demo Video](https://img.shields.io/badge/Demo-YouTube-red.svg)](https://youtu.be/M-HjXkWYRLM)
 [![GitHub Stars](https://img.shields.io/github/stars/BenevolentJoker-JohnL/FlockParser?style=social)](https://github.com/BenevolentJoker-JohnL/FlockParser)
 
-**Free forever, local-first document RAG with GPU-aware distributed inference.**
+> **Distributed document RAG system that turns mismatched hardware into a coordinated inference cluster.** Auto-discovers Ollama nodes, intelligently routes workloads across heterogeneous GPUs/CPUs, and achieves 60x+ speedups through adaptive load balancing. Privacy-first with local/network/cloud interfaces.
 
-A system that distributes document RAG (retrieval-augmented generation) across heterogeneous GPU/CPU clusters with intelligent routing, VRAM monitoring, and multi-protocol interfaces. Built to handle real-world constraints: unequal hardware, network failures, and privacy requirements.
+**What makes this different:** Real distributed systems engineering—not just API wrappers. Handles heterogeneous hardware (RTX 4090 + GTX 1050Ti + CPU laptops working together), network failures, and privacy requirements that rule out cloud APIs.
 
 ---
 
@@ -45,7 +45,7 @@ Watch FlockParser in action: **372 seconds → 6 seconds (61.7x speedup)** throu
 ## **Table of Contents**
 
 - [Key Features](#-key-features)
-- [Architecture](#-architecture)
+- [Architecture](#-architecture) | **[📖 Deep Dive: Architecture & Design Decisions](docs/architecture.md)**
 - [Quickstart](#-quickstart-3-steps)
 - [Benchmarks](#-benchmarks)
 - [Usage Examples](#-usage)
@@ -100,6 +100,12 @@ Watch FlockParser in action: **372 seconds → 6 seconds (61.7x speedup)** throu
          ▲ Auto-discovery | Performance tracking
 ```
 
+**Want to understand how this works?** Read the **[📖 Architecture Deep Dive](docs/architecture.md)** for detailed explanations of:
+- Why distributed AI inference solves real-world problems
+- How adaptive routing decisions are made (sequential vs parallel)
+- MCP integration details and privacy implications
+- Technical trade-offs and design decisions
+
 ## **🚀 Quickstart (3 Steps)**
 
 **Requirements:**
@@ -108,20 +114,24 @@ Watch FlockParser in action: **372 seconds → 6 seconds (61.7x speedup)** throu
 - 4GB+ RAM (8GB+ recommended for GPU nodes)
 
 ```bash
-# 1. Install dependencies
+# 1. Clone and install
+git clone https://github.com/BenevolentJoker-JohnL/FlockParser.git
+cd FlockParser
 pip install -r requirements.txt
 
 # 2. Start Ollama and pull models
-ollama serve
+ollama serve  # In a separate terminal
 ollama pull mxbai-embed-large    # Required for embeddings
 ollama pull llama3.1:latest       # Required for chat
 
 # 3. Run your preferred interface
+streamlit run flock_webui.py         # Web UI - easiest (recommended) ⭐
 python flockparsecli.py              # CLI - 100% local
-streamlit run flock_webui.py         # Web UI - easiest (recommended)
 python flock_ai_api.py               # REST API - multi-user
 python flock_mcp_server.py           # MCP - Claude Desktop integration
 ```
+
+**💡 Pro tip:** Start with the Web UI to see distributed processing with real-time VRAM monitoring and node health dashboards.
 
 ### **Quick Test (30 seconds)**
 
