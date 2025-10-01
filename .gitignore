@@ -55,6 +55,11 @@ converted_files/
 !pyproject.toml
 !MANIFEST.in
 
+# Showcase outputs
+showcase/papers/
+showcase/results.json
+showcase/RESULTS.md
+
 # Public-facing documentation (keep these)
 !CONTRIBUTING.md
 !CODE_OF_CONDUCT.md

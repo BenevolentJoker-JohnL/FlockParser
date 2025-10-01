@@ -117,32 +117,115 @@ if page == "📤 Upload & Process":
         st.info("**Features:**\n- Text extraction\n- 4 format outputs\n- GPU-aware processing\n- Automatic caching")
 
     if uploaded_files:
-        if st.button("🚀 Process Files", type="primary"):
+        # Validate files before processing
+        MAX_FILE_SIZE = 100 * 1024 * 1024  # 100 MB
+        validation_errors = []
+        total_size = 0
+
+        for uploaded_file in uploaded_files:
+            file_size = len(uploaded_file.getbuffer())
+            total_size += file_size
+
+            if file_size > MAX_FILE_SIZE:
+                validation_errors.append(f"❌ {uploaded_file.name}: File too large ({file_size / 1024 / 1024:.1f} MB > 100 MB)")
+            elif file_size == 0:
+                validation_errors.append(f"❌ {uploaded_file.name}: Empty file")
+
+        # Show validation errors
+        if validation_errors:
+            st.error("**Validation Errors:**")
+            for error in validation_errors:
+                st.write(error)
+            st.info("💡 **Tip:** For files >100MB, split them or use the CLI interface for better performance.")
+
+        # Show file summary
+        st.info(f"📊 **Ready to process:** {len(uploaded_files)} file(s), total size: {total_size / 1024 / 1024:.1f} MB")
+
+        if st.button("🚀 Process Files", type="primary", disabled=len(validation_errors) > 0):
             progress_bar = st.progress(0)
-            status_text = st.empty()
+            status_container = st.empty()
+
+            start_time = time.time()
+            success_count = 0
+            error_count = 0
 
             for idx, uploaded_file in enumerate(uploaded_files):
-                status_text.text(f"Processing {uploaded_file.name}...")
+                file_start = time.time()
+
+                # Update status with detailed progress
+                with status_container.container():
+                    st.write(f"**Processing file {idx + 1}/{len(uploaded_files)}:** {uploaded_file.name}")
+                    file_size_mb = len(uploaded_file.getbuffer()) / 1024 / 1024
+                    st.caption(f"Size: {file_size_mb:.1f} MB | Extracting text, creating embeddings...")
 
                 # Save uploaded file temporarily
                 temp_path = Path("/tmp") / uploaded_file.name
-                with open(temp_path, "wb") as f:
-                    f.write(uploaded_file.getbuffer())
-
-                # Process the PDF
                 try:
-                    with st.spinner(f"Processing {uploaded_file.name}..."):
-                        process_pdf(str(temp_path))
-                        st.session_state.processed_files.append(uploaded_file.name)
-                        st.success(f"✅ Processed: {uploaded_file.name}")
+                    with open(temp_path, "wb") as f:
+                        f.write(uploaded_file.getbuffer())
+
+                    # Process the PDF with detailed error handling
+                    process_pdf(str(temp_path))
+
+                    processing_time = time.time() - file_start
+                    st.session_state.processed_files.append(uploaded_file.name)
+                    st.success(f"✅ {uploaded_file.name} ({processing_time:.1f}s)")
+                    success_count += 1
+
+                except FileNotFoundError as e:
+                    st.error(f"❌ {uploaded_file.name}: File not found - {e}")
+                    error_count += 1
+                except PermissionError as e:
+                    st.error(f"❌ {uploaded_file.name}: Permission denied - {e}")
+                    error_count += 1
+                except ValueError as e:
+                    st.error(f"❌ {uploaded_file.name}: Invalid PDF format - {e}")
+                    st.info("💡 Try opening in Adobe Reader and re-saving, or use `qpdf --decrypt` for encrypted PDFs")
+                    error_count += 1
+                except ConnectionError as e:
+                    st.error(f"❌ {uploaded_file.name}: Cannot connect to Ollama - {e}")
+                    st.info("💡 Ensure Ollama is running: `ollama serve`")
+                    error_count += 1
+                except MemoryError as e:
+                    st.error(f"❌ {uploaded_file.name}: Out of memory - file too large")
+                    st.info("💡 Try splitting the PDF or processing on a machine with more RAM")
+                    error_count += 1
                 except Exception as e:
-                    st.error(f"❌ Error processing {uploaded_file.name}: {e}")
+                    st.error(f"❌ {uploaded_file.name}: Unexpected error")
+                    with st.expander("📋 Error Details"):
+                        st.code(f"{type(e).__name__}: {str(e)}")
+                        st.caption("If this persists, please report at: https://github.com/BenevolentJoker-JohnL/FlockParser/issues")
+                    error_count += 1
+                finally:
+                    # Clean up temp file
+                    if temp_path.exists():
+                        temp_path.unlink()
 
                 # Update progress
-                progress_bar.progress((idx + 1) / len(uploaded_files))
+                progress = (idx + 1) / len(uploaded_files)
+                progress_bar.progress(progress)
 
-            status_text.text("✅ All files processed!")
-            st.balloons()
+                # Estimate time remaining
+                elapsed = time.time() - start_time
+                if idx > 0:
+                    avg_time_per_file = elapsed / (idx + 1)
+                    remaining_files = len(uploaded_files) - (idx + 1)
+                    eta = avg_time_per_file * remaining_files
+                    status_container.caption(f"⏱️ Estimated time remaining: {eta:.0f}s")
+
+            # Final summary
+            total_time = time.time() - start_time
+            status_container.empty()
+
+            if success_count == len(uploaded_files):
+                st.success(f"✅ **All {success_count} files processed successfully!** ({total_time:.1f}s total)")
+                st.balloons()
+            elif success_count > 0:
+                st.warning(f"⚠️ **Completed with errors:** {success_count} succeeded, {error_count} failed ({total_time:.1f}s total)")
+            else:
+                st.error(f"❌ **All files failed to process.** Check error messages above.")
+
+            progress_bar.empty()
 
     # Show recently processed files
     if st.session_state.processed_files:
@@ -180,13 +263,13 @@ elif page == "💬 Chat with Documents":
 
         # Get AI response
         with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
+            with st.spinner("Searching documents and generating response..."):
                 try:
                     # Get similar chunks
                     chunks = get_similar_chunks(user_question, top_k=5)
 
                     if not chunks:
-                        response = "I don't have any documents to search. Please upload and process some PDFs first."
+                        response = "❓ **No documents found.**\n\nI don't have any documents to search. Please upload and process some PDFs first using the '📤 Upload & Process' tab."
                     else:
                         # Build context from chunks
                         context = "\n\n".join([
@@ -204,8 +287,22 @@ elif page == "💬 Chat with Documents":
                         "role": "assistant",
                         "content": response
                     })
+
+                except ConnectionError as e:
+                    error_msg = "🔌 **Connection Error:** Cannot connect to Ollama service.\n\n💡 **Fix:** Ensure Ollama is running with `ollama serve`"
+                    st.error(error_msg)
+                    st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
+                except FileNotFoundError as e:
+                    error_msg = "📂 **Database Error:** ChromaDB database not found.\n\n💡 **Fix:** Process at least one document first to create the database."
+                    st.error(error_msg)
+                    st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
                 except Exception as e:
-                    st.error(f"Error: {e}")
+                    error_msg = f"❌ **Unexpected Error:** {type(e).__name__}"
+                    st.error(error_msg)
+                    with st.expander("📋 Error Details"):
+                        st.code(str(e))
+                        st.caption("Report at: https://github.com/BenevolentJoker-JohnL/FlockParser/issues")
+                    st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
 
     # Clear chat button
     if st.button("🗑️ Clear Chat History"):
@@ -300,21 +397,33 @@ elif page == "🔍 Search Documents":
         top_k = st.slider("Results", min_value=1, max_value=20, value=5)
 
     if st.button("🔍 Search", type="primary") and search_query:
-        with st.spinner("Searching..."):
+        search_start = time.time()
+        with st.spinner("Searching documents..."):
             try:
                 chunks = get_similar_chunks(search_query, top_k=top_k)
+                search_time = time.time() - search_start
 
                 if not chunks:
-                    st.warning("No results found. Please process some documents first.")
+                    st.warning("⚠️ **No results found.**\n\nPlease upload and process some documents first using the '📤 Upload & Process' tab.")
                 else:
-                    st.success(f"Found {len(chunks)} relevant chunks")
+                    st.success(f"✅ Found {len(chunks)} relevant chunks in {search_time:.2f}s")
 
                     for idx, chunk in enumerate(chunks, 1):
                         with st.expander(f"Result {idx}: {chunk['doc_name']} (Similarity: {chunk['similarity']:.3f})"):
                             st.write(chunk['text'])
                             st.caption(f"Document: {chunk['doc_name']}")
+
+            except ConnectionError as e:
+                st.error("🔌 **Connection Error:** Cannot connect to Ollama service.")
+                st.info("💡 **Fix:** Ensure Ollama is running with `ollama serve`")
+            except FileNotFoundError as e:
+                st.error("📂 **Database Error:** ChromaDB database not found.")
+                st.info("💡 **Fix:** Process at least one document first to create the database.")
             except Exception as e:
-                st.error(f"Search error: {e}")
+                st.error(f"❌ **Search Error:** {type(e).__name__}")
+                with st.expander("📋 Error Details"):
+                    st.code(str(e))
+                    st.caption("Report at: https://github.com/BenevolentJoker-JohnL/FlockParser/issues")
 
     # Show indexed documents
     st.markdown("---")

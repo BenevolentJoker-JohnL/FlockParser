@@ -3,6 +3,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/flockparser.svg)](https://pypi.org/project/flockparser/)
 [![PyPI downloads](https://img.shields.io/pypi/dm/flockparser.svg)](https://pypi.org/project/flockparser/)
 [![CI Status](https://img.shields.io/github/actions/workflow/status/BenevolentJoker-JohnL/FlockParser/ci.yml?branch=main&label=tests)](https://github.com/BenevolentJoker-JohnL/FlockParser/actions)
+[![codecov](https://codecov.io/gh/BenevolentJoker-JohnL/FlockParser/branch/main/graph/badge.svg)](https://codecov.io/gh/BenevolentJoker-JohnL/FlockParser)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)

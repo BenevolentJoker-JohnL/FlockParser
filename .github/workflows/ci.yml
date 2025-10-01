@@ -35,10 +35,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run smoke tests
+    - name: Run tests with coverage
       run: |
-        pytest tests/test_smoke.py -v --tb=short
+        pytest tests/ -v --tb=short --cov=. --cov-report=xml --cov-report=term
       timeout-minutes: 5
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Check code exists
       run: |
