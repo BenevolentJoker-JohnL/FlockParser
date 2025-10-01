@@ -161,7 +161,7 @@ python flockparsecli.py
 
 ## **📊 Performance**
 
-### **📹 [76-Second Demo Video](https://youtu.be/YOUR_VIDEO_ID)** - Watch 6 minutes become 6 seconds
+### **📹 [76-Second Demo Video](https://youtu.be/M-HjXkWYRLM)** - Watch 6 minutes become 6 seconds
 
 **Real-Time Demo Results** (unedited timing shown on screen):
 
