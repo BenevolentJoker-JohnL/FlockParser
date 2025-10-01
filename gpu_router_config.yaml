@@ -1,0 +1,41 @@
+# GPU Router Daemon Configuration
+#
+# This file configures the intelligent GPU routing daemon for your
+# distributed Ollama cluster.
+
+# List of Ollama nodes to manage
+# Add all your nodes here (localhost and remote)
+nodes:
+  - http://localhost:11434
+  - http://10.9.66.124:11434
+  - http://10.9.66.154:11434
+
+# Priority models to keep on GPU
+# These models will be automatically moved to GPU if detected on CPU
+# The daemon will intelligently decide which nodes can fit which models
+priority_models:
+  - mxbai-embed-large    # Embedding model (705MB) - always prioritize
+  - nomic-embed-text     # Alternative embedding (274MB)
+  # - llama3.2:3b        # Small chat model (1.9GB) - uncomment if needed
+  # - qwen2.5-coder:1.5b # Small coding model (900MB)
+
+# How often to check cluster status (in seconds)
+# Default: 300 (5 minutes)
+# Development: 60-120 (1-2 minutes)
+# Production: 300-600 (5-10 minutes)
+check_interval: 300
+
+# VRAM safety margin (0.0 - 1.0)
+# 0.8 = Use max 80% of available VRAM (recommended)
+# 0.9 = Use max 90% of VRAM (more aggressive)
+# 0.7 = Use max 70% of VRAM (more conservative)
+vram_safety_margin: 0.8
+
+# Automatically optimize GPU assignments
+# true = Daemon will move models to GPU automatically
+# false = Daemon will only monitor and report (no changes)
+auto_optimize: true
+
+# Logging level
+# Options: DEBUG, INFO, WARNING, ERROR
+log_level: INFO

@@ -11,6 +11,7 @@ pypdf>=3.15.1  # Modern version of PDF library
 # OCR support
 pytesseract>=0.3.10
 Pillow>=10.0.0  # Required for image processing
+pdf2image>=1.16.0  # Required for PDF to image conversion
 
 # Document conversion
 python-docx>=0.8.11
@@ -24,6 +25,15 @@ ollama>=0.1.4
 
 # Data processing
 numpy>=1.24.0
+
+# Network requests for node discovery
+requests>=2.31.0
+
+# MCP (Model Context Protocol) integration
+mcp>=1.0.0
+
+# Web UI
+streamlit>=1.40.0
 
 # Optional but recommended packages
 # ocrmypdf>=15.4.0  # Uncomment if using OCR for scanned documents

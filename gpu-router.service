@@ -1,0 +1,24 @@
+[Unit]
+Description=GPU Router Daemon - Intelligent GPU Management for Ollama
+Documentation=https://github.com/yourusername/FlockParser
+After=network.target
+
+[Service]
+Type=simple
+User=joker
+Group=joker
+WorkingDirectory=/home/joker/FlockParser
+ExecStart=/usr/bin/python3 /home/joker/FlockParser/gpu_router_daemon.py --config /home/joker/FlockParser/gpu_router_config.yaml
+Restart=always
+RestartSec=10
+
+# Logging
+StandardOutput=append:/var/log/gpu-router/daemon.log
+StandardError=append:/var/log/gpu-router/daemon.log
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
