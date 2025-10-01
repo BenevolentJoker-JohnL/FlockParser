@@ -2,12 +2,30 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Free Forever](https://img.shields.io/badge/Free-Forever-green.svg)](https://github.com/yourusername/FlockParser)
-[![Privacy First](https://img.shields.io/badge/Privacy-First-brightgreen.svg)](https://github.com/yourusername/FlockParser)
+[![Free Forever](https://img.shields.io/badge/Free-Forever-green.svg)](https://github.com/BenevolentJoker-JohnL/FlockParser)
+[![Privacy First](https://img.shields.io/badge/Privacy-First-brightgreen.svg)](https://github.com/BenevolentJoker-JohnL/FlockParser)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Demo Video](https://img.shields.io/badge/Demo-YouTube-red.svg)](https://youtu.be/M-HjXkWYRLM)
+[![GitHub Stars](https://img.shields.io/github/stars/BenevolentJoker-JohnL/FlockParser?style=social)](https://github.com/BenevolentJoker-JohnL/FlockParser)
 
 **Free forever, local-first document RAG with GPU-aware distributed inference.**
 
 A system that distributes document RAG (retrieval-augmented generation) across heterogeneous GPU/CPU clusters with intelligent routing, VRAM monitoring, and multi-protocol interfaces. Built to handle real-world constraints: unequal hardware, network failures, and privacy requirements.
+
+---
+
+## **📹 Demo Video (76 seconds)**
+
+Watch FlockParser in action: **372 seconds → 6 seconds (61.7x speedup)** through automatic GPU routing.
+
+[![FlockParser Demo - 61.7x Speedup](https://img.youtube.com/vi/M-HjXkWYRLM/maxresdefault.jpg)](https://youtu.be/M-HjXkWYRLM)
+
+**What you'll see:**
+- Single CPU node (372.76s) → Parallel processing (159.79s) → GPU routing (6.04s)
+- Real-time document processing with visible timing on screen
+- Distributed chat functionality and MCP integration with Claude Desktop
+- No editing tricks - all timing shown in real-time
 
 ---
 
@@ -839,6 +857,10 @@ This is **presence-based detection**, not utilization monitoring. It detects *if
 - [VRAM_MONITORING.md](VRAM_MONITORING.md) - Accurate GPU memory tracking
 - [CHROMADB_PRODUCTION.md](CHROMADB_PRODUCTION.md) - Production vector database setup
 - [MODEL_CACHING.md](MODEL_CACHING.md) - Performance improvements with model caching
+
+## **📝 Development Process**
+
+This project was developed iteratively using Claude and Claude Code as coding assistants. All design decisions, architecture choices, and integration strategy were directed and reviewed by me.
 
 ## **🤝 Contributing**
 Contributions are welcome! Please feel free to submit a Pull Request.

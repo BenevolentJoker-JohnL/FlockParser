@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # FlockParser CLI
+  flockparse-cli:
+    build: .
+    container_name: flockparse-cli
+    volumes:
+      - ./converted_files:/app/converted_files
+      - ./knowledge_base:/app/knowledge_base
+      - ./chroma_db_cli:/app/chroma_db_cli
+      - ./testpdfs:/app/testpdfs
+    environment:
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
+    stdin_open: true
+    tty: true
+    command: python flockparsecli.py
+    network_mode: host
+
+  # FlockParser Web UI
+  flockparse-webui:
+    build: .
+    container_name: flockparse-webui
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./converted_files:/app/converted_files
+      - ./knowledge_base:/app/knowledge_base
+      - ./chroma_db_cli:/app/chroma_db_cli
+      - ./testpdfs:/app/testpdfs
+    environment:
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
+    command: streamlit run flock_webui.py --server.address=0.0.0.0
+    network_mode: host
+
+  # FlockParser REST API
+  flockparse-api:
+    build: .
+    container_name: flockparse-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./chroma_db:/app/chroma_db
+    environment:
+      - OLLAMA_HOST=${OLLAMA_HOST:-http://host.docker.internal:11434}
+      - FLOCKPARSE_API_KEY=${FLOCKPARSE_API_KEY:-change-this-secret-key}
+    command: python flock_ai_api.py
+    network_mode: host
+
+  # Ollama (optional - use if you don't have Ollama installed locally)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    # Uncomment for GPU support (requires nvidia-docker)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+volumes:
+  ollama_data:

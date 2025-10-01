@@ -71,6 +71,7 @@ converted_files/
 !LINKEDIN_POST.md
 !LAUNCH_CHECKLIST.md
 !READY_TO_SHIP.md
+!ERROR_HANDLING.md
 
 # Document index and embeddings
 document_index.json
@@ -122,6 +123,8 @@ models/
 # Test output
 test_output/
 test_results/
+.pytest_cache/
+*.pyc
 
 # Coverage reports
 htmlcov/
