@@ -90,6 +90,8 @@ Watch FlockParser in action: **372 seconds → 6 seconds (61.7x speedup)** throu
 ## **Table of Contents**
 
 - [Key Features](#-key-features)
+- [👥 Who Uses This?](#-who-uses-this) - **Target users & scenarios**
+- [📐 How It Works (5-Second Overview)](#-how-it-works-5-second-overview) - **Visual for non-technical evaluators**
 - [Architecture](#-architecture) | **[📖 Deep Dive: Architecture & Design Decisions](docs/architecture.md)**
 - [Quickstart](#-quickstart-3-steps)
 - [Performance & Benchmarks](#-performance)
@@ -107,6 +109,80 @@ Watch FlockParser in action: **372 seconds → 6 seconds (61.7x speedup)** throu
 - **📊 Production Observability** - Real-time health scores, performance tracking, VRAM monitoring, automatic failover
 - **🔒 Privacy-First Architecture** - No external API calls required (CLI mode), all processing on-premise
 - **📄 Complete Pipeline** - PDF extraction → OCR fallback → Multi-format conversion → Vector embeddings → RAG with source citations
+
+---
+
+## **👥 Who Uses This?**
+
+FlockParser is designed for engineers and researchers who need **private, on-premise document intelligence** with **real distributed systems capabilities**.
+
+### **Ideal Users**
+
+| User Type | Use Case | Why FlockParser? |
+|-----------|----------|------------------|
+| **🔬 ML/AI Engineers** | Process research papers, build knowledge bases, experiment with RAG systems | GPU-aware routing, 21× faster embeddings, full pipeline control |
+| **📊 Data Scientists** | Extract insights from large document corpora (100s-1000s of PDFs) | Distributed processing, semantic search, production observability |
+| **🏢 Enterprise Engineers** | On-premise document search for regulated industries (healthcare, legal, finance) | 100% local processing, no cloud APIs, privacy-first architecture |
+| **🎓 Researchers** | Build custom RAG systems, experiment with distributed inference patterns | Full source access, extensible architecture, real benchmarks |
+| **🛠️ DevOps/Platform Engineers** | Set up document intelligence infrastructure for teams | Multi-node setup, health monitoring, automatic failover |
+| **👨‍💻 Students/Learners** | Understand distributed systems, GPU orchestration, RAG architectures | Real working example, comprehensive docs, honest limitations |
+
+### **Real-World Scenarios**
+
+✅ **"I have 500 research papers and a spare GPU machine"** → Process your corpus 20× faster with distributed nodes
+✅ **"I can't send medical records to OpenAI"** → 100% local processing (CLI/Web UI modes)
+✅ **"I want to experiment with RAG without cloud costs"** → Full pipeline, runs on your hardware
+✅ **"I need to search 10,000 internal documents"** → ChromaDB vector search with sub-20ms latency
+✅ **"I have mismatched hardware (old laptop + gaming PC)"** → Adaptive routing handles heterogeneous clusters
+
+### **Not Ideal For**
+
+❌ **Production SaaS with 1000+ concurrent users** → Current SQLite backend limits concurrency (~50 users)
+❌ **Mission-critical systems requiring 99.9% uptime** → Still in Beta, see [KNOWN_ISSUES.md](KNOWN_ISSUES.md)
+❌ **Simple one-time PDF extraction** → Overkill; use `pdfplumber` directly
+❌ **Cloud-first deployments** → Designed for on-premise/hybrid; cloud works but misses GPU routing benefits
+
+**Bottom line:** If you're building document intelligence infrastructure on your own hardware and need distributed processing with privacy guarantees, FlockParser is for you.
+
+---
+
+## **📐 How It Works (5-Second Overview)**
+
+**For recruiters and non-technical evaluators:**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         INPUT                                    │
+│  📄 Your Documents (PDFs, research papers, internal docs)       │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     FLOCKPARSER                                  │
+│                                                                  │
+│  1. Extracts text from PDFs (handles scans with OCR)           │
+│  2. Splits into chunks, creates vector embeddings              │
+│  3. Distributes work across GPU/CPU nodes (auto-discovery)     │
+│  4. Stores in searchable vector database (ChromaDB)            │
+│                                                                  │
+│  ⚡ Distributed Processing: 3 nodes → 13× faster               │
+│  🚀 GPU Acceleration: RTX 4090 → 61× faster than CPU           │
+│  🔒 Privacy: 100% local (no cloud APIs)                        │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        OUTPUT                                    │
+│  🔍 Semantic Search: "Find all mentions of transformers"        │
+│  💬 AI Chat: "Summarize the methodology section"                │
+│  📊 Source Citations: Exact page/document references            │
+│  🌐 4 Interfaces: CLI, Web UI, REST API, Claude Desktop         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Key Innovation:** Auto-detects GPU nodes, measures performance, and routes work to fastest hardware. No manual configuration needed.
+
+---
 
 ## **🏗️ Architecture**
 
