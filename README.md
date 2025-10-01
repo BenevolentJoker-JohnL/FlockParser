@@ -12,7 +12,7 @@
 
 > **Distributed document RAG system that turns mismatched hardware into a coordinated inference cluster.** Auto-discovers Ollama nodes, intelligently routes workloads across heterogeneous GPUs/CPUs, and achieves 60x+ speedups through adaptive load balancing. Privacy-first with local/network/cloud interfaces.
 
-**What makes this different:** Real distributed systems engineering—not just API wrappers. Handles heterogeneous hardware (RTX 4090 + GTX 1050Ti + CPU laptops working together), network failures, and privacy requirements that rule out cloud APIs.
+**What makes this different:** Real distributed systems engineering—not just API wrappers. Handles heterogeneous hardware (RTX A4000 + GTX 1050Ti + CPU laptops working together), network failures, and privacy requirements that rule out cloud APIs.
 
 ---
 
@@ -166,7 +166,7 @@ FlockParser is designed for engineers and researchers who need **private, on-pre
 │  4. Stores in searchable vector database (ChromaDB)            │
 │                                                                  │
 │  ⚡ Distributed Processing: 3 nodes → 13× faster               │
-│  🚀 GPU Acceleration: RTX 4090 → 61× faster than CPU           │
+│  🚀 GPU Acceleration: RTX A4000 → 61× faster than CPU          │
 │  🔒 Privacy: 100% local (no cloud APIs)                        │
 └────────────────────────┬────────────────────────────────────────┘
                          │
