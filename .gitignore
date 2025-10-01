@@ -141,6 +141,10 @@ test_results/
 .pytest_cache/
 *.pyc
 
+# Development test scripts (keep in tests/ directory instead)
+test_*.py
+!tests/test_*.py
+
 # Coverage reports
 htmlcov/
 .coverage
