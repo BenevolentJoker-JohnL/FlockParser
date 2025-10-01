@@ -28,18 +28,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Permission errors when MCP server runs from different working directory
 - Python bytecode cache issues causing stale code execution
 
-## [1.0.0] - Initial Release
+## [1.0.0] - 2025-10-01
 
-### Added
+### 🎉 Initial Public Release on PyPI
+
+**Published:** https://pypi.org/project/flockparser/1.0.0/
+
+FlockParser v1.0.0 is now publicly available and pip-installable!
+
+#### Core Features Added
 - CLI interface (`flockparsecli.py`) for local document processing
 - Web UI interface (`flock_webui.py`) with Streamlit
 - REST API interface (`flock_ai_api.py`) with FastAPI
+- MCP Server interface for Claude Desktop integration
 - Intelligent load balancer with auto-discovery of Ollama nodes
-- Adaptive routing (sequential vs parallel) based on cluster characteristics
-- GPU and VRAM detection via Ollama API
-- Health scoring system prioritizing GPU nodes
+- Adaptive routing (sequential vs parallel) based on cluster characteristics (7.2x threshold)
+- GPU and VRAM detection via Ollama `/api/ps` endpoint
+- Health scoring system prioritizing GPU nodes (+200 for GPU, +100 for VRAM>8GB)
 - ChromaDB vector store for persistent embeddings
-- PDF processing with OCR fallback for scanned documents
+- PDF processing with 3-tier fallback (pdfplumber → PyPDF2 → OCR)
 - Multi-format conversion (TXT, MD, DOCX, JSON)
 - RAG (Retrieval-Augmented Generation) with source citations
 - MD5-based embedding cache to prevent reprocessing
@@ -49,12 +56,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Real-time performance tracking and node statistics
 - Privacy-first architecture with 100% local processing option
 
-### Documentation
-- Comprehensive README with architecture diagram
-- DEMO_SCRIPT.md for video demonstration guidance
-- Performance optimization guides (GPU, VRAM, caching)
-- Troubleshooting documentation
-- API usage examples
+#### Packaging & Distribution
+- Published to PyPI as `flockparser`
+- Console entry points: `flockparse`, `flockparse-webui`, `flockparse-api`, `flockparse-mcp`
+- Docker support (Dockerfile + docker-compose.yml with 4 services)
+- Modern pyproject.toml packaging
+- GitHub Actions CI/CD (tests on Python 3.10, 3.11, 3.12)
+
+#### Documentation Added
+- Comprehensive README with embedded demo video
+- 76-second demo video showing 61.7x speedup: https://youtu.be/M-HjXkWYRLM
+- Architecture deep dive (500+ lines): `docs/architecture.md`
+- Distributed setup guide (400+ lines): `DISTRIBUTED_SETUP.md`
+- Known issues & limitations (900+ lines): `KNOWN_ISSUES.md`
+- Security policy: `SECURITY.md`
+- Error handling guide: `ERROR_HANDLING.md`
+- Performance benchmarks: `BENCHMARKS.md`
+- Contributing guidelines: `CONTRIBUTING.md`
+- Code of Conduct: `CODE_OF_CONDUCT.md`
+- Environment configuration template: `.env.example`
+
+#### Performance (Measured)
+- **Demo video results (unedited timing):**
+  - Single CPU node: 372.76s
+  - Parallel (3 nodes): 159.79s (2.3x speedup)
+  - GPU routing: 6.04s (**61.7x speedup**)
+- Tested up to 10,000 documents in corpus
+- Handles PDFs up to 100 MB
+- Sub-20ms search latency (ChromaDB with 100K chunks)
+- 21.7x GPU speedup for embedding generation (RTX A4000 vs i9-12900K)
+
+#### Known Limitations
+See [KNOWN_ISSUES.md](KNOWN_ISSUES.md) for comprehensive list:
+- Beta status - limited battle testing
+- ~40% test coverage (target: 80% in v1.1.0)
+- ChromaDB SQLite backend limits concurrency (~10 writes/sec)
+- Some PDF edge cases not handled (encrypted, complex layouts)
+- No rate limiting in REST API
+- UI needs polish (progress bars, better errors)
+
+#### Security Considerations
+See [SECURITY.md](SECURITY.md) for full policy:
+- REST API requires manual API key change
+- No encryption at rest by default
+- Ollama nodes use plain HTTP
+- MCP server sends snippets to Anthropic cloud
 
 ---
 

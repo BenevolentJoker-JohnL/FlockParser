@@ -953,6 +953,7 @@ This is **presence-based detection**, not utilization monitoring. It detects *if
 ### Core Documentation
 - **[📖 Architecture Deep Dive](docs/architecture.md)** - System design, routing algorithms, technical decisions
 - **[🌐 Distributed Setup Guide](DISTRIBUTED_SETUP.md)** - ⭐ **Set up your own multi-node cluster**
+- **[📊 Performance Benchmarks](BENCHMARKS.md)** - Real-world performance data and scaling tests
 - **[⚠️ Known Issues & Limitations](KNOWN_ISSUES.md)** - 🔴 **READ THIS** - Honest assessment of current state
 - **[🔒 Security Policy](SECURITY.md)** - Security best practices and vulnerability reporting
 - **[🐛 Error Handling Guide](ERROR_HANDLING.md)** - Troubleshooting common issues
