@@ -15,6 +15,39 @@
 
 ---
 
+## ⚠️ Important: Current Maturity
+
+**Status:** Beta (v1.0.0) - **Early adopters welcome, but read this first!**
+
+**What works well:**
+- ✅ Core distributed processing across heterogeneous nodes
+- ✅ GPU detection and VRAM-aware routing
+- ✅ Basic PDF extraction and OCR fallback
+- ✅ Privacy-first local processing (CLI/Web UI modes)
+
+**Known limitations:**
+- ⚠️ **Limited battle testing** - Tested by ~2 developers, not yet proven at scale
+- ⚠️ **Security gaps** - See [SECURITY.md](SECURITY.md) for current limitations
+- ⚠️ **Edge cases** - Some PDF types may fail (encrypted, complex layouts)
+- ⚠️ **Test coverage** - ~40% coverage, integration tests incomplete
+
+**Read before using:** [KNOWN_ISSUES.md](KNOWN_ISSUES.md) documents all limitations, edge cases, and roadmap honestly.
+
+**Recommended for:**
+- 🎓 Learning distributed systems
+- 🔬 Research and experimentation
+- 🏠 Personal projects with non-critical data
+- 🛠️ Contributors who want to help mature the project
+
+**Not yet recommended for:**
+- ❌ Mission-critical production workloads
+- ❌ Regulated industries (healthcare, finance) without additional hardening
+- ❌ Large-scale deployments (>50 concurrent users)
+
+**Help us improve:** Report issues, contribute fixes, share feedback!
+
+---
+
 ## **📹 Demo Video (76 seconds)**
 
 Watch FlockParser in action: **372 seconds → 6 seconds (61.7x speedup)** through automatic GPU routing.
@@ -920,6 +953,8 @@ This is **presence-based detection**, not utilization monitoring. It detects *if
 ### Core Documentation
 - **[📖 Architecture Deep Dive](docs/architecture.md)** - System design, routing algorithms, technical decisions
 - **[🌐 Distributed Setup Guide](DISTRIBUTED_SETUP.md)** - ⭐ **Set up your own multi-node cluster**
+- **[⚠️ Known Issues & Limitations](KNOWN_ISSUES.md)** - 🔴 **READ THIS** - Honest assessment of current state
+- **[🔒 Security Policy](SECURITY.md)** - Security best practices and vulnerability reporting
 - **[🐛 Error Handling Guide](ERROR_HANDLING.md)** - Troubleshooting common issues
 - **[🤝 Contributing Guide](CONTRIBUTING.md)** - How to contribute to the project
 - **[📋 Code of Conduct](CODE_OF_CONDUCT.md)** - Community guidelines

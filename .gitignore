@@ -62,6 +62,8 @@ converted_files/
 !LICENSE
 !ERROR_HANDLING.md
 !DISTRIBUTED_SETUP.md
+!KNOWN_ISSUES.md
+!SECURITY.md
 !docs/
 
 # Technical documentation (keep these)
