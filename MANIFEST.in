@@ -1,0 +1,44 @@
+# Include documentation
+include README.md
+include LICENSE
+include CHANGELOG.md
+include CONTRIBUTING.md
+include CODE_OF_CONDUCT.md
+include ERROR_HANDLING.md
+include DISTRIBUTED_SETUP.md
+
+# Include technical documentation
+include PERFORMANCE_OPTIMIZATION.md
+include GPU_ROUTER_SETUP.md
+include ADAPTIVE_PARALLELISM.md
+include GPU_AUTO_OPTIMIZATION.md
+include CHROMADB_PRODUCTION.md
+include CHROMADB_INTEGRATION_SUMMARY.md
+include VRAM_MONITORING.md
+include NODE_MANAGEMENT.md
+include QUICK_SETUP.md
+include MODEL_CACHING.md
+
+# Include docs directory
+recursive-include docs *.md
+
+# Include configuration examples
+include .env.example
+include docker-compose.yml
+include Dockerfile
+include gpu_router_config.yaml
+
+# Include requirements
+include requirements.txt
+
+# Exclude development and test files
+exclude test_*.py
+recursive-exclude tests *
+recursive-exclude testpdfs *
+recursive-exclude converted_files *
+recursive-exclude knowledge_base *
+recursive-exclude chroma_db* *
+recursive-exclude uploads *
+recursive-exclude __pycache__ *
+exclude .gitignore
+exclude .github

@@ -52,6 +52,8 @@ converted_files/
 *.md
 !README.md
 !*.py
+!pyproject.toml
+!MANIFEST.in
 
 # Public-facing documentation (keep these)
 !CONTRIBUTING.md

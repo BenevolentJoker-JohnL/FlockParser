@@ -1,0 +1,104 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flockparser"
+version = "1.0.0"
+authors = [
+    {name = "BenevolentJoker (John L.)", email = "benevolentjoker@gmail.com"}
+]
+description = "Distributed document RAG system with intelligent GPU/CPU orchestration"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: General",
+    "Topic :: System :: Distributed Computing",
+]
+keywords = [
+    "rag",
+    "retrieval-augmented-generation",
+    "distributed-systems",
+    "document-processing",
+    "gpu-acceleration",
+    "ollama",
+    "chromadb",
+    "pdf-processing",
+    "ocr",
+    "ai",
+    "machine-learning",
+    "nlp",
+]
+dependencies = [
+    "fastapi>=0.103.1",
+    "uvicorn>=0.23.2",
+    "python-multipart>=0.0.6",
+    "pdfplumber>=0.10.2",
+    "PyPDF2>=3.0.0",
+    "pypdf>=3.15.1",
+    "pytesseract>=0.3.10",
+    "Pillow>=10.0.0",
+    "pdf2image>=1.16.0",
+    "python-docx>=0.8.11",
+    "markdown>=3.4.4",
+    "chromadb>=0.4.13",
+    "ollama>=0.1.4",
+    "numpy>=1.24.0",
+    "requests>=2.31.0",
+    "mcp>=1.0.0",
+    "streamlit>=1.40.0",
+    "pytest>=7.4.0",
+    "pytest-timeout>=2.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-timeout>=2.1.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+]
+ocr = [
+    "ocrmypdf>=15.4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/BenevolentJoker-JohnL/FlockParser"
+Documentation = "https://github.com/BenevolentJoker-JohnL/FlockParser#readme"
+Repository = "https://github.com/BenevolentJoker-JohnL/FlockParser"
+"Bug Tracker" = "https://github.com/BenevolentJoker-JohnL/FlockParser/issues"
+"Demo Video" = "https://youtu.be/M-HjXkWYRLM"
+
+[project.scripts]
+flockparse = "flockparsecli:main"
+flockparse-api = "flock_ai_api:main"
+flockparse-webui = "flock_webui:main"
+flockparse-mcp = "flock_mcp_server:main"
+
+[tool.setuptools]
+py-modules = [
+    "flockparsecli",
+    "flock_ai_api",
+    "flock_webui",
+    "flock_mcp_server",
+    "gpu_controller",
+    "intelligent_gpu_router",
+    "gpu_router_daemon",
+    "adaptive_parallelism",
+    "vram_monitor",
+    "benchmark_comparison",
+]
+
+[tool.setuptools.packages.find]
+exclude = ["tests*", "testpdfs*", "converted_files*", "knowledge_base*", "chroma_db*", "uploads*"]

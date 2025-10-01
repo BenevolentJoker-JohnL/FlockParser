@@ -1,12 +1,11 @@
 # **FlockParse - Document RAG Intelligence with Distributed Processing**
 
+[![PyPI version](https://img.shields.io/pypi/v/flockparser.svg)](https://pypi.org/project/flockparser/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/flockparser.svg)](https://pypi.org/project/flockparser/)
 [![CI Status](https://img.shields.io/github/actions/workflow/status/BenevolentJoker-JohnL/FlockParser/ci.yml?branch=main&label=tests)](https://github.com/BenevolentJoker-JohnL/FlockParser/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Free Forever](https://img.shields.io/badge/Free-Forever-green.svg)](https://github.com/BenevolentJoker-JohnL/FlockParser)
-[![Privacy First](https://img.shields.io/badge/Privacy-First-brightgreen.svg)](https://github.com/BenevolentJoker-JohnL/FlockParser)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Demo Video](https://img.shields.io/badge/Demo-YouTube-red.svg)](https://youtu.be/M-HjXkWYRLM)
 [![GitHub Stars](https://img.shields.io/github/stars/BenevolentJoker-JohnL/FlockParser?style=social)](https://github.com/BenevolentJoker-JohnL/FlockParser)
 
@@ -115,16 +114,8 @@ Watch FlockParser in action: **372 seconds → 6 seconds (61.7x speedup)** throu
 - 4GB+ RAM (8GB+ recommended for GPU nodes)
 
 ```bash
-# 1. Clone and install
-git clone https://github.com/BenevolentJoker-JohnL/FlockParser.git
-cd FlockParser
-
-# Option A: Install dependencies only
-pip install -r requirements.txt
-
-# Option B: Install as package (recommended - adds console commands)
-pip install -e .
-# This adds commands: flockparse, flockparse-webui, flockparse-api, flockparse-mcp
+# 1. Install FlockParser
+pip install flockparser
 
 # 2. Start Ollama and pull models
 ollama serve  # In a separate terminal
@@ -132,19 +123,25 @@ ollama pull mxbai-embed-large    # Required for embeddings
 ollama pull llama3.1:latest       # Required for chat
 
 # 3. Run your preferred interface
-streamlit run flock_webui.py         # Web UI - easiest (recommended) ⭐
-python flockparsecli.py              # CLI - 100% local
-python flock_ai_api.py               # REST API - multi-user
-python flock_mcp_server.py           # MCP - Claude Desktop integration
-
-# Or if you installed with pip (Option B above):
-flockparse-webui                     # Web UI
-flockparse                           # CLI
-flockparse-api                       # REST API
-flockparse-mcp                       # MCP Server
+flockparse-webui                     # Web UI - easiest (recommended) ⭐
+flockparse                           # CLI - 100% local
+flockparse-api                       # REST API - multi-user
+flockparse-mcp                       # MCP - Claude Desktop integration
 ```
 
 **💡 Pro tip:** Start with the Web UI to see distributed processing with real-time VRAM monitoring and node health dashboards.
+
+---
+
+### Alternative: Install from Source
+
+If you want to contribute or modify the code:
+
+```bash
+git clone https://github.com/BenevolentJoker-JohnL/FlockParser.git
+cd FlockParser
+pip install -e .  # Editable install
+```
 
 ### **Quick Test (30 seconds)**
 
