@@ -2305,7 +2305,7 @@ def clear_db():
             print("❌ Operation cancelled")
             return
 
-        global chroma_client, chroma_collection
+        global chroma_collection
 
         # Delete the collection
         try:
