@@ -52,6 +52,16 @@ converted_files/
 *.md
 !README.md
 !*.py
+
+# Public-facing documentation (keep these)
+!CONTRIBUTING.md
+!CODE_OF_CONDUCT.md
+!CHANGELOG.md
+!LICENSE
+!ERROR_HANDLING.md
+!docs/
+
+# Technical documentation (keep these)
 !PERFORMANCE_OPTIMIZATION.md
 !GPU_ROUTER_SETUP.md
 !ADAPTIVE_PARALLELISM.md
@@ -62,17 +72,21 @@ converted_files/
 !NODE_MANAGEMENT.md
 !QUICK_SETUP.md
 !MODEL_CACHING.md
-!VRAM_MONITORING_SUMMARY.md
-!CONTRIBUTING.md
-!CODE_OF_CONDUCT.md
-!CHANGELOG.md
-!LICENSE
-!YOUTUBE_DESCRIPTION.md
-!LINKEDIN_POST.md
-!LAUNCH_CHECKLIST.md
-!READY_TO_SHIP.md
-!ERROR_HANDLING.md
-!docs/
+
+# Internal planning docs (ignore these - keep private)
+YOUTUBE_DESCRIPTION.md
+LINKEDIN_POST.md
+LAUNCH_CHECKLIST.md
+READY_TO_SHIP.md
+DEMO_SCRIPT.md
+BENCHMARK_RESULTS.md
+DEMO_OUTPUT.md
+INTEGRATION_TEST_RESULTS.md
+MODEL_CACHING_INTEGRATION_TEST.md
+NEW_FEATURES.md
+PERFORMANCE_CHART.md
+WEBUI_GUIDE.md
+VRAM_MONITORING_SUMMARY.md
 
 # Document index and embeddings
 document_index.json
