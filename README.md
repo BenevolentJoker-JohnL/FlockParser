@@ -347,17 +347,42 @@ Then run: `docker-compose up -d`
 
 ### **CI/CD Pipeline**
 
-Every push to `main` automatically:
-- ✅ Runs tests (pytest with 78% coverage)
-- ✅ Checks code quality (flake8, black, mypy)
-- ✅ Scans for vulnerabilities (Trivy)
-- ✅ Builds multi-architecture Docker images (amd64, arm64)
-- ✅ Pushes to GitHub Container Registry
+```mermaid
+graph LR
+    A[📝 Git Push] --> B[🔍 Lint & Format]
+    B --> C[🧪 Test Suite]
+    B --> D[🔒 Security Scan]
+    C --> E[🐳 Build Multi-Arch]
+    D --> E
+    E --> F[📦 Push to GHCR]
+    F --> G[🚀 Deploy]
+
+    style A fill:#4CAF50
+    style B fill:#2196F3
+    style C fill:#2196F3
+    style D fill:#FF9800
+    style E fill:#9C27B0
+    style F fill:#9C27B0
+    style G fill:#F44336
+```
+
+**Automated on every push to `main`:**
+
+| Stage | Tools | Purpose |
+|-------|-------|---------|
+| **Code Quality** | black, flake8, mypy | Enforce formatting & typing standards |
+| **Testing** | pytest (Python 3.10/3.11/3.12) | 78% coverage across versions |
+| **Security** | Trivy | Vulnerability scanning & SARIF reports |
+| **Build** | Docker Buildx | Multi-architecture (amd64, arm64) |
+| **Registry** | GitHub Container Registry | Versioned image storage |
+| **Deploy** | On release events | Automated production deployment |
 
 **Pull the latest image:**
 ```bash
 docker pull ghcr.io/benevolentjoker-johnl/flockparser:latest
 ```
+
+**View pipeline runs:** https://github.com/BenevolentJoker-JohnL/FlockParser/actions
 
 ---
 
