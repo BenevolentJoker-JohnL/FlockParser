@@ -8,30 +8,19 @@ import streamlit as st
 import sys
 from pathlib import Path
 import time
-import json
-from datetime import datetime
 
 # Import FlockParse functionality
 sys.path.append(str(Path(__file__).parent))
-from flockparsecli import (
-    process_pdf,
-    load_document_index,
-    get_similar_chunks,
-    load_balancer,
-    KB_DIR,
-    PROCESSED_DIR
-)
+from flockparsecli import process_pdf, load_document_index, get_similar_chunks, load_balancer  # noqa: E402
 
 # Page configuration
 st.set_page_config(
-    page_title="FlockParse - Document Intelligence",
-    page_icon="📚",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_title="FlockParse - Document Intelligence", page_icon="📚", layout="wide", initial_sidebar_state="expanded"
 )
 
 # Custom CSS
-st.markdown("""
+st.markdown(
+    """
 <style>
     .main-header {
         font-size: 3rem;
@@ -52,12 +41,14 @@ st.markdown("""
         width: 100%;
     }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # Initialize session state
-if 'chat_history' not in st.session_state:
+if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-if 'processed_files' not in st.session_state:
+if "processed_files" not in st.session_state:
     st.session_state.processed_files = []
 
 # Header
@@ -70,8 +61,14 @@ with st.sidebar:
     st.header("⚙️ Navigation")
     page = st.radio(
         "Choose a page:",
-        ["📤 Upload & Process", "💬 Chat with Documents", "📊 Load Balancer", "🔍 Search Documents", "🌐 Node Management"],
-        label_visibility="collapsed"
+        [
+            "📤 Upload & Process",
+            "💬 Chat with Documents",
+            "📊 Load Balancer",
+            "🔍 Search Documents",
+            "🌐 Node Management",
+        ],
+        label_visibility="collapsed",
     )
 
     st.markdown("---")
@@ -82,7 +79,7 @@ with st.sidebar:
         index_data = load_document_index()
         doc_count = len(index_data.get("documents", []))
         total_chunks = sum(len(doc.get("chunks", [])) for doc in index_data.get("documents", []))
-    except:
+    except Exception:
         doc_count = 0
         total_chunks = 0
 
@@ -107,10 +104,7 @@ if page == "📤 Upload & Process":
 
     with col1:
         uploaded_files = st.file_uploader(
-            "Choose PDF files",
-            type=['pdf'],
-            accept_multiple_files=True,
-            help="Select one or more PDF files to process"
+            "Choose PDF files", type=["pd"], accept_multiple_files=True, help="Select one or more PDF files to process"
         )
 
     with col2:
@@ -127,7 +121,9 @@ if page == "📤 Upload & Process":
             total_size += file_size
 
             if file_size > MAX_FILE_SIZE:
-                validation_errors.append(f"❌ {uploaded_file.name}: File too large ({file_size / 1024 / 1024:.1f} MB > 100 MB)")
+                validation_errors.append(
+                    f"❌ {uploaded_file.name}: File too large ({file_size / 1024 / 1024:.1f} MB > 100 MB)"
+                )
             elif file_size == 0:
                 validation_errors.append(f"❌ {uploaded_file.name}: Empty file")
 
@@ -139,7 +135,9 @@ if page == "📤 Upload & Process":
             st.info("💡 **Tip:** For files >100MB, split them or use the CLI interface for better performance.")
 
         # Show file summary
-        st.info(f"📊 **Ready to process:** {len(uploaded_files)} file(s), total size: {total_size / 1024 / 1024:.1f} MB")
+        st.info(
+            f"📊 **Ready to process:** {len(uploaded_files)} file(s), total size: {total_size / 1024 / 1024:.1f} MB"
+        )
 
         if st.button("🚀 Process Files", type="primary", disabled=len(validation_errors) > 0):
             progress_bar = st.progress(0)
@@ -186,7 +184,7 @@ if page == "📤 Upload & Process":
                     st.error(f"❌ {uploaded_file.name}: Cannot connect to Ollama - {e}")
                     st.info("💡 Ensure Ollama is running: `ollama serve`")
                     error_count += 1
-                except MemoryError as e:
+                except MemoryError:
                     st.error(f"❌ {uploaded_file.name}: Out of memory - file too large")
                     st.info("💡 Try splitting the PDF or processing on a machine with more RAM")
                     error_count += 1
@@ -194,7 +192,8 @@ if page == "📤 Upload & Process":
                     st.error(f"❌ {uploaded_file.name}: Unexpected error")
                     with st.expander("📋 Error Details"):
                         st.code(f"{type(e).__name__}: {str(e)}")
-                        st.caption("If this persists, please report at: https://github.com/BenevolentJoker-JohnL/FlockParser/issues")
+                        st.caption("If this persists, please report at:")
+                        st.caption("https://github.com/BenevolentJoker-JohnL/FlockParser/issues")
                     error_count += 1
                 finally:
                     # Clean up temp file
@@ -221,9 +220,12 @@ if page == "📤 Upload & Process":
                 st.success(f"✅ **All {success_count} files processed successfully!** ({total_time:.1f}s total)")
                 st.balloons()
             elif success_count > 0:
-                st.warning(f"⚠️ **Completed with errors:** {success_count} succeeded, {error_count} failed ({total_time:.1f}s total)")
+                st.warning(
+                    f"⚠️ **Completed with errors:** {success_count} succeeded, "
+                    f"{error_count} failed ({total_time:.1f}s total)"
+                )
             else:
-                st.error(f"❌ **All files failed to process.** Check error messages above.")
+                st.error("❌ **All files failed to process.** Check error messages above.")
 
             progress_bar.empty()
 
@@ -252,10 +254,7 @@ elif page == "💬 Chat with Documents":
 
     if user_question:
         # Add user message to history
-        st.session_state.chat_history.append({
-            "role": "user",
-            "content": user_question
-        })
+        st.session_state.chat_history.append({"role": "user", "content": user_question})
 
         # Display user message
         with st.chat_message("user"):
@@ -269,31 +268,37 @@ elif page == "💬 Chat with Documents":
                     chunks = get_similar_chunks(user_question, top_k=5)
 
                     if not chunks:
-                        response = "❓ **No documents found.**\n\nI don't have any documents to search. Please upload and process some PDFs first using the '📤 Upload & Process' tab."
+                        response = (
+                            "❓ **No documents found.**\n\n"
+                            "I don't have any documents to search. "
+                            "Please upload and process some PDFs first using the '📤 Upload & Process' tab."
+                        )
                     else:
                         # Build context from chunks
-                        context = "\n\n".join([
-                            f"From {chunk['doc_name']}:\n{chunk['text']}"
-                            for chunk in chunks[:3]
-                        ])
+                        context = "\n\n".join([f"From {chunk['doc_name']}:\n{chunk['text']}" for chunk in chunks[:3]])
 
                         # Simple response (could use chat_with_documents for more sophisticated responses)
-                        response = f"Based on your documents:\n\n{context}\n\n---\n**Sources:** " + ", ".join(set(c['doc_name'] for c in chunks[:3]))
+                        response = f"Based on your documents:\n\n{context}\n\n---\n**Sources:** " + ", ".join(
+                            set(c["doc_name"] for c in chunks[:3])
+                        )
 
                     st.write(response)
 
                     # Add assistant response to history
-                    st.session_state.chat_history.append({
-                        "role": "assistant",
-                        "content": response
-                    })
+                    st.session_state.chat_history.append({"role": "assistant", "content": response})
 
-                except ConnectionError as e:
-                    error_msg = "🔌 **Connection Error:** Cannot connect to Ollama service.\n\n💡 **Fix:** Ensure Ollama is running with `ollama serve`"
+                except ConnectionError:
+                    error_msg = (
+                        "🔌 **Connection Error:** Cannot connect to Ollama service.\n\n"
+                        "💡 **Fix:** Ensure Ollama is running with `ollama serve`"
+                    )
                     st.error(error_msg)
                     st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
-                except FileNotFoundError as e:
-                    error_msg = "📂 **Database Error:** ChromaDB database not found.\n\n💡 **Fix:** Process at least one document first to create the database."
+                except FileNotFoundError:
+                    error_msg = (
+                        "📂 **Database Error:** ChromaDB database not found.\n\n"
+                        "💡 **Fix:** Process at least one document first to create the database."
+                    )
                     st.error(error_msg)
                     st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
                 except Exception as e:
@@ -353,7 +358,7 @@ elif page == "📊 Load Balancer":
             gpu_indicator = f"🚀 GPU (~{vram_gb}GB VRAM)"
         elif has_gpu and not is_gpu_loaded:
             gpu_indicator = "⚠️ GPU (VRAM limited)"
-        elif has_gpu == False:
+        elif has_gpu is False:
             gpu_indicator = "🐢 CPU"
         else:
             gpu_indicator = "❓ Unknown"
@@ -389,8 +394,7 @@ elif page == "🔍 Search Documents":
 
     with col1:
         search_query = st.text_input(
-            "Enter your search query:",
-            placeholder="e.g., quantum mechanics, black holes, neural networks..."
+            "Enter your search query:", placeholder="e.g., quantum mechanics, black holes, neural networks..."
         )
 
     with col2:
@@ -404,19 +408,22 @@ elif page == "🔍 Search Documents":
                 search_time = time.time() - search_start
 
                 if not chunks:
-                    st.warning("⚠️ **No results found.**\n\nPlease upload and process some documents first using the '📤 Upload & Process' tab.")
+                    st.warning(
+                        "⚠️ **No results found.**\n\n"
+                        "Please upload and process some documents first using the '📤 Upload & Process' tab."
+                    )
                 else:
                     st.success(f"✅ Found {len(chunks)} relevant chunks in {search_time:.2f}s")
 
                     for idx, chunk in enumerate(chunks, 1):
                         with st.expander(f"Result {idx}: {chunk['doc_name']} (Similarity: {chunk['similarity']:.3f})"):
-                            st.write(chunk['text'])
+                            st.write(chunk["text"])
                             st.caption(f"Document: {chunk['doc_name']}")
 
-            except ConnectionError as e:
+            except ConnectionError:
                 st.error("🔌 **Connection Error:** Cannot connect to Ollama service.")
                 st.info("💡 **Fix:** Ensure Ollama is running with `ollama serve`")
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 st.error("📂 **Database Error:** ChromaDB database not found.")
                 st.info("💡 **Fix:** Process at least one document first to create the database.")
             except Exception as e:
@@ -476,9 +483,7 @@ elif page == "🌐 Node Management":
 
     with col1:
         new_node_url = st.text_input(
-            "Node URL:",
-            placeholder="http://192.168.1.100:11434",
-            help="Enter the full URL of an Ollama instance"
+            "Node URL:", placeholder="http://192.168.1.100:11434", help="Enter the full URL of an Ollama instance"
         )
 
     with col2:
@@ -529,7 +534,12 @@ elif page == "🌐 Node Management":
         "Select routing strategy:",
         strategies,
         index=strategies.index(current_strategy),
-        help="Adaptive: GPU-aware intelligent routing (recommended)\nRound Robin: Cycle through nodes\nLeast Loaded: Choose node with fewest active requests\nLowest Latency: Choose fastest responding node"
+        help=(
+            "Adaptive: GPU-aware intelligent routing (recommended)\n"
+            "Round Robin: Cycle through nodes\n"
+            "Least Loaded: Choose node with fewest active requests\n"
+            "Lowest Latency: Choose fastest responding node"
+        ),
     )
 
     if new_strategy != current_strategy:
@@ -547,7 +557,7 @@ st.markdown(
         <p>100% Local • Privacy-First • High Performance</p>
     </div>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 
 
