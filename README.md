@@ -283,6 +283,84 @@ python flockparsecli.py
 
 ---
 
+## **🐳 Docker Deployment (One Command)**
+
+### **Quick Start with Docker Compose**
+
+```bash
+# Clone and deploy everything
+git clone https://github.com/BenevolentJoker-JohnL/FlockParser.git
+cd FlockParser
+docker-compose up -d
+
+# Access services
+# Web UI: http://localhost:8501
+# REST API: http://localhost:8000
+# Ollama: http://localhost:11434
+```
+
+### **What Gets Deployed**
+
+| Service | Port | Description |
+|---------|------|-------------|
+| **Web UI** | 8501 | Streamlit interface with visual monitoring |
+| **REST API** | 8000 | FastAPI with authentication |
+| **CLI** | - | Interactive terminal (docker-compose run cli) |
+| **Ollama** | 11434 | Local LLM inference engine |
+
+### **Production Features**
+
+✅ **Multi-stage build** - Optimized image size
+✅ **Non-root user** - Security hardened
+✅ **Health checks** - Auto-restart on failure
+✅ **Volume persistence** - Data survives restarts
+✅ **GPU support** - Uncomment deploy section for NVIDIA GPUs
+
+### **Custom Configuration**
+
+```bash
+# Set API key
+export FLOCKPARSE_API_KEY="your-secret-key"
+
+# Set log level
+export LOG_LEVEL="DEBUG"
+
+# Deploy with custom config
+docker-compose up -d
+```
+
+### **GPU Support (NVIDIA)**
+
+Uncomment the GPU section in `docker-compose.yml`:
+
+```yaml
+deploy:
+  resources:
+    reservations:
+      devices:
+        - driver: nvidia
+          count: all
+          capabilities: [gpu]
+```
+
+Then run: `docker-compose up -d`
+
+### **CI/CD Pipeline**
+
+Every push to `main` automatically:
+- ✅ Runs tests (pytest with 78% coverage)
+- ✅ Checks code quality (flake8, black, mypy)
+- ✅ Scans for vulnerabilities (Trivy)
+- ✅ Builds multi-architecture Docker images (amd64, arm64)
+- ✅ Pushes to GitHub Container Registry
+
+**Pull the latest image:**
+```bash
+docker pull ghcr.io/benevolentjoker-johnl/flockparser:latest
+```
+
+---
+
 ## **🌐 Setting Up Distributed Nodes**
 
 **Want the 60x speedup?** Set up multiple Ollama nodes across your network.
