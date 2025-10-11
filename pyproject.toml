@@ -60,6 +60,7 @@ dependencies = [
     "streamlit>=1.40.0",
     "pytest>=7.4.0",
     "pytest-timeout>=2.1.0",
+    "sollol>=0.9.31",
 ]
 
 [project.optional-dependencies]
@@ -93,11 +94,10 @@ py-modules = [
     "flock_webui",
     "flock_mcp_server",
     "gpu_controller",
-    "intelligent_gpu_router",
     "gpu_router_daemon",
-    "adaptive_parallelism",
-    "vram_monitor",
     "benchmark_comparison",
+    "sollol_compat",
+    "logging_config",
 ]
 
 [tool.setuptools.packages.find]

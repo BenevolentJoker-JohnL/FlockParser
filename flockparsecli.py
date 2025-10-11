@@ -13,11 +13,13 @@ import time
 import socket
 import requests
 import chromadb
-from vram_monitor import VRAMMonitor, monitor_distributed_nodes
+from sollol.vram_monitor import VRAMMonitor, monitor_distributed_nodes
 from gpu_controller import GPUController
-from intelligent_gpu_router import IntelligentGPURouter
-from adaptive_parallelism import AdaptiveParallelismStrategy
+from sollol.intelligent_gpu_router import IntelligentGPURouter
+from sollol.adaptive_parallelism import AdaptiveParallelismStrategy
 from logging_config import setup_logging
+from sollol import OllamaPool  # Direct SOLLOL integration
+from sollol_compat import add_flockparser_methods  # FlockParser compatibility layer
 
 # Initialize logging
 logger = setup_logging()
@@ -53,7 +55,7 @@ COMMANDS = """
 
 # 🔥 AI MODELS
 EMBEDDING_MODEL = "mxbai-embed-large"
-CHAT_MODEL = "llama3.1:latest"
+CHAT_MODEL = "qwen3:8b"  # Fast and fits in available RAM (5.2 GB)
 
 # 🚀 MODEL CACHING CONFIGURATION
 # Keep models in VRAM for faster inference (prevents reloading)
@@ -80,16 +82,13 @@ ACCEPTABLE_EMBEDDING_MODELS = [
 
 ACCEPTABLE_CHAT_MODELS = [
     "llama3.1",
-    "llama3.1:latest",
     "llama3.1:8b",
-    "llama3.1:70b",
     "llama3.2",
     "llama3.2:latest",
     "llama3.2:3b",
     "llama3",
     "llama3:latest",
     "llama3:8b",
-    "llama3:70b",
     "mistral",
     "mistral:latest",
     "mixtral",
@@ -97,1100 +96,21 @@ ACCEPTABLE_CHAT_MODELS = [
     "qwen",
     "qwen:latest",
     "qwen2.5",
+    "qwen3",
+    "qwen3:14b",
+    "qwen3:8b",
+    "qwen3:4b",
+    "gemma2:9b",
     "phi3",
+    "deepseek-coder-v2",
+    "codellama:13b",
 ]
 
 # 🌐 OLLAMA LOAD BALANCER CONFIGURATION
-# Add multiple Ollama instances here (host:port)
-OLLAMA_INSTANCES = [
-    "http://localhost:11434",  # Default local instance
-    # Additional nodes will be auto-discovered or loaded from ollama_nodes.json
-]
+# SOLLOL auto-discovers all Ollama nodes on the network
 
-
-class OllamaLoadBalancer:
-    """Load balancer for distributing requests across multiple Ollama instances with intelligent routing."""
-
-    def __init__(self, instances, skip_init_checks=False):
-        self.instances = list(instances)  # Make a copy
-        self.current_index = 0
-        self.lock = threading.Lock()
-        self.skip_init_checks = skip_init_checks  # Skip network checks during init
-        self.instance_stats = {
-            inst: {
-                "requests": 0,
-                "errors": 0,
-                "total_time": 0,
-                "latency": None,  # Network latency in ms
-                "concurrent_requests": 0,  # Current active requests
-                "health_score": 100.0,  # 0-100 health score
-                "last_check": None,
-                "has_gpu": None,  # GPU availability
-                "gpu_memory_gb": 0,  # GPU memory in GB
-                "is_local": inst.startswith("http://localhost") or inst.startswith("http://127.0.0.1"),
-                "force_cpu": False,  # Manual CPU override
-            }
-            for inst in instances
-        }
-        self.nodes_file = KB_DIR / "ollama_nodes.json"
-        self.routing_strategy = "adaptive"  # Options: round_robin, least_loaded, lowest_latency, adaptive
-
-        # GPU optimization settings
-        self.gpu_controller = GPUController()
-        self.auto_optimize_gpu = False  # Disable automatic GPU optimization (use manual gpu_optimize command)
-        self.gpu_priority_models = ["mxbai-embed-large", "llama3.1"]  # Models to prefer GPU
-        self.optimization_thread = None
-        self.optimization_running = False
-
-        # Node availability cache (to avoid checking every request)
-        self.availability_cache = {}  # {node_url: (is_available, timestamp)}
-        self.availability_cache_ttl = 60  # Cache for 60 seconds
-
-        # Adaptive parallelism strategy
-        self.parallelism_strategy = AdaptiveParallelismStrategy(self)
-        self.auto_adaptive_mode = True  # Automatically choose parallel vs sequential
-
-        self._load_nodes_from_disk()
-
-        # Auto-discover nodes if only localhost is configured and no saved nodes
-        if (
-            not skip_init_checks
-            and len(self.instances) == 1
-            and self.instances[0] in ["http://localhost:11434", "http://127.0.0.1:11434"]
-        ):
-            if not self.nodes_file.exists() or len(self._load_saved_nodes_list()) == 0:
-                logger.info(
-                    "🔍 No additional nodes found. Run 'discover_nodes' to find Ollama instances on your network."
-                )
-
-        # Skip initial network checks if requested (for MCP server or testing)
-        if not skip_init_checks:
-            self._measure_initial_latencies()
-
-            # Start background GPU optimization
-            if self.auto_optimize_gpu:
-                self._start_gpu_optimization()
-
-    def _load_saved_nodes_list(self):
-        """Helper to check saved nodes without modifying instances."""
-        if self.nodes_file.exists():
-            try:
-                with open(self.nodes_file, "r") as f:
-                    return json.load(f)
-            except Exception:
-                pass
-        return []
-
-    def _load_nodes_from_disk(self):
-        """Load saved nodes from disk."""
-        if self.nodes_file.exists():
-            try:
-                with open(self.nodes_file, "r") as f:
-                    saved_nodes = json.load(f)
-                    for node in saved_nodes:
-                        # Handle both old format (string) and new format (dict)
-                        if isinstance(node, str):
-                            node_url = node
-                            force_cpu = False
-                        else:
-                            node_url = node.get("url")
-                            force_cpu = node.get("force_cpu", False)
-
-                        if node_url not in self.instances:
-                            # Add saved nodes without checking (will be checked at runtime)
-                            logger.info(f"📋 Loading saved node: {node_url}{' (forced CPU)' if force_cpu else ''}")
-                            self.instances.append(node_url)
-                            is_local = node_url.startswith("http://localhost") or node_url.startswith(
-                                "http://127.0.0.1"
-                            )
-                            self.instance_stats[node_url] = {
-                                "requests": 0,
-                                "errors": 0,
-                                "total_time": 0,
-                                "latency": None,
-                                "concurrent_requests": 0,
-                                "health_score": 50,  # Default score, will be updated
-                                "last_check": None,
-                                "has_gpu": False if force_cpu else None,  # Force CPU if configured
-                                "gpu_memory_gb": 0,
-                                "is_gpu_loaded": False,
-                                "is_local": is_local,
-                                "force_cpu": force_cpu,  # Store config
-                            }
-            except Exception as e:
-                logger.error(f"⚠️ Error loading saved nodes: {e}")
-
-    def _save_nodes_to_disk(self):
-        """Save current nodes to disk."""
-        try:
-            with open(self.nodes_file, "w") as f:
-                json.dump(self.instances, f, indent=2)
-        except Exception as e:
-            logger.error(f"⚠️ Error saving nodes: {e}")
-
-    def _measure_latency(self, node_url, timeout=2):
-        """Measure network latency to a node in milliseconds."""
-        try:
-            start = time.time()
-            response = requests.get(f"{node_url}/api/tags", timeout=timeout)
-            latency_ms = (time.time() - start) * 1000
-            if response.status_code == 200:
-                return latency_ms
-        except Exception:
-            pass
-        return None
-
-    def _detect_gpu(self, node_url):
-        """
-        Detect if node has GPU and VRAM usage using Ollama's /api/ps endpoint.
-        Returns: (has_gpu, gpu_info_str, vram_gb, is_gpu_loaded)
-        """
-        # Check if this node is forced to CPU mode
-        if node_url in self.instance_stats and self.instance_stats[node_url].get("force_cpu", False):
-            return False, "CPU (forced)", 0, False
-
-        try:
-            # Method 1: Check /api/ps for actual VRAM usage
-            try:
-                response = requests.get(f"{node_url}/api/ps", timeout=5)
-                if response.status_code == 200:
-                    ps_data = response.json()
-                    models = ps_data.get("models", [])
-
-                    # Check if embedding model is loaded
-                    total_vram_bytes = 0
-                    embedding_vram_bytes = 0
-                    embedding_model_found = False
-                    for model_info in models:
-                        model_name = model_info.get("name", "")
-                        size_vram = model_info.get("size_vram", 0)
-                        total_vram_bytes += size_vram
-
-                        # Check if this is our embedding model
-                        if any(
-                            variant in model_name.lower()
-                            for variant in ["mxbai-embed", "nomic-embed", "bge-large", "all-minilm"]
-                        ):
-                            embedding_vram_bytes = size_vram
-                            embedding_model_found = True
-
-                    # If embedding model found with VRAM usage, it's using GPU
-                    if embedding_vram_bytes > 0:
-                        vram_gb = total_vram_bytes / (1024**3)  # Convert to GB
-                        return True, f"GPU (model in VRAM: {vram_gb:.1f}GB)", vram_gb, True
-                    # If embedding model found but size_vram is 0, it's CPU-only
-                    elif embedding_model_found and embedding_vram_bytes == 0:
-                        return False, "CPU (model in RAM, not VRAM)", 0, False
-                    elif total_vram_bytes > 0:
-                        # Other models using GPU, but embedding model not loaded
-                        vram_gb = total_vram_bytes / (1024**3)
-                        return True, f"GPU available ({vram_gb:.1f}GB used by other models)", vram_gb, False
-                    # No models in VRAM, fall through to performance test
-            except Exception:
-                pass  # Fall back to performance testing
-
-            # Method 2: Performance-based detection (fallback)
-            client = ollama.Client(host=node_url)
-
-            # Small embedding test
-            start = time.time()
-            try:
-                _ = client.embed(model=EMBEDDING_MODEL, input="test")
-                small_duration = time.time() - start
-            except Exception:
-                return None, "Unknown", 0, False
-
-            # Larger batch to stress test
-            start = time.time()
-            try:
-                batch_input = ["This is a longer test input for embedding generation"] * 10
-                _ = client.embed(model=EMBEDDING_MODEL, input=batch_input)
-                batch_duration = time.time() - start
-                batch_per_item = batch_duration / len(batch_input)
-            except Exception:
-                batch_per_item = small_duration * 10
-
-            # Performance heuristics
-            is_fast_single = small_duration < 0.5
-            is_fast_batch = batch_per_item < 0.1
-
-            if is_fast_single and is_fast_batch:
-                # Full GPU performance
-                vram_estimate = 8 if batch_per_item < 0.05 else 4
-                return True, f"GPU (inferred, ~{vram_estimate}GB VRAM)", vram_estimate, True
-            elif is_fast_single and not is_fast_batch:
-                # GPU with VRAM constraints
-                return True, "GPU (VRAM limited, CPU fallback)", 2, False
-            else:
-                # CPU-only
-                return False, f"CPU only ({small_duration:.2f}s)", 0, False
-
-        except Exception as e:
-            return None, f"Detection failed: {str(e)[:40]}", 0, False
-
-    def _measure_initial_latencies(self):
-        """Measure initial latency and detect GPU on all nodes."""
-        logger.info("📊 Measuring node capabilities...")
-        for node in self.instances:
-            latency = self._measure_latency(node)
-            if latency:
-                self.instance_stats[node]["latency"] = latency
-
-                # Detect GPU and VRAM
-                has_gpu, gpu_info, vram_gb, is_gpu_loaded = self._detect_gpu(node)
-                self.instance_stats[node]["has_gpu"] = has_gpu
-                self.instance_stats[node]["gpu_memory_gb"] = vram_gb
-                self.instance_stats[node]["is_gpu_loaded"] = is_gpu_loaded
-
-                # Emoji indicators
-                if has_gpu and is_gpu_loaded:
-                    gpu_emoji = "🚀"  # Full GPU power
-                elif has_gpu and not is_gpu_loaded:
-                    gpu_emoji = "⚠️"  # GPU with VRAM issues
-                elif has_gpu is False:
-                    gpu_emoji = "🐢"  # CPU only
-                else:
-                    gpu_emoji = "❓"  # Unknown
-
-                logger.info(f"   {node}: {latency:.0f}ms {gpu_emoji} {gpu_info}")
-            else:
-                self.instance_stats[node]["latency"] = 9999
-                self.instance_stats[node]["has_gpu"] = False
-                self.instance_stats[node]["is_gpu_loaded"] = False
-                logger.info(f"   {node}: unreachable")
-
-    def _update_health_score(self, node):
-        """Calculate health score with GPU priority, VRAM awareness, latency, error rate, and response time."""
-        stats = self.instance_stats[node]
-
-        # Base score
-        score = 100.0
-
-        # GPU and VRAM awareness - HEAVILY prioritize GPU nodes
-        has_gpu = stats.get("has_gpu")
-        is_gpu_loaded = stats.get("is_gpu_loaded", False)
-        vram_gb = stats.get("gpu_memory_gb", 0)
-
-        if has_gpu is True:
-            if is_gpu_loaded:
-                # Full GPU with sufficient VRAM - MASSIVE bonus
-                score += 300 + (vram_gb * 20)  # Increased: GPU should always win
-            else:
-                # GPU exists but NOT being used (size_vram = 0) - treat as CPU
-                # This happens when GPU node is configured for CPU-only generation
-                score -= 50  # Same penalty as CPU-only nodes
-        elif has_gpu is False:
-            score -= 100  # CPU nodes heavily penalized (increased from -50)
-
-        # Penalize for high latency (>100ms is bad)
-        if stats["latency"]:
-            if stats["latency"] > 100:
-                score -= min(50, (stats["latency"] - 100) / 10)
-
-        # Penalize for errors
-        if stats["requests"] > 0:
-            error_rate = stats["errors"] / stats["requests"]
-            score -= error_rate * 40
-
-        # Penalize for slow response times
-        if stats["requests"] > 0:
-            avg_time = stats["total_time"] / stats["requests"]
-            if avg_time > 2.0:  # Slower than 2 seconds
-                score -= min(30, (avg_time - 2.0) * 10)
-
-        # Penalize for high concurrent load
-        load_penalty = stats["concurrent_requests"] * 5
-        if has_gpu and is_gpu_loaded:
-            # Full GPU can handle more concurrent load
-            load_penalty = load_penalty * 0.4
-        elif has_gpu and not is_gpu_loaded:
-            # VRAM-limited GPU - heavily penalize concurrent load (will fall back to CPU!)
-            load_penalty = load_penalty * 1.5
-        score -= load_penalty
-
-        stats["health_score"] = max(0, score)
-        return stats["health_score"]
-
-    def set_routing_strategy(self, strategy):
-        """Set the routing strategy. Options: round_robin, least_loaded, lowest_latency, adaptive"""
-        valid_strategies = ["round_robin", "least_loaded", "lowest_latency", "adaptive"]
-        if strategy in valid_strategies:
-            self.routing_strategy = strategy
-            logger.info(f"✅ Routing strategy set to: {strategy}")
-        else:
-            logger.error(f"❌ Invalid strategy. Choose from: {valid_strategies}")
-
-    def _model_matches(self, available_model, acceptable_models):
-        """Check if an available model matches any acceptable model variant."""
-        # Normalize the available model name
-        available_normalized = available_model.lower().strip()
-
-        for acceptable in acceptable_models:
-            acceptable_normalized = acceptable.lower().strip()
-
-            # Direct match
-            if available_normalized == acceptable_normalized:
-                return True
-
-            # Match without :latest suffix
-            if available_normalized.replace(":latest", "") == acceptable_normalized.replace(":latest", ""):
-                return True
-
-            # Partial match (e.g., "llama3.1:8b" matches "llama3.1")
-            if available_normalized.startswith(acceptable_normalized) or acceptable_normalized in available_normalized:
-                return True
-
-        return False
-
-    def _check_model_available(self, node_url, model_name, acceptable_variants=None):
-        """Check if a specific model (or acceptable variant) is available on a node."""
-        try:
-            client = ollama.Client(host=node_url)
-            result = client.list()
-            if hasattr(result, "models"):
-                models = result.models
-                model_names = [model.model if hasattr(model, "model") else str(model) for model in models]
-            else:
-                models = result.get("models", [])
-                model_names = [model.get("name", "unknown") for model in models]
-
-            # If acceptable variants provided, check against those
-            if acceptable_variants:
-                for available_model in model_names:
-                    if self._model_matches(available_model, acceptable_variants):
-                        return True, available_model
-                return False, None
-            else:
-                # Original behavior - exact match
-                for name in model_names:
-                    if model_name in name:
-                        return True, name
-                return False, None
-        except Exception:
-            return False, None
-
-    def add_node(self, node_url, save=True, check_models=True, optional=False):
-        """Add a new Ollama node to the pool.
-
-        Args:
-            node_url: URL of the Ollama node
-            save: Save to disk
-            check_models: Verify required models exist
-            optional: If True, add node even if currently offline (will be checked at runtime)
-        """
-        # Check if this is a duplicate of localhost
-        is_localhost_variant = node_url in ["http://localhost:11434", "http://127.0.0.1:11434"]
-
-        # Get local machine IPs to detect duplicates
-        import socket
-
-        local_ips = set()
-        try:
-            hostname = socket.gethostname()
-            local_ips.add(socket.gethostbyname(hostname))
-        except Exception:
-            pass
-
-        # Extract IP from node_url
-        node_ip = node_url.replace("http://", "").replace("https://", "").split(":")[0]
-
-        # Check if this node is localhost in disguise
-        if node_ip in local_ips:
-            # Check if we already have localhost
-            has_localhost = any(inst in ["http://localhost:11434", "http://127.0.0.1:11434"] for inst in self.instances)
-            if has_localhost and not is_localhost_variant:
-                logger.warning(f"⚠️  Skipping {node_url} - already have localhost (same machine)")
-                return False
-
-        with self.lock:
-            if node_url not in self.instances:
-                # Test if node is reachable
-                try:
-                    client = ollama.Client(host=node_url)
-                    client.list()  # Test connection
-
-                    # Check if required models are available (with flexible matching)
-                    if check_models:
-                        has_embedding, embedding_model = self._check_model_available(
-                            node_url, EMBEDDING_MODEL, ACCEPTABLE_EMBEDDING_MODELS
-                        )
-                        has_chat, chat_model = self._check_model_available(node_url, CHAT_MODEL, ACCEPTABLE_CHAT_MODELS)
-
-                        if not has_embedding:
-                            logger.warning(f"⚠️ Node {node_url} missing compatible embedding model")
-                            logger.info(f"   Acceptable: {', '.join(ACCEPTABLE_EMBEDDING_MODELS[:3])}...")
-                            logger.info(f"   Run: ssh <host> 'ollama pull {EMBEDDING_MODEL}'")
-                            return False
-                        else:
-                            logger.info(f"   ✅ Found embedding model: {embedding_model}")
-
-                        if not has_chat:
-                            logger.warning(f"⚠️ Node {node_url} missing compatible chat model (optional)")
-                        else:
-                            logger.info(f"   ✅ Found chat model: {chat_model}")
-
-                    self.instances.append(node_url)
-                    is_local = node_url.startswith("http://localhost") or node_url.startswith("http://127.0.0.1")
-                    self.instance_stats[node_url] = {
-                        "requests": 0,
-                        "errors": 0,
-                        "total_time": 0,
-                        "latency": None,
-                        "concurrent_requests": 0,
-                        "health_score": 100.0,
-                        "last_check": None,
-                        "has_gpu": None,
-                        "gpu_memory_gb": 0,
-                        "is_gpu_loaded": False,
-                        "is_local": is_local,
-                    }
-                    # Measure latency and detect GPU
-                    latency = self._measure_latency(node_url)
-                    if latency:
-                        self.instance_stats[node_url]["latency"] = latency
-
-                    has_gpu, gpu_info, vram_gb, is_gpu_loaded = self._detect_gpu(node_url)
-                    self.instance_stats[node_url]["has_gpu"] = has_gpu
-                    self.instance_stats[node_url]["gpu_memory_gb"] = vram_gb
-                    self.instance_stats[node_url]["is_gpu_loaded"] = is_gpu_loaded
-
-                    if has_gpu and is_gpu_loaded:
-                        logger.info(f"   🚀 GPU detected: {gpu_info}")
-                    elif has_gpu and not is_gpu_loaded:
-                        logger.warning(f"   ⚠️  GPU detected (VRAM limited): {gpu_info}")
-                    elif has_gpu is False:
-                        logger.info(f"   🐢 CPU detected: {gpu_info}")
-                    if save:
-                        self._save_nodes_to_disk()
-                    logger.info(f"✅ Added node: {node_url}")
-                    return True
-                except Exception as e:
-                    if optional:
-                        # Add as optional node (offline now, but will check at runtime)
-                        logger.warning(f"⚠️  Node {node_url} currently offline, adding as optional")
-                        self.instances.append(node_url)
-                        is_local = node_url.startswith("http://localhost") or node_url.startswith("http://127.0.0.1")
-                        self.instance_stats[node_url] = {
-                            "requests": 0,
-                            "errors": 0,
-                            "total_time": 0,
-                            "latency": None,
-                            "concurrent_requests": 0,
-                            "health_score": 0,  # Start with 0 since offline
-                            "last_check": None,
-                            "has_gpu": None,
-                            "gpu_memory_gb": 0,
-                            "is_gpu_loaded": False,
-                            "is_local": is_local,
-                        }
-                        if save:
-                            self._save_nodes_to_disk()
-                        return True
-                    else:
-                        logger.error(f"❌ Failed to add node {node_url}: {e}")
-                        return False
-            else:
-                logger.info(f"ℹ️ Node {node_url} already exists")
-                return False
-
-    def remove_node(self, node_url):
-        """Remove a node from the pool."""
-        with self.lock:
-            if node_url in self.instances:
-                if len(self.instances) == 1:
-                    logger.error("❌ Cannot remove the last node!")
-                    return False
-                self.instances.remove(node_url)
-                if node_url in self.instance_stats:
-                    del self.instance_stats[node_url]
-                self._save_nodes_to_disk()
-                logger.info(f"✅ Removed node: {node_url}")
-                return True
-            else:
-                logger.warning(f"⚠️ Node {node_url} not found")
-                return False
-
-    def list_nodes(self):
-        """List all configured nodes with online/offline status."""
-        with self.lock:
-            logger.info("\n🌐 Configured Ollama Nodes:")
-            logger.info("-" * 60)
-            for i, node in enumerate(self.instances, 1):
-                stats = self.instance_stats.get(node, {})
-
-                # Check if node is online (don't use cache for list_nodes - show real-time)
-                is_online = self._is_node_available(node, timeout=1, use_cache=False)
-                if is_online:
-                    online_status = "🟢 ONLINE"
-                else:
-                    online_status = "🔴 OFFLINE"
-
-                # Usage status
-                usage_status = "Active" if stats.get("requests", 0) > 0 else "Unused"
-
-                logger.info(f"{i}. {node} - {online_status} - {usage_status}")
-                if stats.get("requests", 0) > 0:
-                    error_rate = (stats.get("errors", 0) / stats["requests"]) * 100
-                    avg_time = stats.get("total_time", 0) / stats["requests"]
-                    logger.error(
-                        f"   Requests: {stats['requests']}, Errors: {stats.get('errors', 0)} ({error_rate:.1f}%)"
-                    )
-                    logger.info(f"   Avg Response Time: {avg_time:.2f}s")
-            logger.info("-" * 60)
-
-    def verify_models_on_nodes(self):
-        """Verify which models are available on each node with flexible matching."""
-        logger.info("\n🔬 Model Verification:")
-        logger.info("-" * 70)
-
-        for node in self.instances:
-            logger.info(f"\n🖥️  {node}")
-            try:
-                client = ollama.Client(host=node)
-                result = client.list()
-
-                if hasattr(result, "models"):
-                    models = result.models
-                    model_list = [model.model if hasattr(model, "model") else str(model) for model in models]
-                else:
-                    models = result.get("models", [])
-                    model_list = [model.get("name", "unknown") for model in models]
-
-                # Check for compatible models using flexible matching
-                has_embedding, embedding_found = self._check_model_available(
-                    node, EMBEDDING_MODEL, ACCEPTABLE_EMBEDDING_MODELS
-                )
-                has_chat, chat_found = self._check_model_available(node, CHAT_MODEL, ACCEPTABLE_CHAT_MODELS)
-
-                if has_embedding:
-                    logger.info(f"   Embedding: ✅ {embedding_found}")
-                else:
-                    logger.error("   Embedding: ❌ None found")
-                    logger.info(f"              Acceptable: {', '.join(ACCEPTABLE_EMBEDDING_MODELS[:3])}...")
-
-                if has_chat:
-                    logger.info(f"   Chat: ✅ {chat_found}")
-                else:
-                    logger.error("   Chat: ❌ None found")
-                    logger.info(f"         Acceptable: {', '.join(ACCEPTABLE_CHAT_MODELS[:3])}...")
-
-                # Show all available models
-                logger.info(f"   Total models: {len(model_list)}")
-                if model_list:
-                    logger.info(f"   All models: {', '.join(model_list[:5])}")
-                    if len(model_list) > 5:
-                        logger.info(f"               ... and {len(model_list) - 5} more")
-
-            except Exception as e:
-                logger.error(f"   ❌ Error: {str(e)}")
-
-        logger.info("-" * 70)
-
-    def discover_nodes(self, require_embedding_model=True):
-        """Auto-discover Ollama nodes on the local network with model verification."""
-        logger.info("🔍 Scanning local network for Ollama nodes...")
-        logger.info("This may take 30-60 seconds...")
-
-        # Get local network range
-        hostname = socket.gethostname()
-        local_ip = socket.gethostbyname(hostname)
-        logger.info(f"📍 Local IP: {local_ip}")
-
-        # Extract network prefix (assumes /24 subnet)
-        ip_parts = local_ip.split(".")
-        network_prefix = ".".join(ip_parts[:3])
-
-        discovered = []
-
-        def check_host(ip):
-            """Check if Ollama is running on this host."""
-            url = f"http://{ip}:11434"
-            try:
-                response = requests.get(f"{url}/api/tags", timeout=2)
-                if response.status_code == 200:
-                    return url
-            except Exception:
-                pass
-            return None
-
-        # Scan network in parallel
-        with ThreadPoolExecutor(max_workers=50) as executor:
-            futures = []
-            for i in range(1, 255):
-                ip = f"{network_prefix}.{i}"
-                futures.append(executor.submit(check_host, ip))
-
-            for future in as_completed(futures):
-                result = future.result()
-                if result:
-                    discovered.append(result)
-                    logger.info(f"✅ Found Ollama node: {result}")
-
-        if discovered:
-            logger.info(f"\n🎉 Discovered {len(discovered)} Ollama nodes!")
-            logger.info("Verifying models on discovered nodes...")
-            for node in discovered:
-                # Add with model checking (will auto-verify compatible models)
-                self.add_node(node, check_models=require_embedding_model)
-        else:
-            logger.warning("⚠️ No Ollama nodes found on the network")
-
-        return discovered
-
-    def get_next_instance(self):
-        """Round-robin instance selection."""
-        with self.lock:
-            instance = self.instances[self.current_index]
-            self.current_index = (self.current_index + 1) % len(self.instances)
-            return instance
-
-    def _is_node_available(self, node_url, timeout=2, use_cache=True):
-        """Quick check if node is online and responding."""
-        # Check cache first
-        if use_cache and node_url in self.availability_cache:
-            is_available, timestamp = self.availability_cache[node_url]
-            # Use cached result if less than TTL seconds old
-            if time.time() - timestamp < self.availability_cache_ttl:
-                return is_available
-
-        # Actually check node
-        try:
-            response = requests.get(f"{node_url}/api/tags", timeout=timeout)
-            is_available = response.status_code == 200
-        except Exception:
-            is_available = False
-
-        # Update cache
-        if use_cache:
-            self.availability_cache[node_url] = (is_available, time.time())
-
-        return is_available
-
-    def get_available_instances(self):
-        """Get list of currently available (online) instances with caching."""
-        available = []
-        for instance in self.instances:
-            if self._is_node_available(instance, use_cache=True):
-                available.append(instance)
-            else:
-                # Mark as offline in stats
-                with self.lock:
-                    self.instance_stats[instance]["health_score"] = 0
-        return available if available else self.instances  # Fallback to all if none available
-
-    def get_best_instance(self):
-        """Get instance based on current routing strategy."""
-        # Lazy initialization: if we skipped init checks, do them now on first use
-        if self.skip_init_checks and not hasattr(self, "_lazy_init_done"):
-            self._lazy_init_done = True
-            logger.info("🔄 Initializing node stats (first use)...")
-            self._measure_initial_latencies()
-
-        # Check available nodes OUTSIDE the lock (involves network calls)
-        available_instances = self.get_available_instances()
-
-        with self.lock:
-
-            if not available_instances:
-                logger.warning("⚠️  Warning: No nodes available, using fallback")
-                return self.instances[0] if self.instances else None
-
-            if self.routing_strategy == "round_robin":
-                # Round-robin through available nodes only
-                for _ in range(len(self.instances)):
-                    instance = self.instances[self.current_index]
-                    self.current_index = (self.current_index + 1) % len(self.instances)
-                    if instance in available_instances:
-                        return instance
-                return available_instances[0]
-
-            elif self.routing_strategy == "least_loaded":
-                # Choose available node with fewest concurrent requests
-                return min(available_instances, key=lambda n: self.instance_stats[n]["concurrent_requests"])
-
-            elif self.routing_strategy == "lowest_latency":
-                # Choose available node with lowest latency
-                viable_nodes = [
-                    n
-                    for n in available_instances
-                    if self.instance_stats[n]["latency"] is not None and self.instance_stats[n]["latency"] < 5000
-                ]
-                if not viable_nodes:
-                    return available_instances[0]
-                return min(viable_nodes, key=lambda n: self.instance_stats[n]["latency"])
-
-            else:  # adaptive (default)
-                # Use health score for adaptive routing (available nodes only)
-                best_instance = None
-                best_score = -1
-
-                for inst in available_instances:
-                    score = self._update_health_score(inst)
-
-                    if score > best_score:
-                        best_score = score
-                        best_instance = inst
-
-                # Debug: print routing decision
-                if best_instance:
-                    stats = self.instance_stats[best_instance]
-                    gpu_status = "GPU" if stats.get("has_gpu") else "CPU"
-                    # Only print for first few requests to avoid spam
-                    if stats.get("requests", 0) < 3:
-                        logger.info(f"   🎯 Routing to: {best_instance} ({gpu_status}, score={best_score:.0f})")
-
-                return best_instance if best_instance else available_instances[0]
-
-    def record_request(self, instance, duration, error=False):
-        """Record request statistics."""
-        with self.lock:
-            stats = self.instance_stats[instance]
-            stats["requests"] += 1
-            stats["total_time"] += duration
-            if error:
-                stats["errors"] += 1
-
-    def embed_distributed(self, model, input_text, keep_alive=None):
-        """Generate embedding with automatic failover and concurrent tracking."""
-        last_error = None
-
-        # Try all instances
-        for _ in range(len(self.instances)):
-            instance = self.get_best_instance()
-
-            # Track concurrent request
-            with self.lock:
-                self.instance_stats[instance]["concurrent_requests"] += 1
-
-            start_time = time.time()
-
-            try:
-                # Create client for specific instance
-                client = ollama.Client(host=instance)
-                # Add keep_alive parameter if provided
-                embed_kwargs = {"model": model, "input": input_text}
-                if keep_alive:
-                    embed_kwargs["keep_alive"] = keep_alive
-                result = client.embed(**embed_kwargs)
-
-                duration = time.time() - start_time
-                self.record_request(instance, duration, error=False)
-
-                # Update latency if request was fast (good indicator)
-                if duration < 3.0:
-                    with self.lock:
-                        # Running average of latency
-                        current_latency = self.instance_stats[instance]["latency"] or duration * 1000
-                        self.instance_stats[instance]["latency"] = current_latency * 0.8 + duration * 1000 * 0.2
-
-                # Detect VRAM exhaustion: GPU node suddenly running slow
-                with self.lock:
-                    stats = self.instance_stats[instance]
-                    if stats.get("has_gpu") is True and stats.get("is_gpu_loaded") is True:
-                        # If a GPU node that should be fast is suddenly slow, it might be VRAM exhaustion
-                        if duration > 2.0:  # GPU embedding should be <0.5s
-                            logger.warning(f"⚠️  {instance} running slow ({duration:.2f}s) - possible VRAM exhaustion")
-                            stats["is_gpu_loaded"] = False  # Mark as VRAM-limited
-                            stats["health_score"] -= 100  # Heavy penalty
-
-                return result
-            except Exception as e:
-                duration = time.time() - start_time
-                self.record_request(instance, duration, error=True)
-                last_error = e
-                continue
-            finally:
-                # Decrease concurrent request counter
-                with self.lock:
-                    self.instance_stats[instance]["concurrent_requests"] = max(
-                        0, self.instance_stats[instance]["concurrent_requests"] - 1
-                    )
-
-        # All instances failed
-        raise Exception(f"All Ollama instances failed. Last error: {last_error}")
-
-    def chat_distributed(self, model, messages, keep_alive=None):
-        """Generate chat response with automatic failover and concurrent tracking."""
-        last_error = None
-
-        # Try all instances
-        for _ in range(len(self.instances)):
-            instance = self.get_best_instance()
-
-            # Track concurrent request
-            with self.lock:
-                self.instance_stats[instance]["concurrent_requests"] += 1
-
-            start_time = time.time()
-
-            try:
-                # Create client for specific instance
-                client = ollama.Client(host=instance)
-                # Add keep_alive parameter if provided
-                chat_kwargs = {"model": model, "messages": messages}
-                if keep_alive:
-                    chat_kwargs["keep_alive"] = keep_alive
-                result = client.chat(**chat_kwargs)
-
-                duration = time.time() - start_time
-                self.record_request(instance, duration, error=False)
-
-                # Update latency if request was reasonable
-                if duration < 10.0:
-                    with self.lock:
-                        current_latency = self.instance_stats[instance]["latency"] or duration * 1000
-                        self.instance_stats[instance]["latency"] = current_latency * 0.8 + duration * 1000 * 0.2
-
-                return result
-            except Exception as e:
-                duration = time.time() - start_time
-                self.record_request(instance, duration, error=True)
-                last_error = e
-                continue
-            finally:
-                # Decrease concurrent request counter
-                with self.lock:
-                    self.instance_stats[instance]["concurrent_requests"] = max(
-                        0, self.instance_stats[instance]["concurrent_requests"] - 1
-                    )
-
-        # All instances failed
-        raise Exception(f"All Ollama instances failed. Last error: {last_error}")
-
-    def embed_batch(self, model, texts, max_workers=None, force_mode=None):
-        """
-        Embed multiple texts with adaptive parallel/sequential routing.
-
-        Args:
-            model: Model name
-            texts: List of texts to embed
-            max_workers: Manual worker count (overrides adaptive)
-            force_mode: 'parallel', 'sequential', or None for adaptive
-        """
-        batch_size = len(texts)
-        results = [None] * batch_size
-
-        # Adaptive mode decision
-        if self.auto_adaptive_mode and force_mode is None:
-            should_parallel, reasoning = self.parallelism_strategy.should_parallelize(batch_size)
-
-            # Print decision
-            logger.info(f"   🔀 Adaptive mode: {reasoning['reason']}")
-            logger.info(f"      {reasoning['detail']}")
-
-            if should_parallel:
-                mode = "parallel"
-            else:
-                mode = "sequential"
-        else:
-            mode = force_mode or "parallel"
-
-        # SEQUENTIAL MODE: Use fastest node only
-        if mode == "sequential":
-            fastest_node = None
-            best_score = -1
-
-            # Find fastest node
-            for node in self.instances:
-                score = self._update_health_score(node)
-                if score > best_score:
-                    best_score = score
-                    fastest_node = node
-
-            logger.info(f"   ➡️  Sequential mode: Using {fastest_node}")
-
-            # Process sequentially on fastest node
-            # Create client once to avoid connection overhead
-            client = ollama.Client(host=fastest_node)
-            completed = 0
-
-            for i, text in enumerate(texts):
-                try:
-                    # Use pre-created client for efficiency
-                    result = client.embed(model=model, input=text)
-                    results[i] = result
-                    completed += 1
-
-                    # Progress
-                    if completed % 50 == 0 or completed == batch_size:
-                        logger.info(f"   Progress: {completed}/{batch_size} embeddings ({completed*100//batch_size}%)")
-                except Exception as e:
-                    logger.error(f"⚠️ Error embedding text {i}: {e}")
-
-            return results
-
-        # PARALLEL MODE: Distribute across nodes
-        else:
-            if max_workers is None:
-                max_workers = self.parallelism_strategy.get_optimal_workers(batch_size)
-
-            logger.info(f"   🔀 Parallel mode: Using {max_workers} workers across {len(self.instances)} nodes")
-
-            completed = 0
-
-            def embed_single(index, text):
-                try:
-                    result = self.embed_distributed(model, text)
-                    return index, result, None
-                except Exception as e:
-                    return index, None, e
-
-            with ThreadPoolExecutor(max_workers=max_workers) as executor:
-                futures = {executor.submit(embed_single, i, text): i for i, text in enumerate(texts)}
-
-                for future in as_completed(futures):
-                    index, result, error = future.result()
-                    completed += 1
-
-                    # Show progress every 50 embeddings or on completion
-                    if completed % 50 == 0 or completed == batch_size:
-                        logger.info(f"   Progress: {completed}/{batch_size} embeddings ({completed*100//batch_size}%)")
-
-                    if error:
-                        logger.error(f"⚠️ Error embedding text {index}: {error}")
-                    else:
-                        results[index] = result
-
-            return results
-
-    def print_stats(self):
-        """Print load balancer statistics with routing info."""
-        logger.info("\n📊 Ollama Load Balancer Statistics:")
-        logger.info(f"Routing Strategy: {self.routing_strategy.upper()}")
-        logger.info("-" * 70)
-
-        for inst in self.instances:
-            stats = self.instance_stats[inst]
-
-            # Calculate metrics
-            if stats["requests"] > 0:
-                error_rate = (stats["errors"] / stats["requests"]) * 100
-                avg_time = stats["total_time"] / stats["requests"]
-            else:
-                error_rate = 0
-                avg_time = 0
-
-            health_score = self._update_health_score(inst)
-            latency = stats["latency"] or 9999
-
-            # Determine status emoji
-            if health_score > 80:
-                status = "🟢"
-            elif health_score > 50:
-                status = "🟡"
-            else:
-                status = "🔴"
-
-            # GPU and VRAM indicators
-            has_gpu = stats.get("has_gpu")
-            is_gpu_loaded = stats.get("is_gpu_loaded", False)
-            vram_gb = stats.get("gpu_memory_gb", 0)
-
-            if has_gpu and is_gpu_loaded:
-                gpu_indicator = f" 🚀 GPU (~{vram_gb}GB VRAM)"
-            elif has_gpu and not is_gpu_loaded:
-                gpu_indicator = " ⚠️  GPU (VRAM limited)"
-            elif has_gpu is False:
-                gpu_indicator = " 🐢 CPU"
-            else:
-                gpu_indicator = ""
-
-            logger.info(f"\n{status} {inst}{gpu_indicator}")
-            logger.info(f"   Health Score: {health_score:.1f}/100")
-            logger.info(f"   Latency: {latency:.0f}ms")
-            logger.error(f"   Requests: {stats['requests']}, Errors: {stats['errors']} ({error_rate:.1f}%)")
-            if stats["requests"] > 0:
-                logger.info(f"   Avg Response: {avg_time:.2f}s")
-            logger.info(f"   Concurrent: {stats['concurrent_requests']}")
-
-        logger.info("-" * 70)
-
-    def _start_gpu_optimization(self):
-        """Start background thread for automatic GPU optimization."""
-        if self.optimization_running:
-            return
-
-        self.optimization_running = True
-        self.optimization_thread = threading.Thread(
-            target=self._gpu_optimization_loop, daemon=True, name="GPUOptimizer"
-        )
-        self.optimization_thread.start()
-        logger.info("🚀 GPU auto-optimization enabled (background thread)")
-
-    def _gpu_optimization_loop(self):
-        """Background loop that periodically optimizes GPU assignments."""
-        check_interval = 300  # Check every 5 minutes
-
-        while self.optimization_running:
-            try:
-                time.sleep(check_interval)
-
-                if not self.auto_optimize_gpu:
-                    continue
-
-                logger.info("\n🔧 [GPU Optimizer] Running periodic optimization...")
-
-                # Check each node
-                for node_url in self.instances:
-                    status = self.gpu_controller.get_model_status(node_url)
-
-                    if "error" in status:
-                        continue
-
-                    # Check if priority models are on CPU when GPU is available
-                    stats = self.instance_stats.get(node_url, {})
-                    has_gpu = stats.get("has_gpu", False)
-
-                    if not has_gpu:
-                        continue  # Skip CPU-only nodes
-
-                    # Check each loaded model
-                    for model_info in status.get("models", []):
-                        model_name = model_info["name"]
-                        location = model_info["location"]
-
-                        # Check if this is a priority model that should be on GPU
-                        is_priority = any(priority in model_name.lower() for priority in self.gpu_priority_models)
-
-                        if is_priority and "CPU" in location:
-                            logger.warning(f"⚠️  [GPU Optimizer] {model_name} on CPU at {node_url}, moving to GPU...")
-                            result = self.gpu_controller.force_gpu_load(node_url, model_name)
-                            logger.info(f"   {result['message']}")
-
-            except Exception as e:
-                logger.error(f"⚠️  [GPU Optimizer] Error: {e}")
-
-    def stop_gpu_optimization(self):
-        """Stop the background GPU optimization thread."""
-        self.optimization_running = False
-        if self.optimization_thread:
-            self.optimization_thread.join(timeout=5)
-        logger.info("🛑 GPU auto-optimization stopped")
-
-    def force_gpu_all_nodes(self, model_name: str):
-        """Force a specific model to GPU on all capable nodes."""
-        logger.info(f"\n🚀 Forcing {model_name} to GPU on all nodes...")
-        results = []
-
-        for node_url in self.instances:
-            stats = self.instance_stats.get(node_url, {})
-            has_gpu = stats.get("has_gpu", False)
-
-            if not has_gpu:
-                logger.info(f"   ⏭️  Skipping {node_url} (no GPU)")
-                continue
-
-            logger.info(f"   🔄 Processing {node_url}...")
-            result = self.gpu_controller.force_gpu_load(node_url, model_name)
-            results.append({"node": node_url, "result": result})
-            logger.info(f"      {result['message']}")
-
-        return results
-
-
-# 📂 File Storage
-# Use absolute paths based on script location for MCP server compatibility
-_SCRIPT_DIR = Path(__file__).parent.resolve()
+# 📁 Directory setup
+_SCRIPT_DIR = Path(__file__).parent
 PROCESSED_DIR = _SCRIPT_DIR / "converted_files"
 PROCESSED_DIR.mkdir(exist_ok=True)
 
@@ -1208,10 +128,87 @@ chroma_collection = chroma_client.get_or_create_collection(
     name="documents", metadata={"hnsw:space": "cosine"}  # Use cosine similarity for better semantic search
 )
 
-# Initialize global load balancer (after KB_DIR is defined)
-# Skip init checks when imported as module (for MCP server)
-_is_module = __name__ != "__main__"
-load_balancer = OllamaLoadBalancer(OLLAMA_INSTANCES, skip_init_checks=_is_module)
+# ============================================================
+# SOLLOL Direct Integration (replaces ~1100 lines of custom code)
+# Pure SOLLOL OllamaPool - no adapter layer
+# Original implementation backed up to /tmp/old_loadbalancer_backup.py
+# ============================================================
+
+# Initialize SOLLOL pool with auto-discovery FIRST
+load_balancer = OllamaPool(
+    nodes=None,  # Auto-discover all Ollama nodes on network
+    enable_intelligent_routing=True,
+    exclude_localhost=True,  # Use real IP instead of localhost
+    discover_all_nodes=True,  # Scan full network for all nodes
+    app_name="FlockParser",  # Identify as FlockParser in dashboard
+    enable_ray=True,  # Start Ray cluster for multi-app coordination
+    register_with_dashboard=False  # Don't auto-register yet - dashboard not running
+)
+
+# Add FlockParser compatibility methods
+load_balancer = add_flockparser_methods(load_balancer, KB_DIR)
+
+# Start SOLLOL unified dashboard AFTER pool creation
+import os
+_dashboard_enabled = os.getenv("FLOCKPARSER_DASHBOARD", "true").lower() in ("true", "1", "yes", "on")
+_dashboard_port = int(os.getenv("FLOCKPARSER_DASHBOARD_PORT", "8080"))
+
+if _dashboard_enabled:
+    from sollol import run_unified_dashboard
+    import threading
+    import time
+
+    # Shared result from dashboard startup
+    dashboard_result = {}
+
+    def start_dashboard():
+        try:
+            result = run_unified_dashboard(
+                router=load_balancer,  # Pass the pool we just created
+                dashboard_port=_dashboard_port,
+                host="0.0.0.0",
+                enable_dask=True  # Enable Dask for distributed processing
+            )
+        except Exception as e:
+            logger.error(f"Dashboard startup error: {e}")
+            result = None
+        if result:
+            dashboard_result.update(result)
+
+    dashboard_thread = threading.Thread(
+        target=start_dashboard,
+        daemon=True,
+        name="FlockParser-Dashboard"
+    )
+    dashboard_thread.start()
+
+    # Wait for dashboard to start (longer timeout for Dask initialization)
+    dashboard_thread.join(timeout=5.0)
+    time.sleep(0.5)  # Extra buffer
+
+    # Log appropriate message based on result
+    if dashboard_result.get('started'):
+        logger.info(f"🚀 Started SOLLOL Dashboard at http://localhost:{_dashboard_port}")
+        logger.info(f"   - Ray Dashboard: http://localhost:8265")
+        logger.info(f"   - Dask Dashboard: http://localhost:8787")
+        # Manually register pool with dashboard now that it's running
+        try:
+            from sollol.dashboard_client import DashboardClient
+            load_balancer._dashboard_client = DashboardClient(
+                app_name="FlockParser",
+                router_type="OllamaPool",
+                dashboard_url=f"http://localhost:{_dashboard_port}",
+                auto_register=True
+            )
+            logger.info("✅ Registered FlockParser with dashboard")
+        except Exception as e:
+            logger.warning(f"⚠️  Dashboard registration failed: {e}")
+    elif dashboard_result:
+        logger.info(f"✅ Using existing SOLLOL Dashboard at http://localhost:{_dashboard_port}")
+    else:
+        logger.error("❌ Dashboard failed to start - check logs for errors")
+else:
+    logger.info("📊 Dashboard disabled (set FLOCKPARSER_DASHBOARD=true to enable)")
 
 # 💾 Index file for tracking processed documents
 INDEX_FILE = KB_DIR / "document_index.json"
@@ -1251,11 +248,11 @@ def get_cached_embedding(text, use_load_balancer=True):
 
     # Generate new embedding using load balancer
     if use_load_balancer:
-        embedding_result = load_balancer.embed_distributed(EMBEDDING_MODEL, text, keep_alive=EMBEDDING_KEEP_ALIVE)
+        embedding_result = load_balancer.embed(EMBEDDING_MODEL, text, keep_alive=EMBEDDING_KEEP_ALIVE, priority=7)
     else:
         embedding_result = ollama.embed(model=EMBEDDING_MODEL, input=text, keep_alive=EMBEDDING_KEEP_ALIVE)
 
-    embeddings = embedding_result.embeddings if hasattr(embedding_result, "embeddings") else []
+    embeddings = embedding_result.get("embeddings", [])
     embedding = embeddings[0] if embeddings else []
 
     # Cache it
@@ -1335,7 +332,7 @@ def register_document(pdf_path, txt_path, content, chunks=None):
             for chunk, result in zip(batch, batch_results):
                 if result:
                     text_hash = hashlib.md5(chunk.encode()).hexdigest()
-                    embeddings = result.embeddings if hasattr(result, "embeddings") else []
+                    embeddings = result.get("embeddings", [])
                     embedding = embeddings[0] if embeddings else []
                     cache[text_hash] = embedding
                     cached_count += 1
@@ -1575,8 +572,6 @@ def get_similar_chunks(query, top_k=None, min_similarity=None):
                         chunk_embedding = chunk_data.get("embedding", [])
                         if chunk_embedding:
                             similarity = cosine_similarity(query_embedding, chunk_embedding)
-
-                            # Only include chunks above minimum similarity threshold
                             if similarity >= min_similarity:
                                 chunks_with_similarity.append(
                                     {
@@ -1861,13 +856,14 @@ def process_directory(dir_path):
         logger.error(f"❌ Error: Directory not found → {dir_path}")
         return
 
-    pdf_files = list(dir_path.glob("*.pd"))
+    pdf_files = list(dir_path.glob("*.pdf"))
     if not pdf_files:
         logger.warning(f"⚠️ No PDFs found in {dir_path}")
         return
 
     logger.info(f"📂 Found {len(pdf_files)} PDFs. Processing...")
 
+    # SOLLOL's intelligent load balancing handles parallelization during embedding
     for pdf in pdf_files:
         process_pdf(pdf)
 
@@ -2041,10 +1037,11 @@ def chat():
         logger.info("🤖 Generating response...")
         generation_start = time.time()
         try:
-            response = load_balancer.chat_distributed(
+            response = load_balancer.chat(
                 model=CHAT_MODEL,
                 messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_message}],
                 keep_alive=CHAT_KEEP_ALIVE,
+                priority=5,
             )
 
             generation_time = time.time() - generation_start
@@ -2396,11 +1393,29 @@ def main():
     logger.info("🚀 Welcome to FlockParser")
     logger.info(COMMANDS)
 
+    # Show dashboard URL if enabled
+    if _dashboard_enabled:
+        logger.info(f"\n📊 Observability Dashboard: http://localhost:{_dashboard_port}")
+
     # Quick dependency check on startup
     logger.info("\nℹ️ Run 'check_deps' for detailed dependency information")
 
     while True:
-        command = input("\n⚡ Enter command: ").strip().split()
+        try:
+            command = input("\n⚡ Enter command: ").strip().split()
+        except EOFError:
+            # Running in background or stdin closed - keep dashboard alive
+            if _dashboard_enabled:
+                logger.info("📊 Dashboard running in background mode - press Ctrl+C to exit")
+                import time
+                try:
+                    while True:
+                        time.sleep(60)
+                except KeyboardInterrupt:
+                    logger.info("Shutting down...")
+                    break
+            else:
+                break
 
         if not command:
             continue
@@ -2451,7 +1466,7 @@ def main():
         elif action == "cleanup_models":
             cleanup_models()
         elif action == "parallelism_report":
-            from adaptive_parallelism import print_parallelism_report
+            from sollol.adaptive_parallelism import print_parallelism_report
 
             print_parallelism_report(load_balancer)
         elif action == "clear_cache":

@@ -16,7 +16,7 @@ from typing import Dict, List
 import yaml
 from datetime import datetime
 
-from intelligent_gpu_router import IntelligentGPURouter
+from sollol.intelligent_gpu_router import IntelligentGPURouter
 
 
 class GPURouterDaemon:
