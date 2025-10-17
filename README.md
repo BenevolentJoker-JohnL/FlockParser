@@ -98,6 +98,7 @@ Watch FlockParser in action: **372 seconds → 6 seconds (61.7x speedup)** throu
 - [🎓 Showcase: Real-World Example](#-showcase-real-world-example) ⭐ **Try it yourself**
 - [Usage Examples](#-usage)
 - [Security & Production](#-security--production-notes)
+- [🔗 Integration with SynapticLlamas & SOLLOL](#-integration-with-synapticllamas--sollol) - **Complete AI Ecosystem** ⭐
 - [Troubleshooting](#-troubleshooting-guide)
 - [Contributing](#-contributing)
 
@@ -1247,6 +1248,111 @@ This is **presence-based detection**, not utilization monitoring. It detects *if
 - **[📦 Docker Setup](docker-compose.yml)** - Containerized deployment
 - **[⚙️ Environment Config](.env.example)** - Configuration template
 - **[🧪 Tests](tests/)** - Test suite and CI/CD
+
+## **🔗 Integration with SynapticLlamas & SOLLOL**
+
+FlockParser is designed to work seamlessly with **[SynapticLlamas](https://github.com/BenevolentJoker-JohnL/SynapticLlamas)** (multi-agent orchestration) and **[SOLLOL](https://github.com/BenevolentJoker-JohnL/SOLLOL)** (distributed inference platform) as a unified AI ecosystem.
+
+### **The Complete Stack**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              SynapticLlamas (v0.1.0+)                       │
+│          Multi-Agent System & Orchestration                 │
+│  • Research agents  • Editor agents  • Storyteller agents  │
+└───────────┬────────────────────────────────────┬───────────┘
+            │                                    │
+            │ RAG Queries                        │ Distributed
+            │ (with pre-computed embeddings)     │ Inference
+            │                                    │
+     ┌──────▼──────────┐              ┌─────────▼────────────┐
+     │  FlockParser    │              │      SOLLOL          │
+     │  API (v1.0.4+)  │              │  Load Balancer       │
+     │  Port: 8000     │              │  (v0.9.31+)          │
+     └─────────────────┘              └──────────────────────┘
+            │                                    │
+            │ ChromaDB                          │ Intelligent
+            │ Vector Store                      │ GPU/CPU Routing
+            │                                    │
+     ┌──────▼──────────┐              ┌─────────▼────────────┐
+     │  Knowledge Base │              │  Ollama Nodes        │
+     │  41 Documents   │              │  (Distributed)       │
+     │  6,141 Chunks   │              │  GPU + CPU           │
+     └─────────────────┘              └──────────────────────┘
+```
+
+### **Why This Integration Matters**
+
+**FlockParser** provides document RAG capabilities, **SynapticLlamas** orchestrates multi-agent workflows, and **SOLLOL** handles distributed inference with intelligent load balancing.
+
+| Component | Role | Key Feature |
+|-----------|------|-------------|
+| **FlockParser** | Document RAG & Knowledge Base | ChromaDB vector store with 6,141+ chunks |
+| **SynapticLlamas** | Agent Orchestration | Multi-agent workflows with RAG integration |
+| **SOLLOL** | Distributed Inference | Load balanced embedding & model inference |
+
+### **Quick Start: Complete Ecosystem**
+
+```bash
+# Install all three packages (auto-installs dependencies)
+pip install synaptic-llamas  # Pulls in flockparser>=1.0.4 and sollol>=0.9.31
+
+# Start FlockParser API (auto-starts with CLI)
+flockparse
+
+# Configure SynapticLlamas for integration
+synaptic-llamas --interactive --distributed
+```
+
+### **Integration Example: Load Balanced RAG**
+
+```python
+from flockparser_adapter import FlockParserAdapter
+from sollol_load_balancer import SOLLOLLoadBalancer
+
+# Initialize SOLLOL for distributed inference
+sollol = SOLLOLLoadBalancer(
+    rpc_backends=["http://gpu-node-1:50052", "http://gpu-node-2:50052"]
+)
+
+# Initialize FlockParser adapter
+flockparser = FlockParserAdapter("http://localhost:8000", remote_mode=True)
+
+# Step 1: Generate embedding using SOLLOL (load balanced!)
+embedding = sollol.generate_embedding(
+    model="mxbai-embed-large",
+    prompt="quantum entanglement"
+)
+# SOLLOL routes to fastest GPU automatically
+
+# Step 2: Query FlockParser with pre-computed embedding
+results = flockparser.query_remote(
+    query="quantum entanglement",
+    embedding=embedding,  # Skip FlockParser's embedding generation
+    n_results=5
+)
+# FlockParser returns relevant chunks from 41 documents
+
+# Performance gain: 2-5x faster when SOLLOL has faster nodes!
+```
+
+### **New API Endpoints (v1.0.4+)**
+
+FlockParser v1.0.4 adds **SynapticLlamas-compatible** public endpoints:
+
+- **`GET /health`** - Check API availability and document count
+- **`GET /stats`** - Get knowledge base statistics (41 docs, 6,141 chunks)
+- **`POST /query`** - Query with pre-computed embeddings (critical for load balanced RAG)
+
+**These endpoints allow SynapticLlamas to bypass FlockParser's embedding generation and use SOLLOL's load balancer instead!**
+
+### **Learn More**
+
+- **[📖 Complete Integration Guide](INTEGRATION_WITH_SYNAPTICLLAMAS.md)** - Full architecture, examples, and setup
+- **[SynapticLlamas Repository](https://github.com/BenevolentJoker-JohnL/SynapticLlamas)** - Multi-agent orchestration
+- **[SOLLOL Repository](https://github.com/BenevolentJoker-JohnL/SOLLOL)** - Distributed inference platform
+
+---
 
 ## **📝 Development Process**
 
