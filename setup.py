@@ -21,7 +21,7 @@ with open('requirements.txt', 'r') as f:
 
 setup(
     name="flockparser",
-    version="1.0.2",
+    version="1.0.3",
     author="BenevolentJoker (John L.)",
     author_email="benevolentjoker@gmail.com",
     description="Document RAG Intelligence with Distributed Processing",

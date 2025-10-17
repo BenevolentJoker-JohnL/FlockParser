@@ -7,7 +7,10 @@ import uvicorn
 from fastapi import FastAPI, UploadFile, File, HTTPException, Security, Depends
 from fastapi.security.api_key import APIKeyHeader
 from PIL import Image
+from pathlib import Path
+from typing import Optional
 import ollama
+import json
 
 # API Key Configuration
 API_KEY = os.getenv("FLOCKPARSE_API_KEY", "your-secret-api-key-change-this")
@@ -29,11 +32,16 @@ async def verify_api_key(api_key: str = Security(api_key_header)):
 
 
 # Initialize FastAPI app
-app = FastAPI(title="FlockParse API", description="GPU-aware document processing with authentication", version="1.0.0")
+app = FastAPI(title="FlockParse API", description="GPU-aware document processing with authentication", version="1.0.2")
 
-# ChromaDB setup
-chroma_client = chromadb.PersistentClient(path="./chroma_db")
-collection = chroma_client.get_or_create_collection(name="documents")
+# ChromaDB setup - Use CLI's database for shared access
+chroma_client = chromadb.PersistentClient(path="./chroma_db_cli")
+collection = chroma_client.get_or_create_collection(name="documents", metadata={"hnsw:space": "cosine"})
+
+# Knowledge base paths (shared with CLI)
+KB_DIR = Path("./knowledge_base")
+KB_DIR.mkdir(exist_ok=True)
+INDEX_FILE = KB_DIR / "document_index.json"
 
 # Text Extraction from PDF (including OCR for images)
 
@@ -142,6 +150,155 @@ async def search(query: str, api_key: str = Depends(verify_api_key)):
     try:
         results = search_documents(query)
         return {"query": query, "results": results}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/documents/")
+async def list_documents(api_key: str = Depends(verify_api_key)):
+    """List all documents in the knowledge base (requires authentication)"""
+    try:
+        if not INDEX_FILE.exists():
+            return {"documents": [], "total": 0}
+
+        with open(INDEX_FILE, "r") as f:
+            index_data = json.load(f)
+
+        documents = []
+        for doc in index_data.get("documents", []):
+            documents.append({
+                "id": doc["id"],
+                "filename": Path(doc["original"]).name,
+                "original_path": doc["original"],
+                "processed_date": doc["processed_date"],
+                "chunks": len(doc.get("chunks", []))
+            })
+
+        return {"documents": documents, "total": len(documents)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/documents/{doc_id}")
+async def get_document(doc_id: str, api_key: str = Depends(verify_api_key)):
+    """Get details for a specific document (requires authentication)"""
+    try:
+        if not INDEX_FILE.exists():
+            raise HTTPException(status_code=404, detail="No documents found")
+
+        with open(INDEX_FILE, "r") as f:
+            index_data = json.load(f)
+
+        for doc in index_data.get("documents", []):
+            if doc["id"] == doc_id:
+                # Read the text file
+                text_content = ""
+                if Path(doc["text_path"]).exists():
+                    with open(doc["text_path"], "r") as tf:
+                        text_content = tf.read()
+
+                return {
+                    "id": doc["id"],
+                    "filename": Path(doc["original"]).name,
+                    "original_path": doc["original"],
+                    "text_path": doc["text_path"],
+                    "processed_date": doc["processed_date"],
+                    "chunks": len(doc.get("chunks", [])),
+                    "content": text_content
+                }
+
+        raise HTTPException(status_code=404, detail=f"Document {doc_id} not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/process-local/")
+async def process_local_pdf(
+    file_path: str,
+    api_key: str = Depends(verify_api_key)
+):
+    """Process a PDF file from the local filesystem (requires authentication)"""
+    try:
+        pdf_path = Path(file_path).expanduser().resolve()
+
+        if not pdf_path.exists():
+            raise HTTPException(status_code=404, detail=f"File not found: {file_path}")
+
+        if not pdf_path.suffix.lower() == ".pdf":
+            raise HTTPException(status_code=400, detail="File must be a PDF")
+
+        # Import processing function from CLI
+        # Note: This requires flockparsecli to be importable
+        try:
+            import sys
+            sys.path.insert(0, str(Path(__file__).parent))
+            from flockparsecli import process_pdf
+
+            # Process the PDF (this will add it to the knowledge base)
+            process_pdf(pdf_path)
+
+            return {
+                "message": "PDF processed successfully",
+                "file_path": str(pdf_path),
+                "filename": pdf_path.name
+            }
+        except ImportError as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Cannot import flockparsecli: {str(e)}. Make sure FlockParser CLI is available."
+            )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/process-directory/")
+async def process_local_directory(
+    directory_path: str,
+    api_key: str = Depends(verify_api_key)
+):
+    """Process all PDFs in a directory from the local filesystem (requires authentication)"""
+    try:
+        dir_path = Path(directory_path).expanduser().resolve()
+
+        if not dir_path.exists() or not dir_path.is_dir():
+            raise HTTPException(status_code=404, detail=f"Directory not found: {directory_path}")
+
+        pdf_files = list(dir_path.glob("*.pdf"))
+        if not pdf_files:
+            return {"message": "No PDF files found in directory", "processed": 0}
+
+        # Import processing function from CLI
+        try:
+            import sys
+            sys.path.insert(0, str(Path(__file__).parent))
+            from flockparsecli import process_pdf
+
+            processed_files = []
+            for pdf_path in pdf_files:
+                try:
+                    process_pdf(pdf_path)
+                    processed_files.append(pdf_path.name)
+                except Exception as e:
+                    # Continue processing other files even if one fails
+                    pass
+
+            return {
+                "message": f"Processed {len(processed_files)} PDFs",
+                "directory": str(dir_path),
+                "processed": len(processed_files),
+                "files": processed_files
+            }
+        except ImportError as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Cannot import flockparsecli: {str(e)}. Make sure FlockParser CLI is available."
+            )
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
