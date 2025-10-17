@@ -7,7 +7,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Demo Video](https://img.shields.io/badge/Demo-YouTube-red.svg)](https://youtu.be/M-HjXkWYRLM)
 [![GitHub Stars](https://img.shields.io/github/stars/BenevolentJoker-JohnL/FlockParser?style=social)](https://github.com/BenevolentJoker-JohnL/FlockParser)
 
 > **Distributed document RAG system that turns mismatched hardware into a coordinated inference cluster.** Auto-discovers Ollama nodes, intelligently routes workloads across heterogeneous GPUs/CPUs, and achieves 60x+ speedups through adaptive load balancing. Privacy-first with local/network/cloud interfaces.
@@ -49,17 +48,14 @@
 
 ---
 
-## **📹 Demo Video (76 seconds)**
+## **🏛️ Origins & Legacy**
 
-Watch FlockParser in action: **372 seconds → 6 seconds (61.7x speedup)** through automatic GPU routing.
+FlockParser's distributed inference architecture originated from **[FlockParser-legacy](https://github.com/BenevolentJoker-JohnL/FlockParser-legacy)**, which pioneered:
+- **Auto-discovery** of Ollama nodes across heterogeneous hardware
+- **Adaptive load balancing** with GPU/CPU awareness
+- **VRAM-aware routing** and automatic failover mechanisms
 
-[![FlockParser Demo - 61.7x Speedup](https://img.youtube.com/vi/M-HjXkWYRLM/maxresdefault.jpg)](https://youtu.be/M-HjXkWYRLM)
-
-**What you'll see:**
-- Single CPU node (372.76s) → Parallel processing (159.79s) → GPU routing (6.04s)
-- Real-time document processing with visible timing on screen
-- Distributed chat functionality and MCP integration with Claude Desktop
-- No editing tricks - all timing shown in real-time
+This core distributed logic from FlockParser-legacy was later extracted and generalized to become **[SOLLOL](https://github.com/BenevolentJoker-JohnL/SOLLOL)** - a standalone distributed inference platform that now powers both FlockParser and **[SynapticLlamas](https://github.com/BenevolentJoker-JohnL/SynapticLlamas)**.
 
 ### **📊 Quick Performance Reference**
 
@@ -468,9 +464,7 @@ python flockparsecli.py
 
 ## **📊 Performance**
 
-### **📹 [76-Second Demo Video](https://youtu.be/M-HjXkWYRLM)** - Watch 6 minutes become 6 seconds
-
-**Real-Time Demo Results** (unedited timing shown on screen):
+### **Real-World Benchmark Results**
 
 | Processing Mode | Time | Speedup | What It Shows |
 |----------------|------|---------|---------------|
@@ -484,25 +478,15 @@ python flockparsecli.py
 - Avoided bottleneck of waiting for slower CPU nodes to finish
 - No network overhead (local cluster, no cloud APIs)
 
-**Demo Contents:**
-- `0:00` - Single node baseline (372.76s)
-- `0:30` - Auto-discover cluster nodes on network
-- `0:45` - Parallel processing across nodes (159.79s)
-- `1:00` - GPU routing with adaptive decision (6.04s)
-- `1:10` - Document chat with RAG + source citations
-- `1:15` - MCP integration with Claude Desktop
+**Key Insight:** The system **automatically** detects performance differences and makes routing decisions - no manual GPU configuration needed.
 
-**Key Insight:** The system **automatically** detected performance differences and made routing decisions - no manual GPU configuration needed.
-
-**Hardware (Demo Cluster):**
-- **Node 1 (10.9.66.90):** Intel i9-12900K, 32GB DDR5-6000, 6TB NVMe Gen4, RTX A4000 16GB - routed here
-- **Node 2 (10.9.66.159):** AMD Ryzen 7 5700X, 32GB DDR4-3600, GTX 1050Ti (CPU-mode)
+**Hardware (Benchmark Cluster):**
+- **Node 1 (10.9.66.90):** Intel i9-12900K, 32GB DDR5-6000, 6TB NVMe Gen4, RTX A4000 16GB - primary GPU node
+- **Node 2 (10.9.66.159):** AMD Ryzen 7 5700X, 32GB DDR4-3600, GTX 1050Ti (CPU-mode fallback)
 - **Node 3:** Intel i7-12th gen (laptop), 16GB DDR5, CPU-only
 - **Software:** Python 3.10, Ollama, Ubuntu 22.04
 
 **Reproducibility:**
-- Timing shown on-screen in real-time (not edited)
-- Commands visible in terminal output
 - Full source code available in this repo
 - Test with your own hardware - results will vary based on GPU
 
@@ -1244,7 +1228,7 @@ This is **presence-based detection**, not utilization monitoring. It detects *if
 - **[⚡ Quick Setup](QUICK_SETUP.md)** - Fast track to getting started
 
 ### Additional Resources
-- **[📹 Demo Video (76 seconds)](https://youtu.be/M-HjXkWYRLM)** - Watch FlockParser in action
+- **[🏛️ FlockParser-legacy](https://github.com/BenevolentJoker-JohnL/FlockParser-legacy)** - Original distributed inference implementation
 - **[📦 Docker Setup](docker-compose.yml)** - Containerized deployment
 - **[⚙️ Environment Config](.env.example)** - Configuration template
 - **[🧪 Tests](tests/)** - Test suite and CI/CD
