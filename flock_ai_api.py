@@ -4,13 +4,21 @@ import pdfplumber
 import pytesseract
 import chromadb
 import uvicorn
-from fastapi import FastAPI, UploadFile, File, HTTPException, Security, Depends
+from fastapi import FastAPI, UploadFile, File, HTTPException, Security, Depends, Body
 from fastapi.security.api_key import APIKeyHeader
+from pydantic import BaseModel
 from PIL import Image
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 import ollama
 import json
+
+# Pydantic Models for Request Bodies
+class QueryRequest(BaseModel):
+    query: str
+    embedding: Optional[List[float]] = None
+    n_results: int = 3
+
 
 # API Key Configuration
 API_KEY = os.getenv("FLOCKPARSE_API_KEY", "your-secret-api-key-change-this")
@@ -32,7 +40,7 @@ async def verify_api_key(api_key: str = Security(api_key_header)):
 
 
 # Initialize FastAPI app
-app = FastAPI(title="FlockParse API", description="GPU-aware document processing with authentication", version="1.0.2")
+app = FastAPI(title="FlockParse API", description="GPU-aware document processing with authentication", version="1.0.4")
 
 # ChromaDB setup - Use CLI's database for shared access
 chroma_client = chromadb.PersistentClient(path="./chroma_db_cli")
@@ -109,9 +117,11 @@ async def root():
     """Public endpoint - API status"""
     return {
         "service": "FlockParse API",
-        "version": "1.0.0",
+        "version": "1.0.4",
         "status": "running",
-        "authentication": "Required (X-API-Key header)",
+        "authentication": "Required (X-API-Key header for most endpoints)",
+        "public_endpoints": ["/", "/health", "/stats", "/query"],
+        "authenticated_endpoints": ["/upload", "/search", "/summarize", "/documents", "/process-local", "/process-directory"],
     }
 
 
@@ -299,6 +309,127 @@ async def process_local_directory(
             )
     except HTTPException:
         raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# SynapticLlamas Compatibility Endpoints
+
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for SynapticLlamas compatibility (public)"""
+    try:
+        doc_index_exists = INDEX_FILE.exists()
+        chroma_healthy = collection is not None
+
+        # Count documents if index exists
+        doc_count = 0
+        if doc_index_exists:
+            try:
+                with open(INDEX_FILE, "r") as f:
+                    index_data = json.load(f)
+                    doc_count = len(index_data.get("documents", []))
+            except Exception:
+                pass
+
+        return {
+            "status": "healthy",
+            "available": True,
+            "document_index_exists": doc_index_exists,
+            "chroma_healthy": chroma_healthy,
+            "document_count": doc_count
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "available": False,
+            "error": str(e)
+        }
+
+
+@app.get("/stats")
+async def get_stats():
+    """Get statistics about knowledge base (SynapticLlamas compatibility - public)"""
+    try:
+        if not INDEX_FILE.exists():
+            return {
+                "total_documents": 0,
+                "total_chunks": 0,
+                "knowledge_base_size": 0,
+                "available": True
+            }
+
+        with open(INDEX_FILE, "r") as f:
+            index_data = json.load(f)
+
+        documents = index_data.get("documents", [])
+        total_docs = len(documents)
+        total_chunks = sum(len(doc.get("chunks", [])) for doc in documents)
+
+        # Calculate total KB size
+        kb_size = 0
+        for doc in documents:
+            text_path = Path(doc.get("text_path", ""))
+            if text_path.exists():
+                kb_size += text_path.stat().st_size
+
+        return {
+            "total_documents": total_docs,
+            "total_chunks": total_chunks,
+            "knowledge_base_size": kb_size,
+            "available": True,
+            "documents": [
+                {
+                    "id": doc["id"],
+                    "filename": Path(doc["original"]).name,
+                    "chunks": len(doc.get("chunks", [])),
+                    "processed_date": doc.get("processed_date", "")
+                }
+                for doc in documents
+            ]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/query")
+async def query_with_embedding(request: QueryRequest):
+    """Query with pre-computed embedding (SynapticLlamas compatibility - public)
+
+    SynapticLlamas generates embeddings on its side, then sends them here for retrieval.
+    This allows load balancing of embedding generation while centralizing document storage.
+    """
+    try:
+        # If embedding provided, use it directly (SynapticLlamas mode)
+        if request.embedding:
+            query_embedding = request.embedding
+        else:
+            # Otherwise generate embedding locally (fallback mode)
+            query_embedding = embed_text(request.query).tolist()
+
+        # Query ChromaDB with the embedding
+        results = collection.query(
+            query_embeddings=[query_embedding],
+            n_results=request.n_results
+        )
+
+        # Format results for SynapticLlamas
+        formatted_results = []
+        if results and results.get("documents"):
+            for i, doc in enumerate(results["documents"][0]):
+                formatted_results.append({
+                    "content": doc,
+                    "metadata": results["metadatas"][0][i] if results.get("metadatas") else {},
+                    "distance": results["distances"][0][i] if results.get("distances") else None,
+                    "id": results["ids"][0][i] if results.get("ids") else None
+                })
+
+        return {
+            "query": request.query,
+            "results": formatted_results,
+            "total_results": len(formatted_results)
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
