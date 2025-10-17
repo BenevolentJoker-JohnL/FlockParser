@@ -51,6 +51,9 @@ COMMANDS = """
    🧹 clear_cache       → Clear embedding cache (keeps documents)
    🗑️  clear_db          → Clear ChromaDB vector store (removes all documents)
    ❌ exit              → Quit the program
+
+   🌐 API Server: Automatically starts on port 8000 (http://localhost:8000)
+      Configure with: FLOCKPARSER_API=true/false, FLOCKPARSER_API_PORT=8000
 """
 
 # 🔥 AI MODELS
@@ -134,81 +137,116 @@ chroma_collection = chroma_client.get_or_create_collection(
 # Original implementation backed up to /tmp/old_loadbalancer_backup.py
 # ============================================================
 
-# Initialize SOLLOL pool with auto-discovery FIRST
-load_balancer = OllamaPool(
-    nodes=None,  # Auto-discover all Ollama nodes on network
-    enable_intelligent_routing=True,
-    exclude_localhost=True,  # Use real IP instead of localhost
-    discover_all_nodes=True,  # Scan full network for all nodes
-    app_name="FlockParser",  # Identify as FlockParser in dashboard
-    enable_ray=True,  # Start Ray cluster for multi-app coordination
-    register_with_dashboard=False  # Don't auto-register yet - dashboard not running
-)
+# Global reference (will be initialized in setup_load_balancer())
+load_balancer = None
 
-# Add FlockParser compatibility methods
-load_balancer = add_flockparser_methods(load_balancer, KB_DIR)
+def setup_load_balancer():
+    """Initialize SOLLOL pool with auto-discovery and dashboard.
 
-# Start SOLLOL unified dashboard AFTER pool creation
+    Must be called from within if __name__ == '__main__': to avoid
+    multiprocessing issues with Dask worker spawning.
+    """
+    global load_balancer
+
+    # Initialize SOLLOL pool with auto-discovery FIRST
+    load_balancer = OllamaPool(
+        nodes=None,  # Auto-discover all Ollama nodes on network
+        enable_intelligent_routing=True,
+        exclude_localhost=True,  # Use real IP instead of localhost
+        discover_all_nodes=True,  # Scan full network for all nodes
+        app_name="FlockParser",  # Identify as FlockParser in dashboard
+        enable_ray=True,  # Start Ray cluster for multi-app coordination
+        register_with_dashboard=False  # Don't auto-register yet - dashboard not running
+    )
+
+    # Add FlockParser compatibility methods
+    load_balancer = add_flockparser_methods(load_balancer, KB_DIR)
+
+    return load_balancer
+
+# Dashboard configuration (read from environment)
 import os
 _dashboard_enabled = os.getenv("FLOCKPARSER_DASHBOARD", "true").lower() in ("true", "1", "yes", "on")
 _dashboard_port = int(os.getenv("FLOCKPARSER_DASHBOARD_PORT", "8080"))
 
-if _dashboard_enabled:
-    from sollol import run_unified_dashboard
+def setup_dashboard():
+    """Start SOLLOL unified dashboard after pool creation.
+
+    Must be called from within if __name__ == '__main__': to avoid
+    multiprocessing issues with Dask worker spawning.
+    """
+    global load_balancer
+
+    if not _dashboard_enabled:
+        logger.info("📊 Dashboard disabled (set FLOCKPARSER_DASHBOARD=true to enable)")
+        return
+
+    # Install Redis log publisher for distributed log streaming
+    from sollol.dashboard_service import install_redis_log_publisher
+    try:
+        install_redis_log_publisher()
+        logger.info("📡 Redis log publisher installed - logs streaming to dashboard")
+    except Exception as e:
+        logger.warning(f"⚠️  Redis log publisher failed: {e}")
+
+    # Check if dashboard already running, if not start dashboard_service
+    import requests
+    import subprocess
     import threading
     import time
 
-    # Shared result from dashboard startup
-    dashboard_result = {}
+    dashboard_url = f"http://localhost:{_dashboard_port}"
+    dashboard_running = False
 
-    def start_dashboard():
-        try:
-            result = run_unified_dashboard(
-                router=load_balancer,  # Pass the pool we just created
-                dashboard_port=_dashboard_port,
-                host="0.0.0.0",
-                enable_dask=True  # Enable Dask for distributed processing
-            )
-        except Exception as e:
-            logger.error(f"Dashboard startup error: {e}")
-            result = None
-        if result:
-            dashboard_result.update(result)
+    try:
+        response = requests.get(f"{dashboard_url}/api/applications", timeout=1)
+        if response.status_code == 200:
+            dashboard_running = True
+            logger.info(f"✅ Dashboard already running at {dashboard_url}")
+    except requests.exceptions.RequestException:
+        logger.info(f"🚀 Starting dashboard service at {dashboard_url}")
 
-    dashboard_thread = threading.Thread(
-        target=start_dashboard,
-        daemon=True,
-        name="FlockParser-Dashboard"
-    )
-    dashboard_thread.start()
+    if not dashboard_running:
+        # Start dashboard_service as subprocess (not daemon thread)
+        dashboard_proc = subprocess.Popen([
+            "python3", "-m", "sollol.dashboard_service",
+            "--port", str(_dashboard_port),
+            "--redis-url", "redis://localhost:6379",
+            "--ray-dashboard-port", "8265",
+            "--dask-dashboard-port", "8787",
+        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    # Wait for dashboard to start (longer timeout for Dask initialization)
-    dashboard_thread.join(timeout=5.0)
-    time.sleep(0.5)  # Extra buffer
+        # Wait for dashboard to start
+        for attempt in range(10):
+            time.sleep(0.5)
+            try:
+                response = requests.get(f"{dashboard_url}/api/applications", timeout=1)
+                if response.status_code == 200:
+                    logger.info(f"✅ Dashboard service started at {dashboard_url}")
+                    dashboard_running = True
+                    break
+            except requests.exceptions.RequestException:
+                continue
 
-    # Log appropriate message based on result
-    if dashboard_result.get('started'):
-        logger.info(f"🚀 Started SOLLOL Dashboard at http://localhost:{_dashboard_port}")
-        logger.info(f"   - Ray Dashboard: http://localhost:8265")
-        logger.info(f"   - Dask Dashboard: http://localhost:8787")
-        # Manually register pool with dashboard now that it's running
+        if not dashboard_running:
+            logger.error("❌ Dashboard failed to start - check logs for errors")
+
+    # Register FlockParser with dashboard
+    if dashboard_running:
         try:
             from sollol.dashboard_client import DashboardClient
             load_balancer._dashboard_client = DashboardClient(
                 app_name="FlockParser",
                 router_type="OllamaPool",
-                dashboard_url=f"http://localhost:{_dashboard_port}",
+                dashboard_url=dashboard_url,
                 auto_register=True
             )
-            logger.info("✅ Registered FlockParser with dashboard")
+            logger.info("✅ FlockParser registered with dashboard")
+            logger.info(f"📊 Dashboard: {dashboard_url}")
+            logger.info(f"   - Ray Dashboard: http://localhost:8265")
+            logger.info(f"   - Dask Dashboard: http://localhost:8787")
         except Exception as e:
             logger.warning(f"⚠️  Dashboard registration failed: {e}")
-    elif dashboard_result:
-        logger.info(f"✅ Using existing SOLLOL Dashboard at http://localhost:{_dashboard_port}")
-    else:
-        logger.error("❌ Dashboard failed to start - check logs for errors")
-else:
-    logger.info("📊 Dashboard disabled (set FLOCKPARSER_DASHBOARD=true to enable)")
 
 # 💾 Index file for tracking processed documents
 INDEX_FILE = KB_DIR / "document_index.json"
@@ -640,33 +678,116 @@ def embed_text(text):
         return None
 
 
+def clean_extracted_text(text):
+    """Clean extracted text by normalizing Unicode and fixing common LaTeX/PDF extraction issues."""
+    import re
+    import unicodedata
+
+    if not text:
+        return text
+
+    # Step 1: Normalize Unicode (convert composed chars to decomposed and back)
+    text = unicodedata.normalize('NFKC', text)
+
+    # Step 2: Fix common Unicode escape sequences that appear as literal text
+    # Replace \uXXXX patterns with actual Unicode characters
+    def replace_unicode_escapes(match):
+        try:
+            code = match.group(1)
+            return chr(int(code, 16))
+        except:
+            return match.group(0)
+
+    text = re.sub(r'\\u([0-9a-fA-F]{4})', replace_unicode_escapes, text)
+    text = re.sub(r'\\x([0-9a-fA-F]{2})', replace_unicode_escapes, text)
+
+    # Step 3: Clean up common LaTeX remnants that get corrupted
+    # Replace common Greek letter codes with their actual Unicode
+    greek_map = {
+        r'\\alpha': 'α', r'\\beta': 'β', r'\\gamma': 'γ', r'\\delta': 'δ',
+        r'\\epsilon': 'ε', r'\\zeta': 'ζ', r'\\eta': 'η', r'\\theta': 'θ',
+        r'\\iota': 'ι', r'\\kappa': 'κ', r'\\lambda': 'λ', r'\\mu': 'μ',
+        r'\\nu': 'ν', r'\\xi': 'ξ', r'\\pi': 'π', r'\\rho': 'ρ',
+        r'\\sigma': 'σ', r'\\tau': 'τ', r'\\upsilon': 'υ', r'\\phi': 'φ',
+        r'\\chi': 'χ', r'\\psi': 'ψ', r'\\omega': 'ω',
+        # Capital letters
+        r'\\Gamma': 'Γ', r'\\Delta': 'Δ', r'\\Theta': 'Θ', r'\\Lambda': 'Λ',
+        r'\\Xi': 'Ξ', r'\\Pi': 'Π', r'\\Sigma': 'Σ', r'\\Phi': 'Φ',
+        r'\\Psi': 'Ψ', r'\\Omega': 'Ω'
+    }
+
+    for latex, unicode_char in greek_map.items():
+        text = text.replace(latex, unicode_char)
+
+    # Step 4: Fix spacing issues - add space after periods if missing
+    text = re.sub(r'\.([A-Z])', r'. \1', text)
+
+    # Step 5: Remove excessive whitespace
+    text = re.sub(r'[ \t]+', ' ', text)  # Multiple spaces to single space
+    text = re.sub(r'\n{3,}', '\n\n', text)  # Multiple newlines to double newline
+
+    return text.strip()
+
+
 def extract_text_from_pdf(pdf_path):
     """Extracts text from a PDF file using multiple methods for better reliability."""
     pdf_path_str = str(pdf_path)
     extracted_text = ""
 
-    # Method 1: Try PyPDF2 first
+    # Method 1: Try PyMuPDF (fitz) first - better word spacing preservation
     try:
-        logger.info("🔍 Attempting extraction with PyPDF2...")
-        reader = PdfReader(pdf_path_str)
-        pypdf_text = ""
+        import fitz  # PyMuPDF
+        logger.info("🔍 Attempting extraction with PyMuPDF (better word spacing)...")
 
-        for page_num, page in enumerate(reader.pages):
-            page_text = page.extract_text()
+        doc = fitz.open(pdf_path_str)
+        pymupdf_text = ""
+
+        for page_num, page in enumerate(doc):
+            # extract_text() with "text" mode preserves word spacing better
+            page_text = page.get_text("text")
             if page_text:
-                pypdf_text += f"{page_text}\n\n"
+                # Clean the text immediately after extraction
+                page_text = clean_extracted_text(page_text)
+                pymupdf_text += f"{page_text}\n\n"
             else:
-                logger.warning(f"⚠️ PyPDF2: No text extracted from page {page_num + 1}")
+                logger.warning(f"⚠️ PyMuPDF: No text extracted from page {page_num + 1}")
 
-        if pypdf_text.strip():
-            logger.info(f"✅ PyPDF2 successfully extracted {len(pypdf_text)} characters")
-            extracted_text = pypdf_text
+        doc.close()
+
+        if pymupdf_text.strip():
+            logger.info(f"✅ PyMuPDF successfully extracted {len(pymupdf_text)} characters")
+            extracted_text = pymupdf_text
         else:
-            logger.warning("⚠️ PyPDF2 extraction yielded no text, trying alternative method...")
+            logger.warning("⚠️ PyMuPDF extraction yielded no text, trying alternative method...")
+    except ImportError:
+        logger.warning("⚠️ PyMuPDF not installed (pip install pymupdf), falling back to PyPDF2...")
     except Exception as e:
-        logger.warning(f"⚠️ PyPDF2 extraction error: {e}")
+        logger.warning(f"⚠️ PyMuPDF extraction error: {e}")
 
-    # Method 2: If PyPDF2 failed or returned no text, try pdftotext if available
+    # Method 2: Try PyPDF2 as fallback (has known word spacing issues)
+    if not extracted_text:
+        try:
+            logger.info("🔍 Attempting extraction with PyPDF2...")
+            reader = PdfReader(pdf_path_str)
+            pypdf_text = ""
+
+            for page_num, page in enumerate(reader.pages):
+                page_text = page.extract_text()
+                if page_text:
+                    pypdf_text += f"{page_text}\n\n"
+                else:
+                    logger.warning(f"⚠️ PyPDF2: No text extracted from page {page_num + 1}")
+
+            if pypdf_text.strip():
+                logger.info(f"✅ PyPDF2 successfully extracted {len(pypdf_text)} characters")
+                logger.warning("⚠️ PyPDF2 may have word spacing issues - install pymupdf for better quality")
+                extracted_text = pypdf_text
+            else:
+                logger.warning("⚠️ PyPDF2 extraction yielded no text, trying alternative method...")
+        except Exception as e:
+            logger.warning(f"⚠️ PyPDF2 extraction error: {e}")
+
+    # Method 3: If PyMuPDF and PyPDF2 failed, try pdftotext if available
     if not extracted_text:
         try:
             logger.info("🔍 Attempting extraction with pdftotext (if installed)...")
@@ -692,7 +813,7 @@ def extract_text_from_pdf(pdf_path):
         except Exception as e:
             logger.warning(f"⚠️ Alternative extraction error: {e}")
 
-    # Method 3: If still no text, try OCR (for scanned documents)
+    # Method 4: If still no text, try OCR (for scanned documents)
     if not extracted_text or len(extracted_text.strip()) < 100:
         try:
             logger.info("🔍 Attempting OCR extraction (for scanned/image-based PDFs)...")
@@ -1388,8 +1509,67 @@ def vram_report():
         logger.info("\n" + "=" * 70)
 
 
+def setup_api_server():
+    """Start the FlockParse API server in background thread."""
+    api_port = int(os.getenv("FLOCKPARSER_API_PORT", "8000"))
+    api_enabled = os.getenv("FLOCKPARSER_API", "true").lower() in ("true", "1", "yes", "on")
+
+    if not api_enabled:
+        logger.info("🔌 API server disabled (set FLOCKPARSER_API=true to enable)")
+        return
+
+    # Check if API already running
+    try:
+        response = requests.get(f"http://localhost:{api_port}/", timeout=1)
+        if response.status_code == 200:
+            logger.info(f"✅ API already running at http://localhost:{api_port}")
+            return
+    except requests.exceptions.RequestException:
+        pass
+
+    # Start API server in background thread
+    def run_api():
+        import sys
+        # Suppress uvicorn startup messages
+        original_stdout = sys.stdout
+        sys.stdout = open(os.devnull, 'w')
+
+        from flock_ai_api import app
+        import uvicorn
+
+        os.makedirs("./uploads", exist_ok=True)
+        uvicorn.run(app, host="0.0.0.0", port=api_port, log_level="error")
+
+        sys.stdout = original_stdout
+
+    api_thread = threading.Thread(target=run_api, daemon=True, name="FlockParserAPI")
+    api_thread.start()
+
+    # Wait for API to start
+    for attempt in range(10):
+        time.sleep(0.3)
+        try:
+            response = requests.get(f"http://localhost:{api_port}/", timeout=1)
+            if response.status_code == 200:
+                logger.info(f"✅ API server started at http://localhost:{api_port}")
+                logger.info(f"   📡 Endpoints: /upload, /search, /summarize")
+                logger.info(f"   🔑 API Key: Set via FLOCKPARSE_API_KEY environment variable")
+                return
+        except requests.exceptions.RequestException:
+            continue
+
+    logger.warning(f"⚠️  API server may not have started properly on port {api_port}")
+
+
 def main():
     """Command-line interface."""
+    global load_balancer
+
+    # Initialize load balancer and dashboard
+    setup_load_balancer()
+    setup_dashboard()
+    setup_api_server()
+
     logger.info("🚀 Welcome to FlockParser")
     logger.info(COMMANDS)
 
@@ -1483,4 +1663,8 @@ def main():
 
 
 if __name__ == "__main__":
+    # Required for multiprocessing (Dask, Ray) to work correctly
+    import multiprocessing
+    multiprocessing.freeze_support()
+
     main()
