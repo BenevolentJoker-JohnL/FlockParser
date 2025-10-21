@@ -328,12 +328,16 @@ def register_document(pdf_path, txt_path, content, chunks=None):
     # Create document record
     document_id = f"doc_{len(index_data['documents']) + 1}"
 
+    # Get PDF filename for better logging (especially in parallel mode)
+    from pathlib import Path
+    pdf_name = Path(pdf_path).stem if pdf_path else "unknown"
+
     # Generate embeddings and chunks for search
     chunks = chunks or chunk_text(content)
     chunk_embeddings = []
 
     # Batch process embeddings for better performance
-    logger.info(f"🔄 Processing {len(chunks)} chunks in batches...")
+    logger.info(f"🔄 [{pdf_name}] Processing {len(chunks)} chunks in batches...")
 
     import hashlib
 
@@ -350,7 +354,7 @@ def register_document(pdf_path, txt_path, content, chunks=None):
 
     # Batch embed uncached chunks using load balancer
     if uncached_chunks:
-        logger.info(f"🚀 Embedding {len(uncached_chunks)} new chunks in parallel...")
+        logger.info(f"🚀 [{pdf_name}] Embedding {len(uncached_chunks)} new chunks in parallel...")
         logger.info(f"   Using {len(load_balancer.instances)} Ollama nodes")
 
         # Process in batches of 100 to save cache periodically
@@ -361,7 +365,7 @@ def register_document(pdf_path, txt_path, content, chunks=None):
 
             batch_num = batch_start // batch_size + 1
             total_batches = (len(uncached_chunks) + batch_size - 1) // batch_size
-            logger.info(f"   Processing batch {batch_num}/{total_batches}...")
+            logger.info(f"   [{pdf_name}] Batch {batch_num}/{total_batches}...")
 
             batch_results = load_balancer.embed_batch(EMBEDDING_MODEL, batch)
 
@@ -377,11 +381,11 @@ def register_document(pdf_path, txt_path, content, chunks=None):
 
             # Save cache after each batch
             save_embedding_cache(cache)
-            logger.info(f"   ✅ Cached {cached_count} embeddings from this batch")
+            logger.info(f"   [{pdf_name}] ✅ Cached {cached_count} embeddings from this batch")
 
-        logger.info(f"✅ All {len(uncached_chunks)} new embeddings cached")
+        logger.info(f"✅ [{pdf_name}] All {len(uncached_chunks)} new embeddings cached")
     else:
-        logger.info("✅ All chunks found in cache!")
+        logger.info(f"✅ [{pdf_name}] All chunks found in cache!")
 
     # Now process all chunks
     for i, chunk in enumerate(chunks):
@@ -953,9 +957,9 @@ def process_pdf(pdf_path):
     logger.info(f"✅ Saved JSON → {json_path}")
 
     # Add to knowledge base for chat capability
-    logger.info("🧠 Adding document to knowledge base...")
+    logger.info(f"🧠 [{pdf_path.stem}] Adding document to knowledge base...")
     chunks = chunk_text(clean_text)
-    logger.info(f"📊 Document divided into {len(chunks)} semantic chunks")
+    logger.info(f"📊 [{pdf_path.stem}] Document divided into {len(chunks)} semantic chunks")
 
     doc_id = register_document(pdf_path, txt_path, clean_text, chunks)
     logger.info(f"✅ Document registered with ID: {doc_id}")
@@ -984,9 +988,71 @@ def process_directory(dir_path):
 
     logger.info(f"📂 Found {len(pdf_files)} PDFs. Processing...")
 
-    # SOLLOL's intelligent load balancing handles parallelization during embedding
-    for pdf in pdf_files:
-        process_pdf(pdf)
+    # Determine if we should use parallel batch processing
+    num_nodes = len(load_balancer.nodes) if load_balancer and load_balancer.nodes else 1
+    num_pdfs = len(pdf_files)
+
+    # Use SOLLOL's locality detection to decide if parallel batch processing is beneficial
+    use_parallel_batch = False
+    if load_balancer and num_nodes > 1 and num_pdfs > 1:
+        # Check if nodes are on different physical machines
+        unique_hosts = load_balancer.count_unique_physical_hosts()
+        use_parallel_batch = unique_hosts >= 2
+
+        if use_parallel_batch:
+            logger.info(
+                f"⚡ Parallel batch processing ENABLED: {num_pdfs} PDFs across "
+                f"{num_nodes} nodes on {unique_hosts} physical machines"
+            )
+            logger.info(
+                f"   Expected speedup: ~{unique_hosts}x faster than sequential\n"
+                f"   (Each PDF will also use parallel embedding within itself)"
+            )
+        else:
+            logger.info(
+                f"ℹ️  Sequential batch processing: all {num_nodes} nodes on same machine\n"
+                f"   (SOLLOL will parallelize embeddings within each PDF)"
+            )
+    else:
+        logger.info(
+            f"ℹ️  Sequential batch processing: {num_nodes} node(s) available\n"
+            f"   (SOLLOL will parallelize embeddings within each PDF)"
+        )
+
+    # Process PDFs: parallel if beneficial, sequential otherwise
+    if use_parallel_batch:
+        # Parallel batch processing: process multiple PDFs concurrently
+        # Each PDF processing will internally use SOLLOL's embedding parallelization
+        max_workers = min(unique_hosts, num_pdfs)
+
+        logger.info(f"🚀 Starting {max_workers} parallel workers...\n")
+
+        completed = 0
+        failed = 0
+
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # Submit all PDF processing tasks
+            future_to_pdf = {executor.submit(process_pdf, pdf): pdf for pdf in pdf_files}
+
+            # Process results as they complete
+            for future in as_completed(future_to_pdf):
+                pdf = future_to_pdf[future]
+                try:
+                    future.result()
+                    completed += 1
+                    logger.info(f"✅ Progress: {completed}/{num_pdfs} PDFs completed")
+                except Exception as e:
+                    failed += 1
+                    logger.error(f"❌ Failed to process {pdf.name}: {e}")
+
+        if failed > 0:
+            logger.warning(f"⚠️  {failed}/{num_pdfs} PDFs failed to process")
+    else:
+        # Sequential batch processing (original behavior)
+        # SOLLOL's intelligent load balancing handles parallelization during embedding
+        for i, pdf in enumerate(pdf_files, 1):
+            logger.info(f"📄 Processing {i}/{num_pdfs}: {pdf.name}")
+            process_pdf(pdf)
 
     elapsed_time = time.time() - start_time
     logger.info("✅ All PDFs processed!")

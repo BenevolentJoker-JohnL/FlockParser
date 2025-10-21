@@ -182,8 +182,10 @@ def add_flockparser_methods(pool: OllamaPool, kb_dir: Path):
         if max_workers:
             workers = max_workers
         else:
-            # Use number of nodes as workers (each node can handle one request at a time)
-            workers = min(num_nodes, batch_size)
+            # Each Ollama node can handle multiple concurrent embedding requests efficiently
+            # Use 4-8 workers per node for optimal throughput (Ollama handles queuing internally)
+            workers_per_node = 6  # Sweet spot: high concurrency without overwhelming nodes
+            workers = min(num_nodes * workers_per_node, batch_size)
 
         # For single node or small batches, use sequential processing
         if workers <= 1 or batch_size <= 2:
@@ -199,7 +201,7 @@ def add_flockparser_methods(pool: OllamaPool, kb_dir: Path):
             return results
 
         # Parallel processing for multiple nodes and larger batches
-        logger.info(f"⚡ Parallel batch embedding: {batch_size} texts using {workers} workers across {num_nodes} nodes")
+        logger.info(f"⚡ Parallel batch embedding: {batch_size} texts using {workers} workers ({workers//num_nodes}/node) across {num_nodes} nodes")
 
         results = [None] * len(texts)  # Pre-allocate results list
 
