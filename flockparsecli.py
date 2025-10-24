@@ -1,4 +1,24 @@
+# CRITICAL: Configure logging BEFORE importing SOLLOL to prevent Dask logging deadlocks
+from logging_config import setup_logging
+logger = setup_logging()
+
+import sys
 import ollama
+
+# Helper function to ensure prompts are visible
+def visible_input(prompt):
+    """Input with automatic stdout/stderr flushing to ensure prompt is visible."""
+    # Flush logger handlers first (now on stderr)
+    for handler in logger.handlers:
+        handler.flush()
+    # Flush both streams
+    sys.stdout.flush()
+    sys.stderr.flush()
+    # Write prompt to stderr (same stream as logger - known to be visible)
+    sys.stderr.write("\n" + prompt)
+    sys.stderr.flush()
+    # Read from stdin
+    return sys.stdin.readline().strip()
 from pathlib import Path
 from PyPDF2 import PdfReader
 import docx
@@ -17,12 +37,9 @@ from sollol.vram_monitor import VRAMMonitor, monitor_distributed_nodes
 from gpu_controller import GPUController
 from sollol.intelligent_gpu_router import IntelligentGPURouter
 from sollol.adaptive_parallelism import AdaptiveParallelismStrategy
-from logging_config import setup_logging
 from sollol import OllamaPool  # Direct SOLLOL integration
 from sollol_compat import add_flockparser_methods  # FlockParser compatibility layer
-
-# Initialize logging
-logger = setup_logging()
+from parallel_embedder import embed_batch_parallel  # Legacy parallel embedding
 
 # 🚀 AVAILABLE COMMANDS:
 COMMANDS = """
@@ -148,16 +165,48 @@ def setup_load_balancer():
     """
     global load_balancer
 
-    # Initialize SOLLOL pool with auto-discovery FIRST
+    # Initialize SOLLOL pool with ROUND_ROBIN routing for balanced load distribution
+    # SOLLOL handles adaptive parallelism, intelligent routing, and distributed coordination
+    from sollol.routing_strategy import RoutingStrategy
+
     load_balancer = OllamaPool(
         nodes=None,  # Auto-discover all Ollama nodes on network
-        enable_intelligent_routing=True,
+        routing_strategy=RoutingStrategy.ROUND_ROBIN,  # Balanced round-robin distribution
         exclude_localhost=True,  # Use real IP instead of localhost
         discover_all_nodes=True,  # Scan full network for all nodes
         app_name="FlockParser",  # Identify as FlockParser in dashboard
-        enable_ray=True,  # Start Ray cluster for multi-app coordination
+        enable_ray=False,  # Skip Ray (single app, no cross-app coordination needed)
+        enable_dask=False,  # DISABLE Dask - causes hanging with embed_batch
+        enable_gpu_redis=False,  # Skip Redis VRAM monitoring (use local monitoring)
         register_with_dashboard=False  # Don't auto-register yet - dashboard not running
     )
+
+    # Load primed performance stats if available
+    primed_stats_file = _SCRIPT_DIR / "sollol_primed_stats.json"
+    if primed_stats_file.exists():
+        try:
+            import json
+            with open(primed_stats_file, 'r') as f:
+                primed_data = json.load(f)
+
+            if primed_data.get('priming_complete'):
+                # Merge primed stats into SOLLOL pool
+                if 'node_performance' in primed_data:
+                    load_balancer.stats['node_performance'] = primed_data['node_performance']
+                    logger.info("✅ Loaded primed performance stats (optimized distribution)")
+
+                    # Show distribution preview
+                    node_perf = primed_data['node_performance']
+                    if node_perf:
+                        total_throughput = sum(p.get('batch_throughput', 0.5) for p in node_perf.values())
+                        logger.info("📊 Configured workload distribution:")
+                        for node_key, perf in node_perf.items():
+                            throughput = perf.get('batch_throughput', 0.5)
+                            pct = (throughput / total_throughput) * 100
+                            logger.info(f"   {node_key}: {pct:.1f}%")
+        except Exception as e:
+            logger.warning(f"⚠️  Could not load primed stats: {e}")
+            logger.info("   Run: python prime_sollol_performance.py")
 
     # Add FlockParser compatibility methods
     load_balancer = add_flockparser_methods(load_balancer, KB_DIR)
@@ -346,44 +395,64 @@ def register_document(pdf_path, txt_path, content, chunks=None):
     uncached_indices = []
 
     # Check cache first
+    cached_count = 0
     for i, chunk in enumerate(chunks):
         text_hash = hashlib.md5(chunk.encode()).hexdigest()
         if text_hash not in cache:
             uncached_chunks.append(chunk)
             uncached_indices.append(i)
+        else:
+            cached_count += 1
 
-    # Batch embed uncached chunks using load balancer
+    # Log cache status explicitly
+    if cached_count > 0:
+        logger.info(f"📦 [{pdf_name}] Using {cached_count} cached embeddings, processing {len(uncached_chunks)} fresh chunks")
+    else:
+        logger.info(f"🆕 [{pdf_name}] No cached embeddings - processing all {len(uncached_chunks)} chunks fresh")
+
+    # Batch embed uncached chunks using SOLLOL's optimized embed_batch
     if uncached_chunks:
-        logger.info(f"🚀 [{pdf_name}] Embedding {len(uncached_chunks)} new chunks in parallel...")
-        logger.info(f"   Using {len(load_balancer.instances)} Ollama nodes")
+        logger.info(f"🚀 [{pdf_name}] Embedding {len(uncached_chunks)} new chunks...")
 
-        # Process in batches of 100 to save cache periodically
-        batch_size = 100
-        for batch_start in range(0, len(uncached_chunks), batch_size):
-            batch_end = min(batch_start + batch_size, len(uncached_chunks))
-            batch = uncached_chunks[batch_start:batch_end]
+        import time
+        start_time = time.time()
 
-            batch_num = batch_start // batch_size + 1
-            total_batches = (len(uncached_chunks) + batch_size - 1) // batch_size
-            logger.info(f"   [{pdf_name}] Batch {batch_num}/{total_batches}...")
+        # Use SOLLOL's optimized embed_batch with adaptive parallelism
+        # This automatically:
+        # - Splits chunks across nodes (round-robin)
+        # - Uses connection reuse per node (_embed_batch_sequential)
+        # - Processes nodes in parallel
+        # - Provides 10-12x speedup over individual requests
+        logger.info(f"   📞 Calling SOLLOL embed_batch with {len(uncached_chunks)} chunks, {len(load_balancer.nodes)} nodes")
 
-            batch_results = load_balancer.embed_batch(EMBEDDING_MODEL, batch)
+        all_results = load_balancer.embed_batch(
+            model=EMBEDDING_MODEL,
+            inputs=uncached_chunks,
+            priority=7,
+            use_adaptive=True,  # Enable adaptive parallelism strategy
+            keep_alive=EMBEDDING_KEEP_ALIVE
+        )
 
-            # Cache the batch embeddings
-            cached_count = 0
-            for chunk, result in zip(batch, batch_results):
-                if result:
-                    text_hash = hashlib.md5(chunk.encode()).hexdigest()
-                    embeddings = result.get("embeddings", [])
-                    embedding = embeddings[0] if embeddings else []
-                    cache[text_hash] = embedding
-                    cached_count += 1
+        logger.info(f"   📥 SOLLOL embed_batch returned {len([r for r in all_results if r is not None])} results")
 
-            # Save cache after each batch
-            save_embedding_cache(cache)
-            logger.info(f"   [{pdf_name}] ✅ Cached {cached_count} embeddings from this batch")
+        total_time = time.time() - start_time
+        successful = len([r for r in all_results if r is not None])
+        rate = successful / total_time if total_time > 0 else 0
+        logger.info(f"   ✅ Embedded {successful}/{len(uncached_chunks)} chunks in {total_time:.1f}s ({rate:.1f} chunks/sec)")
 
-        logger.info(f"✅ [{pdf_name}] All {len(uncached_chunks)} new embeddings cached")
+        # Cache the embeddings
+        cached_count = 0
+        for chunk, result in zip(uncached_chunks, all_results):
+            if result:
+                text_hash = hashlib.md5(chunk.encode()).hexdigest()
+                embeddings = result.get("embeddings", [])
+                embedding = embeddings[0] if embeddings else []
+                cache[text_hash] = embedding
+                cached_count += 1
+
+        # Save cache once after all embeddings complete
+        save_embedding_cache(cache)
+        logger.info(f"✅ [{pdf_name}] Embedded and cached {cached_count}/{len(uncached_chunks)} chunks")
     else:
         logger.info(f"✅ [{pdf_name}] All chunks found in cache!")
 
@@ -992,32 +1061,15 @@ def process_directory(dir_path):
     num_nodes = len(load_balancer.nodes) if load_balancer and load_balancer.nodes else 1
     num_pdfs = len(pdf_files)
 
-    # Use SOLLOL's locality detection to decide if parallel batch processing is beneficial
+    # Process PDFs sequentially to avoid nested parallelism issues
+    # Each PDF uses parallel embedding internally for optimal performance
     use_parallel_batch = False
-    if load_balancer and num_nodes > 1 and num_pdfs > 1:
-        # Check if nodes are on different physical machines
-        unique_hosts = load_balancer.count_unique_physical_hosts()
-        use_parallel_batch = unique_hosts >= 2
+    unique_hosts = load_balancer.count_unique_physical_hosts() if load_balancer and num_nodes > 1 else 1
 
-        if use_parallel_batch:
-            logger.info(
-                f"⚡ Parallel batch processing ENABLED: {num_pdfs} PDFs across "
-                f"{num_nodes} nodes on {unique_hosts} physical machines"
-            )
-            logger.info(
-                f"   Expected speedup: ~{unique_hosts}x faster than sequential\n"
-                f"   (Each PDF will also use parallel embedding within itself)"
-            )
-        else:
-            logger.info(
-                f"ℹ️  Sequential batch processing: all {num_nodes} nodes on same machine\n"
-                f"   (SOLLOL will parallelize embeddings within each PDF)"
-            )
-    else:
-        logger.info(
-            f"ℹ️  Sequential batch processing: {num_nodes} node(s) available\n"
-            f"   (SOLLOL will parallelize embeddings within each PDF)"
-        )
+    logger.info(
+        f"ℹ️  Sequential PDF processing: {num_nodes} node(s) available\n"
+        f"   (Each PDF uses parallel embedding across all nodes for maximum speed)"
+    )
 
     # Process PDFs: parallel if beneficial, sequential otherwise
     if use_parallel_batch:
@@ -1030,9 +1082,21 @@ def process_directory(dir_path):
         completed = 0
         failed = 0
 
+        # Import thread-local from sollol_compat for parallelism signaling
+        from sollol_compat import _thread_local
+
+        def process_pdf_with_context(pdf):
+            """Wrapper that sets PDF parallel mode flag before processing."""
+            # Signal that we're in PDF parallel mode (avoid nested embedding parallelism)
+            _thread_local.in_pdf_parallel_mode = True
+            try:
+                return process_pdf(pdf)
+            finally:
+                _thread_local.in_pdf_parallel_mode = False
+
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            # Submit all PDF processing tasks
-            future_to_pdf = {executor.submit(process_pdf, pdf): pdf for pdf in pdf_files}
+            # Submit all PDF processing tasks with context
+            future_to_pdf = {executor.submit(process_pdf_with_context, pdf): pdf for pdf in pdf_files}
 
             # Process results as they complete
             for future in as_completed(future_to_pdf):
@@ -1074,7 +1138,7 @@ def chat():
     chat_history = []
 
     while True:
-        user_query = input("\n🙋 You: ").strip()
+        user_query = visible_input("\n🙋 You: ").strip()
 
         if user_query.lower() == "exit":
             logger.info("Returning to main menu...")
@@ -1335,7 +1399,7 @@ def clear_cache():
     """Clear the embedding cache."""
     try:
         if EMBEDDING_CACHE_FILE.exists():
-            confirm = input("⚠️  This will delete the embedding cache. Continue? (yes/no): ").strip().lower()
+            confirm = visible_input("⚠️  This will delete the embedding cache. Continue? (yes/no): ").strip().lower()
             if confirm == "yes":
                 EMBEDDING_CACHE_FILE.unlink()
                 logger.info("✅ Embedding cache cleared successfully")
@@ -1480,7 +1544,7 @@ def cleanup_models():
     for model in models_to_unload:
         logger.info(f"   - {model}")
 
-    confirm = input("\n⚠️  Unload these models? (yes/no): ").strip().lower()
+    confirm = visible_input("\n⚠️  Unload these models? (yes/no): ").strip().lower()
     if confirm != "yes":
         logger.error("❌ Operation cancelled")
         return
@@ -1495,9 +1559,7 @@ def cleanup_models():
 def clear_db():
     """Clear the ChromaDB vector store (removes all documents)."""
     try:
-        confirm = (
-            input("⚠️  This will DELETE ALL DOCUMENTS from the vector database. Continue? (yes/no): ").strip().lower()
-        )
+        confirm = visible_input("⚠️  This will DELETE ALL DOCUMENTS from the vector database. Continue? (yes/no): ").strip().lower()
         if confirm != "yes":
             logger.error("❌ Operation cancelled")
             return
@@ -1517,14 +1579,14 @@ def clear_db():
         logger.info("   All documents removed from database")
 
         # Optionally clear the document index too
-        clear_index = input("Also clear document index? (yes/no): ").strip().lower()
+        clear_index = visible_input("Also clear document index? (yes/no): ").strip().lower()
         if clear_index == "yes":
             if INDEX_FILE.exists():
                 INDEX_FILE.unlink()
             logger.info("✅ Document index cleared")
 
         # Optionally clear JSON knowledge base
-        clear_json = input("Also clear legacy JSON knowledge base? (yes/no): ").strip().lower()
+        clear_json = visible_input("Also clear legacy JSON knowledge base? (yes/no): ").strip().lower()
         if clear_json == "yes":
             json_files = list(KB_DIR.glob("*.json"))
             for f in json_files:
@@ -1646,9 +1708,21 @@ def main():
     # Quick dependency check on startup
     logger.info("\nℹ️ Run 'check_deps' for detailed dependency information")
 
+    # Flush all output before entering main loop
+    for handler in logger.handlers:
+        handler.flush()
+    sys.stdout.flush()
+    sys.stderr.flush()
+
     while True:
         try:
-            command = input("\n⚡ Enter command: ").strip().split()
+            # Flush all streams before prompting
+            for handler in logger.handlers:
+                handler.flush()
+            sys.stdout.flush()
+            sys.stderr.flush()
+            # Use visible_input to ensure prompt is displayed
+            command = visible_input("⚡ Enter command: ").strip().split()
         except EOFError:
             # Running in background or stdin closed - keep dashboard alive
             if _dashboard_enabled:
@@ -1669,7 +1743,7 @@ def main():
         action = command[0]
         arg = " ".join(command[1:]) if len(command) > 1 else None
 
-        if action == "open_pd" and arg:
+        if action == "open_pdf" and arg:
             process_pdf(arg)
         elif action == "open_dir" and arg:
             process_directory(arg)

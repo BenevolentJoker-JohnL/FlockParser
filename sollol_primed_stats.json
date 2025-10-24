@@ -1,0 +1,28 @@
+{
+  "node_performance": {
+    "10.9.66.154:11434": {
+      "batch_throughput": 0.18,
+      "avg_response_time": 5.5,
+      "total_requests": 10,
+      "successful_requests": 10,
+      "failed_requests": 0,
+      "latency_ms": 5500,
+      "available": true,
+      "primed": true,
+      "note": "LAPTOP - slow CPU node"
+    },
+    "10.9.66.250:11434": {
+      "batch_throughput": 1.0,
+      "avg_response_time": 1.0,
+      "total_requests": 10,
+      "successful_requests": 10,
+      "failed_requests": 0,
+      "latency_ms": 1000,
+      "available": true,
+      "primed": true,
+      "note": "DESKTOP - fast node"
+    }
+  },
+  "priming_complete": true,
+  "note": "Desktop (10.9.66.250) is 5.5x faster than Laptop (10.9.66.154)"
+}
