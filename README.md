@@ -137,7 +137,7 @@ This core distributed logic from FlockParser-legacy was later extracted and gene
 
 ## **⚡ Key Features**
 
-- **🌐 Intelligent Load Balancing** - Auto-discovers Ollama nodes, detects GPU vs CPU, monitors VRAM, and routes work adaptively (10x speedup on heterogeneous clusters)
+- **🌐 Intelligent Load Balancing** - Auto-discovers Ollama nodes, detects GPU vs CPU, monitors VRAM, and routes work adaptively (2x speedup on CPU clusters, designed for GPU acceleration)
 - **🔌 Multi-Protocol Support** - CLI (100% local), REST API (network), MCP (Claude Desktop), Web UI (Streamlit) - choose your privacy level
 - **🎯 Adaptive Routing** - Sequential vs parallel decisions based on cluster characteristics (prevents slow nodes from bottlenecking)
 - **📊 Production Observability** - Real-time health scores, performance tracking, VRAM monitoring, automatic failover
@@ -200,7 +200,7 @@ FlockParser is designed for engineers and researchers who need **private, on-pre
 │  4. Stores in searchable vector database (ChromaDB)            │
 │                                                                  │
 │  ⚡ Distributed Processing: 3 nodes → 13× faster               │
-│  🚀 GPU Acceleration: RTX A4000 → 61× faster than CPU          │
+│  🚀 Distributed Processing: SOLLOL routing → 2× speedup        │
 │  🔒 Privacy: 100% local (no cloud APIs)                        │
 └────────────────────────┬────────────────────────────────────────┘
                          │
@@ -445,7 +445,7 @@ docker pull ghcr.io/benevolentjoker-johnl/flockparser:latest
 
 ## **🌐 Setting Up Distributed Nodes**
 
-**Want the 60x speedup?** Set up multiple Ollama nodes across your network.
+**Want distributed processing?** Set up multiple Ollama nodes across your network for automatic load balancing.
 
 ### Quick Multi-Node Setup
 
@@ -511,7 +511,7 @@ python flockparsecli.py
 | **MCP Integration** | ✅ Native | ❌ No | ❌ No | ❌ No |
 | **Embedding Cache** | ✅ MD5-based | ⚠️ Basic | ⚠️ Basic | ⚠️ Basic |
 | **Batch Processing** | ✅ Parallel | ⚠️ Sequential | ⚠️ Sequential | ⚠️ Basic |
-| **Performance** | 🚀 60x+ faster with GPU auto-routing | ⚠️ Varies by config | ⚠️ Varies by config | ⚠️ Varies by config |
+| **Performance** | 🚀 2x faster with distributed CPU routing | ⚠️ Varies by config | ⚠️ Varies by config | ⚠️ Varies by config |
 | **Cost** | 💰 Free | 💰💰 Free + Paid | 💰💰 Free + Paid | 💰💰 Free + Paid |
 
 ### **Key Differentiators:**
@@ -524,31 +524,31 @@ python flockparsecli.py
 
 ## **📊 Performance**
 
-### **Real-World Benchmark Results**
+### **Real-World Benchmark Results (CPU Cluster)**
 
-| Processing Mode | Time | Speedup | What It Shows |
-|----------------|------|---------|---------------|
-| Single CPU node | 372.76s (~6 min) | 1x baseline | Sequential CPU processing |
-| Parallel (multi-node) | 159.79s (~2.5 min) | **2.3x faster** | Distributed across cluster |
-| GPU node routing | 6.04s (~6 sec) | **61.7x faster** | Automatic GPU detection & routing |
+| Processing Mode | Workload | Time | Speedup | What It Shows |
+|----------------|----------|------|---------|---------------|
+| Legacy (single-threaded) | 20 PDFs | 60.9 min | 1x baseline | Basic routing |
+| Current (SOLLOL routing) | 20 PDFs | 30.0 min | **2.0x faster** | Intelligent load balancing across 2 CPU nodes |
 
-**Why the Massive Speedup?**
-- GPU processes embeddings in milliseconds vs seconds on CPU
-- Adaptive routing detected GPU was 60x+ faster and sent all work there
-- Avoided bottleneck of waiting for slower CPU nodes to finish
+**Why the Speedup?**
+- SOLLOL intelligently distributes workload across available nodes
+- Adaptive parallelism prevents slow nodes from bottlenecking
+- Per-node queues with cross-node stealing optimize throughput
 - No network overhead (local cluster, no cloud APIs)
+
+**GPU acceleration:** Designed for GPU-aware routing with VRAM monitoring, not yet benchmarked.
 
 **Key Insight:** The system **automatically** detects performance differences and makes routing decisions - no manual GPU configuration needed.
 
 **Hardware (Benchmark Cluster):**
-- **Node 1 (10.9.66.90):** Intel i9-12900K, 32GB DDR5-6000, 6TB NVMe Gen4, RTX A4000 16GB - primary GPU node
-- **Node 2 (10.9.66.159):** AMD Ryzen 7 5700X, 32GB DDR4-3600, GTX 1050Ti (CPU-mode fallback)
-- **Node 3:** Intel i7-12th gen (laptop), 16GB DDR5, CPU-only
-- **Software:** Python 3.10, Ollama, Ubuntu 22.04
+- **Node 1 (10.9.66.154):** Consumer CPU (Intel/AMD)
+- **Node 2 (10.9.66.250):** Consumer CPU (Intel/AMD)
+- **Software:** Python 3.10, Ollama, SOLLOL 0.9.60+
 
 **Reproducibility:**
 - Full source code available in this repo
-- Test with your own hardware - results will vary based on GPU
+- Test with your own hardware - results will vary based on cluster size and hardware
 
 ### **🔬 Run Your Own Benchmarks**
 
@@ -627,11 +627,12 @@ Downloads and processes 5 seminal AI research papers:
 
 ### **Expected Results**
 
-| Configuration | Processing Time | Speedup |
-|---------------|----------------|---------|
-| **Single CPU node** | ~90s | 1.0× baseline |
-| **Multi-node (1 GPU + 2 CPU)** | ~30s | 3.0× |
-| **Single GPU node (RTX A4000)** | ~21s | **4.3×** |
+| Configuration | Processing Time | Notes |
+|---------------|----------------|-------|
+| **Single CPU node** | Baseline | Sequential processing |
+| **Multi-node CPU cluster** | **~2x faster** | SOLLOL distributed routing |
+
+**Note:** GPU acceleration designed but not yet benchmarked. Actual performance will vary based on your hardware.
 
 ### **What You Get**
 
@@ -648,7 +649,7 @@ After processing, the script demonstrates:
 2. **Performance Metrics** (`showcase/results.json`):
    ```json
    {
-     "total_time": 21.3,
+     "total_time": "Varies by hardware",
      "papers": [
        {
          "title": "Attention Is All You Need",
