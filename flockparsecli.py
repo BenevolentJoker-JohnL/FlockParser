@@ -182,7 +182,7 @@ def setup_load_balancer():
         enable_ray=False,  # Skip Ray (single app, no cross-app coordination needed)
         enable_dask=False,  # DISABLE Dask - causes hanging with embed_batch
         enable_gpu_redis=False,  # Skip Redis VRAM monitoring (use local monitoring)
-        register_with_dashboard=False  # Don't auto-register yet - dashboard not running
+        register_with_dashboard=True  # Register with dashboard for live stats/logs
     )
 
     # Load primed performance stats if available
