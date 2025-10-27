@@ -252,6 +252,35 @@ flockparse-mcp                       # MCP - Claude Desktop integration
 
 ---
 
+### **📝 Programmatic Usage (2-Minute Example)**
+
+Want to use FlockParser in your own Python code? Here's the minimal example:
+
+```python
+from flockparsecli import FlockParseEngine
+
+# Initialize with automatic node discovery
+engine = FlockParseEngine()
+engine.discover_nodes()  # Auto-finds Ollama nodes on network
+
+# Process a document
+engine.process_pdf("research_paper.pdf")
+
+# Query the knowledge base
+results = engine.query("What is the main conclusion?")
+print(results)
+```
+
+**That's it!** FlockParser handles:
+- ✅ GPU detection and routing
+- ✅ Load balancing across nodes
+- ✅ Vector embeddings and storage
+- ✅ Automatic failover
+
+**More examples:** See `showcase/process_arxiv_papers.py` for batch processing and `flockparsecli.py` for the full CLI implementation.
+
+---
+
 ### Alternative: Install from Source
 
 If you want to contribute or modify the code:
@@ -489,6 +518,43 @@ python flockparsecli.py
 **Reproducibility:**
 - Full source code available in this repo
 - Test with your own hardware - results will vary based on GPU
+
+### **🔬 Run Your Own Benchmarks**
+
+Compare FlockParser against LangChain and LlamaIndex on your hardware:
+
+```bash
+# Clone the repo if you haven't already
+git clone https://github.com/BenevolentJoker-JohnL/FlockParser.git
+cd FlockParser
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run comparison benchmark
+python benchmark_comparison.py
+```
+
+**What it tests:**
+- ✅ Processing time for 3 research papers (~50 pages total)
+- ✅ GPU utilization and load balancing
+- ✅ Memory efficiency
+- ✅ Caching effectiveness
+
+**Expected results:**
+- FlockParser: ~15-30s (with GPU cluster)
+- LangChain: ~45-60s (single node, no load balancing)
+- LlamaIndex: ~40-55s (single node, no GPU optimization)
+
+**Why FlockParser is faster:**
+- GPU-aware routing (automatic)
+- Multi-node parallelization
+- MD5-based embedding cache
+- Model weight persistence
+
+Results saved to `benchmark_results.json` for your records.
+
+---
 
 The project offers four main interfaces:
 1. **flock_webui.py** - 🎨 Beautiful Streamlit web interface (NEW!)
