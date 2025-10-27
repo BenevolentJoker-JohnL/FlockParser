@@ -2,8 +2,12 @@
 from logging_config import setup_logging
 logger = setup_logging()
 
+import os
 import sys
 import ollama
+
+# Set SOLLOL app name for logging context
+os.environ["SOLLOL_APP_NAME"] = "FlockParser"
 
 # Helper function to ensure prompts are visible
 def visible_input(prompt):
