@@ -15,6 +15,36 @@
 
 ---
 
+## Quick start — demo in ~3 minutes
+
+Clone, start a minimal demo, open the UI:
+
+```bash
+git clone https://github.com/BenevolentJoker-JohnL/FlockParser && cd FlockParser
+# option A: docker-compose demo (recommended)
+docker-compose up --build -d
+# open Web UI: http://localhost:8501
+# open API: http://localhost:8000
+```
+
+If you prefer local Python (no Docker):
+
+```bash
+# Option B: Use the idempotent install script
+./INSTALL_SOLLOL_IDEMPOTENT.sh --mode python
+source .venv/bin/activate && python flock_webui.py
+# Web UI opens at http://localhost:8501
+
+# Or manually:
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python flock_webui.py  # or flockparsecli.py for CLI
+```
+
+For full setup instructions, see [detailed quickstart below](#-quickstart-3-steps).
+
+---
+
 ## ⚠️ Important: Current Maturity
 
 **Status:** Beta (v1.0.0) - **Early adopters welcome, but read this first!**
@@ -252,23 +282,17 @@ flockparse-mcp                       # MCP - Claude Desktop integration
 
 ---
 
-### **📝 Programmatic Usage (2-Minute Example)**
+### **📝 Programmatic Usage Example**
 
 Want to use FlockParser in your own Python code? Here's the minimal example:
 
 ```python
-from flockparsecli import FlockParseEngine
-
-# Initialize with automatic node discovery
-engine = FlockParseEngine()
-engine.discover_nodes()  # Auto-finds Ollama nodes on network
-
-# Process a document
-engine.process_pdf("research_paper.pdf")
-
-# Query the knowledge base
-results = engine.query("What is the main conclusion?")
-print(results)
+# Programmatic example
+from flockparser import FlockParser
+fp = FlockParser()                      # uses default config/registry
+fp.discover_nodes(timeout=3.0)          # waits for any SOLLOL/agents to register
+result = fp.process_pdf("example.pdf")  # routes work via SOLLOL; returns result dict
+print(result["summary"][:250])
 ```
 
 **That's it!** FlockParser handles:
@@ -553,6 +577,14 @@ python benchmark_comparison.py
 - Model weight persistence
 
 Results saved to `benchmark_results.json` for your records.
+
+### Reproduce the benchmarks
+
+To reproduce the benchmark numbers used in this README:
+
+```bash
+python benchmark_comparison.py --runs 10 --concurrency 2
+```
 
 ---
 
