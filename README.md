@@ -9,9 +9,9 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![GitHub Stars](https://img.shields.io/github/stars/BenevolentJoker-JohnL/FlockParser?style=social)](https://github.com/BenevolentJoker-JohnL/FlockParser)
 
-> **Distributed document RAG system that turns mismatched hardware into a coordinated inference cluster.** Auto-discovers Ollama nodes, intelligently routes workloads across heterogeneous GPUs/CPUs, and achieves 60x+ speedups through adaptive load balancing. Privacy-first with local/network/cloud interfaces.
+> **Distributed document RAG system with intelligent load balancing across heterogeneous hardware.** Auto-discovers Ollama nodes, routes workloads adaptively, and achieves 2x+ speedups through SOLLOL-powered distributed processing. Privacy-first with local/network/cloud interfaces.
 
-**What makes this different:** Real distributed systems engineering—not just API wrappers. Handles heterogeneous hardware (RTX A4000 + GTX 1050Ti + CPU laptops working together), network failures, and privacy requirements that rule out cloud APIs.
+**What makes this different:** Real distributed systems engineering—not just API wrappers. Developed on CPU to ensure universal compatibility, designed for GPU acceleration when available. Handles heterogeneous hardware, network failures, and privacy requirements that rule out cloud APIs.
 
 ---
 
@@ -87,16 +87,23 @@ FlockParser's distributed inference architecture originated from **[FlockParser-
 
 This core distributed logic from FlockParser-legacy was later extracted and generalized to become **[SOLLOL](https://github.com/BenevolentJoker-JohnL/SOLLOL)** - a standalone distributed inference platform that now powers both FlockParser and **[SynapticLlamas](https://github.com/BenevolentJoker-JohnL/SynapticLlamas)**.
 
-### **📊 Quick Performance Reference**
+### **📊 Performance (CPU Cluster Testing)**
 
-| Workload | Hardware | Time | Speedup | Notes |
-|----------|----------|------|---------|-------|
-| **5 AI papers (~350 pages)** | 1× RTX A4000 (16GB) | 21.3s | **17.5×** | [Real arXiv showcase](#-showcase-real-world-example) |
-| **12-page PDF (demo video)** | 1× RTX A4000 (16GB) | 6.0s | **61.7×** | GPU-aware routing |
-| **100 PDFs (2000 pages)** | 3-node cluster (mixed) | 3.2 min | **13.2×** | See [BENCHMARKS.md](BENCHMARKS.md) |
-| **Embedding generation** | RTX A4000 vs i9 CPU | 8.2s vs 178s | **21.7×** | 10K chunks |
+**Tested on 2-node CPU cluster:**
 
-**🎯 Try it yourself:** `pip install flockparser && python showcase/process_arxiv_papers.py`
+| Version | Workload | Time | Speedup | Notes |
+|---------|----------|------|---------|-------|
+| **Legacy** | 20 PDFs (~400 pages) | 60.9 min | Baseline | Single-threaded routing |
+| **Current (SOLLOL)** | 20 PDFs (~400 pages) | 30.0 min | **2.0×** | Intelligent load balancing |
+
+**Hardware:**
+- 2× CPU nodes (consumer hardware)
+- SOLLOL auto-discovery and adaptive routing
+- Processing rate: 1.9 chunks/sec across cluster
+
+**GPU acceleration:** Designed for GPU-aware routing (VRAM monitoring, adaptive allocation), not yet benchmarked.
+
+**See benchmarks:** [performance-comparison-sollol.png](performance-comparison-sollol.png)
 
 ---
 
