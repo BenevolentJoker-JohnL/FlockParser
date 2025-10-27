@@ -284,22 +284,13 @@ def setup_dashboard():
         if not dashboard_running:
             logger.error("❌ Dashboard failed to start - check logs for errors")
 
-    # Register FlockParser with dashboard
+    # Dashboard registration - OllamaPool already registers via register_with_dashboard=True
+    # No need for separate DashboardClient registration (was causing duplicate registrations)
     if dashboard_running:
-        try:
-            from sollol.dashboard_client import DashboardClient
-            load_balancer._dashboard_client = DashboardClient(
-                app_name="FlockParser",
-                router_type="OllamaPool",
-                dashboard_url=dashboard_url,
-                auto_register=True
-            )
-            logger.info("✅ FlockParser registered with dashboard")
-            logger.info(f"📊 Dashboard: {dashboard_url}")
-            logger.info(f"   - Ray Dashboard: http://localhost:8265")
-            logger.info(f"   - Dask Dashboard: http://localhost:8787")
-        except Exception as e:
-            logger.warning(f"⚠️  Dashboard registration failed: {e}")
+        logger.info("✅ FlockParser registered with dashboard via OllamaPool")
+        logger.info(f"📊 Dashboard: {dashboard_url}")
+        logger.info(f"   - Ray Dashboard: http://localhost:8265")
+        logger.info(f"   - Dask Dashboard: http://localhost:8787")
 
 # 💾 Index file for tracking processed documents
 INDEX_FILE = KB_DIR / "document_index.json"
