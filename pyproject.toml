@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flockparser"
-version = "1.0.4"
+version = "1.0.8"
 authors = [
     {name = "BenevolentJoker (John L.)", email = "benevolentjoker@gmail.com"}
 ]
@@ -60,7 +60,7 @@ dependencies = [
     "streamlit>=1.40.0",
     "pytest>=7.4.0",
     "pytest-timeout>=2.1.0",
-    "sollol>=0.9.31",
+    "sollol-flockparser>=0.9.60",
 ]
 
 [project.optional-dependencies]
