@@ -23,6 +23,9 @@ chromadb>=0.4.13
 # AI integration
 ollama>=0.1.4
 
+# Distributed Ollama load balancing
+sollol>=0.9.60
+
 # Data processing
 numpy>=1.24.0
 
