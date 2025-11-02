@@ -1,9 +1,45 @@
+# CRITICAL: Enable unbuffered output FIRST to prevent CLI display freezing
+# This ensures real-time progress messages are visible during async operations
+import os
+import sys
+
+# Use development SOLLOL code instead of installed package
+sys.path.insert(0, '/home/joker/SOLLOL/src')
+
+# CRITICAL: Configure NetworkObserver BEFORE any SOLLOL imports
+# NetworkObserver is a singleton initialized on first import, so this MUST come first
+os.environ["SOLLOL_OBSERVER_SAMPLING"] = "false"  # Disable sampling to get all events
+os.environ["SOLLOL_REDIS_URL"] = "redis://localhost:6379"  # Enable Redis pub/sub for dashboard
+os.environ.setdefault("SOLLOL_ROUTING_LOG", "true")  # Ensure routing decisions hit observability
+
+# Force unbuffered output for stdout and stderr
+# This prevents output buffering that can make the CLI appear frozen
+os.environ['PYTHONUNBUFFERED'] = '1'
+sys.stdout.reconfigure(line_buffering=True)
+sys.stderr.reconfigure(line_buffering=True)
+
 # CRITICAL: Configure logging BEFORE importing SOLLOL to prevent Dask logging deadlocks
 from logging_config import setup_logging
 logger = setup_logging()
 
-import os
-import sys
+# Pre-flight Redis connectivity check so observability issues are logged before SOLLOL loads
+redis_url = os.getenv("SOLLOL_REDIS_URL", "redis://localhost:6379")
+try:
+    import redis
+    from sollol.network_observer import logger as observer_logger
+
+    try:
+        redis.from_url(redis_url).ping()
+        msg = f"📡 Redis reachable at {redis_url}"
+        logger.info(msg)
+        observer_logger.info(msg)
+    except Exception as exc:
+        msg = f"⚠️ SOLLOL observability disabled: cannot reach Redis at {redis_url} ({exc})"
+        logger.warning(msg)
+        observer_logger.warning(msg)
+except ImportError as exc:
+    logger.warning(f"⚠️ SOLLOL observability disabled: redis package not available ({exc})")
+
 import ollama
 
 # Set SOLLOL app name for logging context
@@ -169,6 +205,21 @@ def setup_load_balancer():
     """
     global load_balancer
 
+    # CRITICAL: Initialize routing logger BEFORE OllamaPool (singleton pattern)
+    # This ensures OllamaPool gets a properly configured routing logger with Redis
+    from sollol.routing_logger import get_routing_logger, enable_console_routing_log
+    import redis as redis_lib
+    try:
+        routing_redis = redis_lib.from_url(os.getenv("SOLLOL_REDIS_URL", "redis://localhost:6379"), decode_responses=True)
+        routing_redis.ping()  # Test connection
+        routing_logger = get_routing_logger(redis_client=routing_redis, console_output=False)
+        logger.info(f"✅ Routing logger pre-initialized (enabled={routing_logger.enabled}, redis_available={routing_logger.redis_available})")
+        logger.info(f"   📡 Publishing routing decisions to: sollol:routing_events")
+    except Exception as e:
+        logger.warning(f"⚠️  Routing logger Redis configuration failed: {e}")
+        # Create logger anyway (will fall back to local-only mode)
+        routing_logger = get_routing_logger()
+
     # Initialize SOLLOL pool with ROUND_ROBIN routing for balanced load distribution
     # SOLLOL handles adaptive parallelism, intelligent routing, and distributed coordination
     from sollol.routing_strategy import RoutingStrategy
@@ -180,10 +231,23 @@ def setup_load_balancer():
         discover_all_nodes=True,  # Scan full network for all nodes
         app_name="FlockParser",  # Identify as FlockParser in dashboard
         enable_ray=False,  # Skip Ray (single app, no cross-app coordination needed)
-        enable_dask=False,  # DISABLE Dask - causes hanging with embed_batch
-        enable_gpu_redis=False,  # Skip Redis VRAM monitoring (use local monitoring)
-        register_with_dashboard=True  # Register with dashboard for live stats/logs
+        enable_dask=True,  # Enable Dask for distributed batch processing (fixed stdin issue)
+        enable_gpu_redis=True,  # Required for SOLLOL metrics publisher (latency, routing logs)
+        redis_host=os.getenv("SOLLOL_REDIS_HOST", "localhost"),
+        redis_port=int(os.getenv("SOLLOL_REDIS_PORT", "6379")),
+        register_with_dashboard=False  # Delay registration until after dashboard starts (see setup_dashboard)
     )
+
+    # DEBUG: Check observer configuration for dashboard activity logging
+    from sollol.network_observer import get_observer
+    observer = get_observer()
+    logger.info(f"🔍 Observer Redis configured: {observer.redis_client is not None}")
+    logger.info(f"🔍 Observer total events so far: {observer.get_stats()['total_events']}")
+
+    # Force immediate flush of any pending dashboard events for real-time updates
+    if observer.redis_client:
+        observer._flush_dashboard_batch()
+        logger.info(f"✅ Dashboard event flushing enabled (batch_size={observer.batch_size}, timeout={observer.batch_timeout}s)")
 
     # Load primed performance stats if available
     primed_stats_file = _SCRIPT_DIR / "sollol_primed_stats.json"
@@ -214,6 +278,13 @@ def setup_load_balancer():
 
     # Add FlockParser compatibility methods
     load_balancer = add_flockparser_methods(load_balancer, KB_DIR)
+
+    logger.info(
+        "Shim patch status: %s / %s / %s",
+        getattr(load_balancer, "_make_request", None).__qualname__,
+        getattr(load_balancer, "_make_streaming_request", None).__qualname__,
+        getattr(load_balancer, "_embed_batch_sequential", None).__qualname__,
+    )
 
     return load_balancer
 
@@ -284,10 +355,31 @@ def setup_dashboard():
         if not dashboard_running:
             logger.error("❌ Dashboard failed to start - check logs for errors")
 
-    # Dashboard registration - OllamaPool already registers via register_with_dashboard=True
-    # No need for separate DashboardClient registration (was causing duplicate registrations)
-    if dashboard_running:
-        logger.info("✅ FlockParser registered with dashboard via OllamaPool")
+    # Dashboard registration - Register now that dashboard is running
+    # Use explicit DashboardClient registration (same as SynapticLlamas)
+    if dashboard_running and load_balancer:
+        try:
+            from sollol import DashboardClient
+            import socket
+            hostname = socket.gethostname()
+
+            dashboard_client = DashboardClient(
+                app_name=f"FlockParser ({hostname})",
+                router_type="OllamaPool",
+                version="1.0.0",
+                dashboard_url=dashboard_url,
+                metadata={
+                    "nodes": len(load_balancer.nodes),
+                    "routing_strategy": str(load_balancer.routing_strategy),
+                    "enable_dask": True,
+                    "enable_gpu_redis": True,
+                },
+                auto_register=True
+            )
+            logger.info(f"✅ FlockParser registered with dashboard: {dashboard_client.app_id}")
+        except Exception as e:
+            logger.warning(f"⚠️  Dashboard registration failed: {e}")
+
         logger.info(f"📊 Dashboard: {dashboard_url}")
         logger.info(f"   - Ray Dashboard: http://localhost:8265")
         logger.info(f"   - Dask Dashboard: http://localhost:8787")
@@ -420,6 +512,12 @@ def register_document(pdf_path, txt_path, content, chunks=None):
         # - Provides 10-12x speedup over individual requests
         logger.info(f"   📞 Calling SOLLOL embed_batch with {len(uncached_chunks)} chunks, {len(load_balancer.nodes)} nodes")
 
+        # DEBUG: Check observer before embed_batch
+        from sollol.network_observer import get_observer
+        _obs = get_observer()
+        _before = _obs.get_stats()['total_events']
+        logger.info(f"🔍 Observer events BEFORE embed_batch: {_before}")
+
         all_results = load_balancer.embed_batch(
             model=EMBEDDING_MODEL,
             inputs=uncached_chunks,
@@ -427,6 +525,15 @@ def register_document(pdf_path, txt_path, content, chunks=None):
             use_adaptive=True,  # Enable adaptive parallelism strategy
             keep_alive=EMBEDDING_KEEP_ALIVE
         )
+
+        # DEBUG: Check observer after embed_batch
+        # CRITICAL: Observer processes events asynchronously in background thread!
+        # We need to wait for the event queue to be processed
+        import time
+        time.sleep(0.5)  # Give background thread time to process events
+        _obs._flush_dashboard_batch()  # Force flush any batched events
+        _after = _obs.get_stats()['total_events']
+        logger.info(f"🔍 Observer events AFTER embed_batch (with 0.5s wait): {_after} (+{_after - _before})")
 
         logger.info(f"   📥 SOLLOL embed_batch returned {len([r for r in all_results if r is not None])} results")
 
