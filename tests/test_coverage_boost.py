@@ -6,7 +6,7 @@ Designed to push coverage from 76% to 80%
 import pytest
 import sys
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock, call
+from unittest.mock import Mock, patch, MagicMock, call, mock_open
 import tempfile
 import json
 
@@ -27,9 +27,9 @@ from flockparsecli import (
 class TestLoadBalancerNetworkDetection:
     """Test network detection and duplicate checking"""
 
-    @patch('socket.gethostbyname')
-    @patch('socket.gethostname')
-    @patch('flockparsecli.ollama.Client')
+    @patch("socket.gethostbyname")
+    @patch("socket.gethostname")
+    @patch("flockparsecli.ollama.Client")
     def test_add_node_detects_localhost_duplicate(self, mock_client, mock_hostname, mock_gethost):
         """Test that adding localhost by IP is detected as duplicate"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -49,8 +49,8 @@ class TestLoadBalancerNetworkDetection:
         # Should detect as duplicate
         assert isinstance(result, bool)
 
-    @patch('socket.gethostbyname')
-    @patch('socket.gethostname')
+    @patch("socket.gethostbyname")
+    @patch("socket.gethostname")
     def test_add_node_socket_error_handling(self, mock_hostname, mock_gethost):
         """Test handling of socket errors during duplicate detection"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -108,8 +108,8 @@ class TestChunkTextSpecialCases:
 class TestPDFExtractionSpecialCases:
     """Test special PDF extraction scenarios"""
 
-    @patch('flockparsecli.subprocess.run')
-    @patch('flockparsecli.PdfReader')
+    @patch("flockparsecli.subprocess.run")
+    @patch("flockparsecli.PdfReader")
     def test_extract_pdftotext_empty_output(self, mock_pypdf2, mock_subprocess):
         """Test pdftotext returning empty output"""
         # PyPDF2 returns empty
@@ -124,11 +124,11 @@ class TestPDFExtractionSpecialCases:
         mock_result.returncode = 0
         mock_subprocess.return_value = mock_result
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             pdf_path = tmp.name
 
         try:
-            with patch('builtins.open', mock_open(read_data="")):
+            with patch("builtins.open", mock_open(read_data="")):
                 result = extract_text_from_pdf(pdf_path)
 
             # Should handle empty result
@@ -136,7 +136,7 @@ class TestPDFExtractionSpecialCases:
         finally:
             Path(pdf_path).unlink(missing_ok=True)
 
-    @patch('flockparsecli.PdfReader')
+    @patch("flockparsecli.PdfReader")
     def test_extract_pypdf2_page_exception(self, mock_pypdf2):
         """Test handling page extraction exceptions"""
         # Some pages raise exceptions
@@ -154,7 +154,7 @@ class TestPDFExtractionSpecialCases:
         mock_pdf.pages = pages
         mock_pypdf2.return_value = mock_pdf
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             pdf_path = tmp.name
 
         try:
@@ -168,10 +168,10 @@ class TestPDFExtractionSpecialCases:
 class TestSimilarChunksDetailedPaths:
     """Test detailed similarity search paths"""
 
-    @patch('builtins.open')
-    @patch('flockparsecli.Path.exists')
-    @patch('flockparsecli.load_document_index')
-    @patch('flockparsecli.get_cached_embedding')
+    @patch("builtins.open")
+    @patch("flockparsecli.Path.exists")
+    @patch("flockparsecli.load_document_index")
+    @patch("flockparsecli.get_cached_embedding")
     def test_similarity_all_below_threshold(self, mock_embed, mock_index, mock_exists, mock_open_file):
         """Test when all chunks are below similarity threshold"""
         mock_embed.return_value = [1.0] * 1024
@@ -184,11 +184,9 @@ class TestSimilarChunksDetailedPaths:
         mock_open_file.return_value = mock_handle
 
         mock_index.return_value = {
-            "documents": [{
-                "id": "doc1",
-                "original": "/test.pdf",
-                "chunks": [{"file": "/tmp/chunk1.json", "chunk_id": 0}]
-            }]
+            "documents": [
+                {"id": "doc1", "original": "/test.pdf", "chunks": [{"file": "/tmp/chunk1.json", "chunk_id": 0}]}
+            ]
         }
 
         # High similarity threshold
@@ -197,10 +195,10 @@ class TestSimilarChunksDetailedPaths:
         # Should filter out low similarity chunks
         assert isinstance(results, list)
 
-    @patch('builtins.open')
-    @patch('flockparsecli.Path.exists')
-    @patch('flockparsecli.load_document_index')
-    @patch('flockparsecli.get_cached_embedding')
+    @patch("builtins.open")
+    @patch("flockparsecli.Path.exists")
+    @patch("flockparsecli.load_document_index")
+    @patch("flockparsecli.get_cached_embedding")
     def test_similarity_with_chunk_json_error(self, mock_embed, mock_index, mock_exists, mock_open_file):
         """Test handling of malformed chunk JSON"""
         mock_embed.return_value = [0.5] * 1024
@@ -212,11 +210,9 @@ class TestSimilarChunksDetailedPaths:
         mock_open_file.return_value = mock_handle
 
         mock_index.return_value = {
-            "documents": [{
-                "id": "doc1",
-                "original": "/test.pdf",
-                "chunks": [{"file": "/tmp/chunk1.json", "chunk_id": 0}]
-            }]
+            "documents": [
+                {"id": "doc1", "original": "/test.pdf", "chunks": [{"file": "/tmp/chunk1.json", "chunk_id": 0}]}
+            ]
         }
 
         # Should handle JSON errors gracefully
@@ -228,16 +224,16 @@ class TestSimilarChunksDetailedPaths:
 class TestRegisterDocumentEdgePaths:
     """Test document registration edge paths"""
 
-    @patch('flockparsecli.chroma_collection.add')
-    @patch('flockparsecli.get_cached_embedding')
-    @patch('flockparsecli.save_document_index')
-    @patch('flockparsecli.load_document_index')
+    @patch("flockparsecli.chroma_collection.add")
+    @patch("flockparsecli.get_cached_embedding")
+    @patch("flockparsecli.save_document_index")
+    @patch("flockparsecli.load_document_index")
     def test_register_with_empty_chunks_list(self, mock_load, mock_save, mock_embed, mock_chroma):
         """Test registering with empty chunks list"""
         mock_load.return_value = {"documents": []}
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as pdf:
-            with tempfile.NamedTemporaryFile(suffix='.txt', delete=False) as txt:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as pdf:
+            with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as txt:
                 pdf_path = Path(pdf.name)
                 txt_path = Path(txt.name)
 
@@ -258,7 +254,7 @@ class TestLoadBalancerRoutingEdgeCases:
         """Test all routing strategies with single node"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
-        strategies = ['adaptive', 'round_robin', 'least_loaded', 'lowest_latency']
+        strategies = ["adaptive", "round_robin", "least_loaded", "lowest_latency"]
 
         for strategy in strategies:
             lb.set_routing_strategy(strategy)
@@ -270,8 +266,7 @@ class TestLoadBalancerRoutingEdgeCases:
     def test_routing_lowest_latency_selection(self):
         """Test lowest latency routing selects lowest"""
         lb = OllamaLoadBalancer(
-            instances=["http://localhost:11434", "http://192.168.1.10:11434"],
-            skip_init_checks=True
+            instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True
         )
 
         # Set different latencies
@@ -280,7 +275,7 @@ class TestLoadBalancerRoutingEdgeCases:
 
         lb.set_routing_strategy("lowest_latency")
 
-        with patch.object(lb, '_is_node_available', return_value=True):
+        with patch.object(lb, "_is_node_available", return_value=True):
             instance = lb.get_next_instance()
 
             # Should prefer lower latency
@@ -289,8 +284,7 @@ class TestLoadBalancerRoutingEdgeCases:
     def test_routing_least_loaded_selection(self):
         """Test least loaded routing"""
         lb = OllamaLoadBalancer(
-            instances=["http://localhost:11434", "http://192.168.1.10:11434"],
-            skip_init_checks=True
+            instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True
         )
 
         # Set different request counts
@@ -299,7 +293,7 @@ class TestLoadBalancerRoutingEdgeCases:
 
         lb.set_routing_strategy("least_loaded")
 
-        with patch.object(lb, '_is_node_available', return_value=True):
+        with patch.object(lb, "_is_node_available", return_value=True):
             instance = lb.get_next_instance()
 
             # Should prefer less loaded
@@ -356,7 +350,7 @@ class TestDocumentIndexEdgeCases:
 
     def test_load_document_index_file_not_found(self):
         """Test loading index when file doesn't exist"""
-        with patch('flockparsecli.INDEX_FILE', Path("/nonexistent/index.json")):
+        with patch("flockparsecli.INDEX_FILE", Path("/nonexistent/index.json")):
             index = load_document_index()
 
             # Should return default structure
@@ -368,7 +362,7 @@ class TestDocumentIndexEdgeCases:
         with tempfile.TemporaryDirectory() as tmpdir:
             index_file = Path(tmpdir) / "subdir" / "index.json"
 
-            with patch('flockparsecli.INDEX_FILE', index_file):
+            with patch("flockparsecli.INDEX_FILE", index_file):
                 # Directory doesn't exist yet
                 assert not index_file.parent.exists()
 
@@ -382,7 +376,7 @@ class TestDocumentIndexEdgeCases:
 class TestEmbedBatchEdgeCases:
     """Test embed_batch edge cases"""
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_embed_batch_single_worker(self, mock_client):
         """Test embed_batch with max_workers=1"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -398,7 +392,7 @@ class TestEmbedBatchEdgeCases:
 
         assert len(results) == 3
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_embed_batch_error_in_batch(self, mock_client):
         """Test handling errors during batch embedding"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)

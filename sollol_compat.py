@@ -18,25 +18,11 @@ from sollol.network_observer import log_ollama_error, log_ollama_request, log_ol
 
 logger = logging.getLogger(__name__)
 
-if not getattr(logging.Logger, "_sollol_diag_installed", False):
-    from sollol.network_observer import get_observer
 
-    def _diag_log_observer(label: str):
-        obs = get_observer()
-        logging.getLogger("flockparser").warning(
-            "[diag:%s] redis_client=%s sampling=%s sample_rate=%.2f batch=%d queue=%d",
-            label,
-            bool(obs.redis_client),
-            obs.enable_sampling,
-            obs.sample_rate,
-            len(getattr(obs, "dashboard_batch", [])),
-            obs.event_queue.qsize(),
-        )
+# Diagnostic logging disabled - no performance impact
+def _diag_log_observer(label: str):
+    pass
 
-    logging.Logger._sollol_diag_installed = True
-else:
-    def _diag_log_observer(label: str):
-        pass
 
 # Thread-local storage for parallelism context
 _thread_local = threading.local()
@@ -77,7 +63,7 @@ def _percentile(values: List[float], pct: float) -> float:
     return float(sorted_values[lower] + (sorted_values[upper] - sorted_values[lower]) * fraction)
 
 
-def _create_redis_client() -> Optional["redis.Redis"]:
+def _create_redis_client() -> Optional["redis.Redis"]:  # noqa: F821
     """Create Redis client using SOLLOL environment defaults."""
     try:
         import redis  # type: ignore
@@ -221,9 +207,7 @@ def _make_request_with_metadata(
 
         start_time = time.time()
 
-        log_ollama_request(
-            backend=node_key, model=tracked_model, operation=operation, priority=priority
-        )
+        log_ollama_request(backend=node_key, model=tracked_model, operation=operation, priority=priority)
 
         try:
             logger.debug(f"Request to {url}")
@@ -242,9 +226,7 @@ def _make_request_with_metadata(
             if response.status_code == 200:
                 with self._lock:
                     self.stats["successful_requests"] += 1
-                    self.stats["nodes_used"][node_key] = (
-                        self.stats["nodes_used"].get(node_key, 0) + 1
-                    )
+                    self.stats["nodes_used"][node_key] = self.stats["nodes_used"].get(node_key, 0) + 1
 
                     self.stats.setdefault("node_performance", {})
                     perf = self.stats["node_performance"].setdefault(
@@ -263,13 +245,11 @@ def _make_request_with_metadata(
                     if perf["total_requests"] == 1:
                         perf["latency_ms"] = latency_ms
                     else:
-                        perf["latency_ms"] = (
-                            perf["latency_ms"] * (perf["total_requests"] - 1) + latency_ms
-                        ) / perf["total_requests"]
+                        perf["latency_ms"] = (perf["latency_ms"] * (perf["total_requests"] - 1) + latency_ms) / perf[
+                            "total_requests"
+                        ]
 
-                    perf["success_rate"] = (
-                        perf["total_requests"] - perf["failed_requests"]
-                    ) / perf["total_requests"]
+                    perf["success_rate"] = (perf["total_requests"] - perf["failed_requests"]) / perf["total_requests"]
                     if requested_model:
                         perf["last_model"] = requested_model
                     # Only persist real model values (don't write "unknown")
@@ -294,9 +274,7 @@ def _make_request_with_metadata(
                 )
 
                 if self.router and "model" in data:
-                    task_type = (
-                        routing_decision.get("task_type", "generation") if routing_decision else "generation"
-                    )
+                    task_type = routing_decision.get("task_type", "generation") if routing_decision else "generation"
                     self.router.record_performance(
                         task_type=task_type, model=data["model"], actual_duration_ms=latency_ms
                     )
@@ -359,9 +337,7 @@ def _embed_batch_sequential_with_metadata(
         return [None] * batch_size
 
     node_url = f"http://{host}:{port}"
-    logger.info(
-        f"➡️  Sequential mode: Processing {batch_size} embeddings on {node_key} with connection reuse"
-    )
+    logger.info(f"➡️  Sequential mode: Processing {batch_size} embeddings on {node_key} with connection reuse")
 
     client = ollama.Client(host=node_url)
 
@@ -374,9 +350,7 @@ def _embed_batch_sequential_with_metadata(
         _diag_log_observer("embed")
 
         try:
-            log_ollama_request(
-                backend=node_key, model=model, operation="embed", priority=priority
-            )
+            log_ollama_request(backend=node_key, model=model, operation="embed", priority=priority)
 
             embed_start = time.time()
             result = client.embed(model=model, input=text, **kwargs)
@@ -421,14 +395,10 @@ def _embed_batch_sequential_with_metadata(
                 progress_pct = ((i + 1) * 100) // batch_size
                 logger.info(f"   Progress: {i + 1}/{batch_size} embeddings ({progress_pct}%)")
         except Exception as exc:
-            embed_latency_ms = (
-                (time.time() - embed_start) * 1000 if "embed_start" in locals() else 0
-            )
+            embed_latency_ms = (time.time() - embed_start) * 1000 if "embed_start" in locals() else 0
             logger.error(f"Error embedding text {i}: {exc}")
 
-            log_ollama_error(
-                backend=node_key, model=model, error=str(exc), latency_ms=embed_latency_ms
-            )
+            log_ollama_error(backend=node_key, model=model, error=str(exc), latency_ms=embed_latency_ms)
 
             results.append(None)
             errors += 1
@@ -475,7 +445,12 @@ def _embed_batch_sequential_with_metadata(
 
 
 def _make_streaming_request_with_metadata(
-    self, endpoint: str, data: Dict[str, Any], priority: int = 5, timeout: float = 300.0, node: Optional[Dict[str, Any]] = None
+    self,
+    endpoint: str,
+    data: Dict[str, Any],
+    priority: int = 5,
+    timeout: float = 300.0,
+    node: Optional[Dict[str, Any]] = None,
 ):
     """
     Override OllamaPool streaming request handling to track last model/operation metadata.
@@ -571,7 +546,9 @@ def _start_observability_bridge(pool: OllamaPool):
 
     redis_client = _create_redis_client()
     if not redis_client:
-        logger.error("❌ FlockParser observability bridge: Redis connection failed, metrics will NOT be published to dashboard")
+        logger.error(
+            "❌ FlockParser observability bridge: Redis connection failed, metrics will NOT be published to dashboard"
+        )
         return
 
     logger.info("✅ FlockParser observability bridge: Redis connected, starting metrics publisher")
@@ -593,9 +570,7 @@ def _start_observability_bridge(pool: OllamaPool):
 
                 total_requests = stats.get("total_requests", 0)
                 successful_requests = stats.get("successful_requests", 0)
-                success_rate = (
-                    successful_requests / total_requests if total_requests else 1.0
-                )
+                success_rate = successful_requests / total_requests if total_requests else 1.0
                 avg_latency = sum(latencies) / len(latencies) if latencies else 0.0
 
                 analytics = {
@@ -761,7 +736,9 @@ def _start_observability_bridge(pool: OllamaPool):
     pool._flockparser_metrics_stop_event = stop_event
     pool._flockparser_metrics_client = redis_client
 
-    logger.info(f"✅ FlockParser observability bridge thread started (alive={thread.is_alive()}, will publish every 5s)")
+    logger.info(
+        f"✅ FlockParser observability bridge thread started (alive={thread.is_alive()}, will publish every 5s)"
+    )
 
     def _shutdown():
         stop = getattr(pool, "_flockparser_metrics_stop_event", None)
@@ -835,7 +812,7 @@ def add_flockparser_methods(pool: OllamaPool, kb_dir: Path):
         discovered_keys = set()
         logger.info(f"📡 Found {len(discovered)} Ollama node(s) on network:")
         for node_dict in discovered:
-            if node_dict['host'] not in ['localhost', '127.0.0.1']:
+            if node_dict["host"] not in ["localhost", "127.0.0.1"]:
                 node_key = f"{node_dict['host']}:{node_dict['port']}"
                 discovered_keys.add(node_key)
                 logger.info(f"   • http://{node_key}")
@@ -1030,8 +1007,9 @@ def add_flockparser_methods(pool: OllamaPool, kb_dir: Path):
     def _save_nodes(self):
         """Save nodes to FlockParser's nodes file."""
         import json
+
         try:
-            with open(self._nodes_file, 'w') as f:
+            with open(self._nodes_file, "w") as f:
                 json.dump(self.instances, f, indent=2)
         except Exception as e:
             logger.warning(f"Failed to save nodes: {e}")
@@ -1040,6 +1018,7 @@ def add_flockparser_methods(pool: OllamaPool, kb_dir: Path):
 
     # Override add_node to save
     original_add_node = pool.add_node
+
     def add_node_with_save(self, host, port=11434):
         original_add_node(host, port)
         pool._save_nodes()
@@ -1049,6 +1028,7 @@ def add_flockparser_methods(pool: OllamaPool, kb_dir: Path):
 
     # Override remove_node to save
     original_remove_node = pool.remove_node
+
     def remove_node_with_save(self, host, port=11434):
         original_remove_node(host, port)
         pool._save_nodes()
