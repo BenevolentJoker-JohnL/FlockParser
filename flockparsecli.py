@@ -2035,6 +2035,12 @@ def main():
             logger.info(COMMANDS)
 
 
+# Compatibility exports for tests
+# Tests import OllamaLoadBalancer which no longer exists as a class
+# Export OllamaPool (which gets wrapped with FlockParser methods via add_flockparser_methods)
+OllamaLoadBalancer = OllamaPool
+
+
 if __name__ == "__main__":
     # Required for multiprocessing (Dask, Ray) to work correctly
     import multiprocessing
