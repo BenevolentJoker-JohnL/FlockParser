@@ -179,7 +179,7 @@ class TestDocumentIndex:
 
     def test_load_document_index_creates_default(self):
         """Test that load_document_index creates default structure"""
-        with patch('flockparsecli.INDEX_FILE', Path(tempfile.mktemp())):
+        with patch("flockparsecli.INDEX_FILE", Path(tempfile.mktemp())):
             index = load_document_index()
 
             assert isinstance(index, dict), "Should return dict"
@@ -188,7 +188,7 @@ class TestDocumentIndex:
 
     def test_save_and_load_document_index(self):
         """Test saving and loading document index"""
-        temp_index = Path(tempfile.mktemp(suffix='.json'))
+        temp_index = Path(tempfile.mktemp(suffix=".json"))
 
         try:
             test_data = {
@@ -197,12 +197,12 @@ class TestDocumentIndex:
                         "id": "test123",
                         "original": "/path/to/doc.pdf",
                         "text_path": "/path/to/doc.txt",
-                        "processed_date": "2025-01-01"
+                        "processed_date": "2025-01-01",
                     }
                 ]
             }
 
-            with patch('flockparsecli.INDEX_FILE', temp_index):
+            with patch("flockparsecli.INDEX_FILE", temp_index):
                 save_document_index(test_data)
                 loaded = load_document_index()
 
@@ -215,16 +215,16 @@ class TestDocumentIndex:
 
     def test_register_document(self):
         """Test registering a new document"""
-        temp_index = Path(tempfile.mktemp(suffix='.json'))
+        temp_index = Path(tempfile.mktemp(suffix=".json"))
 
         try:
-            with patch('flockparsecli.INDEX_FILE', temp_index):
+            with patch("flockparsecli.INDEX_FILE", temp_index):
                 # Register a document
                 doc_id = register_document(
                     pdf_path="/test/doc.pdf",
                     txt_path="/test/doc.txt",
                     content="Test content",
-                    chunks=["chunk1", "chunk2"]
+                    chunks=["chunk1", "chunk2"],
                 )
 
                 assert isinstance(doc_id, str), "Should return document ID"

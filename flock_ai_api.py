@@ -13,6 +13,7 @@ from typing import Optional, List
 import ollama
 import json
 
+
 # Pydantic Models for Request Bodies
 class QueryRequest(BaseModel):
     query: str
@@ -121,7 +122,14 @@ async def root():
         "status": "running",
         "authentication": "Required (X-API-Key header for most endpoints)",
         "public_endpoints": ["/", "/health", "/stats", "/query"],
-        "authenticated_endpoints": ["/upload", "/search", "/summarize", "/documents", "/process-local", "/process-directory"],
+        "authenticated_endpoints": [
+            "/upload",
+            "/search",
+            "/summarize",
+            "/documents",
+            "/process-local",
+            "/process-directory",
+        ],
     }
 
 
@@ -176,13 +184,15 @@ async def list_documents(api_key: str = Depends(verify_api_key)):
 
         documents = []
         for doc in index_data.get("documents", []):
-            documents.append({
-                "id": doc["id"],
-                "filename": Path(doc["original"]).name,
-                "original_path": doc["original"],
-                "processed_date": doc["processed_date"],
-                "chunks": len(doc.get("chunks", []))
-            })
+            documents.append(
+                {
+                    "id": doc["id"],
+                    "filename": Path(doc["original"]).name,
+                    "original_path": doc["original"],
+                    "processed_date": doc["processed_date"],
+                    "chunks": len(doc.get("chunks", [])),
+                }
+            )
 
         return {"documents": documents, "total": len(documents)}
     except Exception as e:
@@ -214,7 +224,7 @@ async def get_document(doc_id: str, api_key: str = Depends(verify_api_key)):
                     "text_path": doc["text_path"],
                     "processed_date": doc["processed_date"],
                     "chunks": len(doc.get("chunks", [])),
-                    "content": text_content
+                    "content": text_content,
                 }
 
         raise HTTPException(status_code=404, detail=f"Document {doc_id} not found")
@@ -225,10 +235,7 @@ async def get_document(doc_id: str, api_key: str = Depends(verify_api_key)):
 
 
 @app.post("/process-local/")
-async def process_local_pdf(
-    file_path: str,
-    api_key: str = Depends(verify_api_key)
-):
+async def process_local_pdf(file_path: str, api_key: str = Depends(verify_api_key)):
     """Process a PDF file from the local filesystem (requires authentication)"""
     try:
         pdf_path = Path(file_path).expanduser().resolve()
@@ -243,21 +250,18 @@ async def process_local_pdf(
         # Note: This requires flockparsecli to be importable
         try:
             import sys
+
             sys.path.insert(0, str(Path(__file__).parent))
             from flockparsecli import process_pdf
 
             # Process the PDF (this will add it to the knowledge base)
             process_pdf(pdf_path)
 
-            return {
-                "message": "PDF processed successfully",
-                "file_path": str(pdf_path),
-                "filename": pdf_path.name
-            }
+            return {"message": "PDF processed successfully", "file_path": str(pdf_path), "filename": pdf_path.name}
         except ImportError as e:
             raise HTTPException(
                 status_code=500,
-                detail=f"Cannot import flockparsecli: {str(e)}. Make sure FlockParser CLI is available."
+                detail=f"Cannot import flockparsecli: {str(e)}. Make sure FlockParser CLI is available.",
             )
     except HTTPException:
         raise
@@ -266,10 +270,7 @@ async def process_local_pdf(
 
 
 @app.post("/process-directory/")
-async def process_local_directory(
-    directory_path: str,
-    api_key: str = Depends(verify_api_key)
-):
+async def process_local_directory(directory_path: str, api_key: str = Depends(verify_api_key)):
     """Process all PDFs in a directory from the local filesystem (requires authentication)"""
     try:
         dir_path = Path(directory_path).expanduser().resolve()
@@ -284,6 +285,7 @@ async def process_local_directory(
         # Import processing function from CLI
         try:
             import sys
+
             sys.path.insert(0, str(Path(__file__).parent))
             from flockparsecli import process_pdf
 
@@ -300,12 +302,12 @@ async def process_local_directory(
                 "message": f"Processed {len(processed_files)} PDFs",
                 "directory": str(dir_path),
                 "processed": len(processed_files),
-                "files": processed_files
+                "files": processed_files,
             }
         except ImportError as e:
             raise HTTPException(
                 status_code=500,
-                detail=f"Cannot import flockparsecli: {str(e)}. Make sure FlockParser CLI is available."
+                detail=f"Cannot import flockparsecli: {str(e)}. Make sure FlockParser CLI is available.",
             )
     except HTTPException:
         raise
@@ -338,14 +340,10 @@ async def health_check():
             "available": True,
             "document_index_exists": doc_index_exists,
             "chroma_healthy": chroma_healthy,
-            "document_count": doc_count
+            "document_count": doc_count,
         }
     except Exception as e:
-        return {
-            "status": "error",
-            "available": False,
-            "error": str(e)
-        }
+        return {"status": "error", "available": False, "error": str(e)}
 
 
 @app.get("/stats")
@@ -353,12 +351,7 @@ async def get_stats():
     """Get statistics about knowledge base (SynapticLlamas compatibility - public)"""
     try:
         if not INDEX_FILE.exists():
-            return {
-                "total_documents": 0,
-                "total_chunks": 0,
-                "knowledge_base_size": 0,
-                "available": True
-            }
+            return {"total_documents": 0, "total_chunks": 0, "knowledge_base_size": 0, "available": True}
 
         with open(INDEX_FILE, "r") as f:
             index_data = json.load(f)
@@ -384,10 +377,10 @@ async def get_stats():
                     "id": doc["id"],
                     "filename": Path(doc["original"]).name,
                     "chunks": len(doc.get("chunks", [])),
-                    "processed_date": doc.get("processed_date", "")
+                    "processed_date": doc.get("processed_date", ""),
                 }
                 for doc in documents
-            ]
+            ],
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -409,27 +402,22 @@ async def query_with_embedding(request: QueryRequest):
             query_embedding = embed_text(request.query).tolist()
 
         # Query ChromaDB with the embedding
-        results = collection.query(
-            query_embeddings=[query_embedding],
-            n_results=request.n_results
-        )
+        results = collection.query(query_embeddings=[query_embedding], n_results=request.n_results)
 
         # Format results for SynapticLlamas
         formatted_results = []
         if results and results.get("documents"):
             for i, doc in enumerate(results["documents"][0]):
-                formatted_results.append({
-                    "content": doc,
-                    "metadata": results["metadatas"][0][i] if results.get("metadatas") else {},
-                    "distance": results["distances"][0][i] if results.get("distances") else None,
-                    "id": results["ids"][0][i] if results.get("ids") else None
-                })
+                formatted_results.append(
+                    {
+                        "content": doc,
+                        "metadata": results["metadatas"][0][i] if results.get("metadatas") else {},
+                        "distance": results["distances"][0][i] if results.get("distances") else None,
+                        "id": results["ids"][0][i] if results.get("ids") else None,
+                    }
+                )
 
-        return {
-            "query": request.query,
-            "results": formatted_results,
-            "total_results": len(formatted_results)
-        }
+        return {"query": request.query, "results": formatted_results, "total_results": len(formatted_results)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

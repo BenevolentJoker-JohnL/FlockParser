@@ -54,32 +54,24 @@ class TestChunkTextEdgeCases:
 class TestGetSimilarChunksComplete:
     """Test complete similarity search workflow"""
 
-    @patch('flockparsecli.Path.exists')
-    @patch('builtins.open', new_callable=mock_open)
-    @patch('flockparsecli.load_document_index')
-    @patch('flockparsecli.get_cached_embedding')
+    @patch("flockparsecli.Path.exists")
+    @patch("builtins.open", new_callable=mock_open)
+    @patch("flockparsecli.load_document_index")
+    @patch("flockparsecli.get_cached_embedding")
     def test_get_similar_chunks_with_real_chunks(self, mock_embed, mock_index, mock_file_open, mock_exists):
         """Test similarity search with real chunk files"""
         mock_embed.return_value = [0.5] * 1024
         mock_exists.return_value = True
 
         # Mock chunk data
-        chunk_data = {
-            "text": "Test chunk content",
-            "embedding": [0.5] * 1024
-        }
+        chunk_data = {"text": "Test chunk content", "embedding": [0.5] * 1024}
         mock_file_open.return_value.read.return_value = json.dumps(chunk_data)
 
         # Mock index with chunk references
         mock_index.return_value = {
-            "documents": [{
-                "id": "doc1",
-                "original": "/path/to/test.pdf",
-                "chunks": [{
-                    "file": "/tmp/chunk1.json",
-                    "chunk_id": 0
-                }]
-            }]
+            "documents": [
+                {"id": "doc1", "original": "/path/to/test.pdf", "chunks": [{"file": "/tmp/chunk1.json", "chunk_id": 0}]}
+            ]
         }
 
         results = get_similar_chunks("test query", top_k=5)
@@ -87,18 +79,14 @@ class TestGetSimilarChunksComplete:
         # Should execute search logic
         assert isinstance(results, list)
 
-    @patch('flockparsecli.load_document_index')
-    @patch('flockparsecli.get_cached_embedding')
+    @patch("flockparsecli.load_document_index")
+    @patch("flockparsecli.get_cached_embedding")
     def test_get_similar_chunks_adaptive_topk(self, mock_embed, mock_index):
         """Test adaptive top-k selection"""
         mock_embed.return_value = [0.5] * 1024
 
         # Mock index with many chunks
-        mock_index.return_value = {
-            "documents": [
-                {"chunks": [{"file": f"/tmp/chunk{i}.json"} for i in range(100)]}
-            ]
-        }
+        mock_index.return_value = {"documents": [{"chunks": [{"file": f"/tmp/chunk{i}.json"} for i in range(100)]}]}
 
         # Don't specify top_k, should use adaptive
         results = get_similar_chunks("test query")
@@ -110,16 +98,14 @@ class TestGetSimilarChunksComplete:
 class TestLoadBalancerAdvanced:
     """Test advanced load balancer functionality"""
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_verify_models_on_nodes(self, mock_client):
         """Test model verification"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
         # Mock client
         mock_instance = Mock()
-        mock_instance.list.return_value = {
-            "models": [{"name": "llama3.2:1b"}]
-        }
+        mock_instance.list.return_value = {"models": [{"name": "llama3.2:1b"}]}
         mock_client.return_value = mock_instance
 
         try:
@@ -127,9 +113,9 @@ class TestLoadBalancerAdvanced:
         except:
             pass  # May raise, that's OK
 
-    @patch('flockparsecli.socket.gethostbyname')
-    @patch('flockparsecli.socket.gethostname')
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.socket.gethostbyname")
+    @patch("flockparsecli.socket.gethostname")
+    @patch("flockparsecli.ollama.Client")
     def test_discover_nodes_basic(self, mock_client, mock_hostname, mock_gethost):
         """Test node discovery"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -160,7 +146,7 @@ class TestLoadBalancerAdvanced:
             nodes_file = Path(tmpdir) / "nodes.json"
 
             # Create old format (list of strings)
-            with open(nodes_file, 'w') as f:
+            with open(nodes_file, "w") as f:
                 json.dump(["http://192.168.1.10:11434"], f)
 
             lb = OllamaLoadBalancer(instances=[], skip_init_checks=True)
@@ -177,12 +163,12 @@ class TestDocumentIndex:
 
     def test_load_document_index_corrupted(self):
         """Test loading corrupted index"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             f.write("{invalid json")
             temp_file = f.name
 
         try:
-            with patch('flockparsecli.INDEX_FILE', Path(temp_file)):
+            with patch("flockparsecli.INDEX_FILE", Path(temp_file)):
                 index = load_document_index()
 
                 # Should return default empty index
@@ -193,13 +179,13 @@ class TestDocumentIndex:
 
     def test_save_document_index_basic(self):
         """Test saving document index"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             temp_file = f.name
 
         try:
             index_data = {"documents": [{"id": "test"}]}
 
-            with patch('flockparsecli.INDEX_FILE', Path(temp_file)):
+            with patch("flockparsecli.INDEX_FILE", Path(temp_file)):
                 save_document_index(index_data)
 
                 # Should create file
@@ -219,7 +205,7 @@ class TestLoadBalancerEdgeCases:
 
         assert results == []
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_embed_batch_single_item(self, mock_client):
         """Test batch embedding with single item"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)

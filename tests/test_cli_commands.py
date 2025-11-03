@@ -22,13 +22,13 @@ from flockparsecli import (
 class TestCLICommands:
     """Test CLI command functions"""
 
-    @patch('flockparsecli.load_balancer')
+    @patch("flockparsecli.load_balancer")
     def test_check_dependencies_basic(self, mock_lb):
         """Test basic dependency check"""
         mock_lb.instances = ["http://localhost:11434"]
         mock_lb.get_next_instance.return_value = "http://localhost:11434"
 
-        with patch('flockparsecli.ollama.Client') as mock_client:
+        with patch("flockparsecli.ollama.Client") as mock_client:
             mock_instance = Mock()
             mock_instance.list.return_value = {"models": []}
             mock_client.return_value = mock_instance
@@ -38,8 +38,8 @@ class TestCLICommands:
             except:
                 pass  # May raise, that's ok
 
-    @patch('flockparsecli.EMBEDDING_CACHE_FILE')
-    @patch('flockparsecli.load_balancer')
+    @patch("flockparsecli.EMBEDDING_CACHE_FILE")
+    @patch("flockparsecli.load_balancer")
     def test_clear_cache_basic(self, mock_lb, mock_cache):
         """Test cache clearing"""
         mock_cache.exists.return_value = True
@@ -54,7 +54,7 @@ class TestCLICommands:
 class TestLoadBalancerMethods:
     """Test additional load balancer methods"""
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_add_node_basic(self, mock_client):
         """Test adding a node"""
         lb = OllamaLoadBalancer(instances=[], skip_init_checks=True)
@@ -71,7 +71,9 @@ class TestLoadBalancerMethods:
 
     def test_remove_node_basic(self):
         """Test removing a node"""
-        lb = OllamaLoadBalancer(instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True)
+        lb = OllamaLoadBalancer(
+            instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True
+        )
 
         result = lb.remove_node("http://192.168.1.10:11434")
 
@@ -86,16 +88,14 @@ class TestLoadBalancerMethods:
 
         assert instance in lb.instances or instance is None
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_model_check_available(self, mock_client):
         """Test checking if model is available"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
         # Mock client response
         mock_instance = Mock()
-        mock_instance.list.return_value = {
-            "models": [{"name": "llama3.2:1b"}]
-        }
+        mock_instance.list.return_value = {"models": [{"name": "llama3.2:1b"}]}
         mock_client.return_value = mock_instance
 
         result = lb._check_model_available("http://localhost:11434", "llama3.2:1b")
@@ -113,7 +113,7 @@ class TestLoadBalancerMethods:
         # Test no match
         assert lb._model_matches("llama3.2:1b", ["mistral"]) is False
 
-    @patch('flockparsecli.requests.get')
+    @patch("flockparsecli.requests.get")
     def test_detect_gpu(self, mock_get):
         """Test GPU detection"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -129,7 +129,7 @@ class TestLoadBalancerMethods:
         # May return various formats
         assert result is not None or result is None
 
-    @patch('flockparsecli.requests.get')
+    @patch("flockparsecli.requests.get")
     def test_measure_latency(self, mock_get):
         """Test latency measurement"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)

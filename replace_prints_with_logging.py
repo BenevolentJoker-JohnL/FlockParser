@@ -11,7 +11,7 @@ def replace_prints_in_file(filepath: Path) -> int:
     Replace print statements with appropriate logging calls
     Returns number of replacements made
     """
-    with open(filepath, 'r') as f:
+    with open(filepath, "r") as f:
         content = f.read()
 
     original_content = content
@@ -20,23 +20,20 @@ def replace_prints_in_file(filepath: Path) -> int:
     # Patterns for different types of print statements
     patterns = [
         # Error messages (❌, ⚠️, Error, Failed, etc.)
-        (r'print\(f?"(❌[^"]*)"', r'logger.error(\1', 'error'),
-        (r'print\(f?"(⚠️[^"]*)"', r'logger.warning(\1', 'warning'),
-        (r'print\(f?"([^"]*(?:Error|ERROR|Failed|FAILED)[^"]*)"', r'logger.error(\1', 'error'),
-
+        (r'print\(f?"(❌[^"]*)"', r"logger.error(\1", "error"),
+        (r'print\(f?"(⚠️[^"]*)"', r"logger.warning(\1", "warning"),
+        (r'print\(f?"([^"]*(?:Error|ERROR|Failed|FAILED)[^"]*)"', r"logger.error(\1", "error"),
         # Success messages (✅, ✓, Success, etc.)
-        (r'print\(f?"(✅[^"]*)"', r'logger.info(\1', 'info'),
-        (r'print\(f?"(✓[^"]*)"', r'logger.info(\1', 'info'),
-        (r'print\(f?"([^"]*(?:Success|SUCCESS|Complete|COMPLETE)[^"]*)"', r'logger.info(\1', 'info'),
-
+        (r'print\(f?"(✅[^"]*)"', r"logger.info(\1", "info"),
+        (r'print\(f?"(✓[^"]*)"', r"logger.info(\1", "info"),
+        (r'print\(f?"([^"]*(?:Success|SUCCESS|Complete|COMPLETE)[^"]*)"', r"logger.info(\1", "info"),
         # Info messages (ℹ️, 📊, 📄, etc.)
-        (r'print\(f?"(ℹ️[^"]*)"', r'logger.info(\1', 'info'),
-        (r'print\(f?"(💡[^"]*)"', r'logger.info(\1', 'info'),
-        (r'print\(f?"(📊[^"]*)"', r'logger.info(\1', 'info'),
-        (r'print\(f?"(📄[^"]*)"', r'logger.info(\1', 'info'),
-
+        (r'print\(f?"(ℹ️[^"]*)"', r"logger.info(\1", "info"),
+        (r'print\(f?"(💡[^"]*)"', r"logger.info(\1", "info"),
+        (r'print\(f?"(📊[^"]*)"', r"logger.info(\1", "info"),
+        (r'print\(f?"(📄[^"]*)"', r"logger.info(\1", "info"),
         # Debug/verbose messages (Starting, Processing, etc.)
-        (r'print\(f?"([^"]*(?:Starting|Processing|Analyzing|Checking)[^"]*)"', r'logger.debug(\1', 'debug'),
+        (r'print\(f?"([^"]*(?:Starting|Processing|Analyzing|Checking)[^"]*)"', r"logger.debug(\1", "debug"),
     ]
 
     # Apply patterns
@@ -48,11 +45,11 @@ def replace_prints_in_file(filepath: Path) -> int:
 
     # Generic print statements -> logger.info
     # This handles remaining prints
-    content = re.sub(r'\bprint\(', 'logger.info(', content)
+    content = re.sub(r"\bprint\(", "logger.info(", content)
 
     # Write back if changes were made
     if content != original_content:
-        with open(filepath, 'w') as f:
+        with open(filepath, "w") as f:
             f.write(content)
 
     return replacements
@@ -61,7 +58,7 @@ def replace_prints_in_file(filepath: Path) -> int:
 def main():
     """Replace print statements in main files"""
     files_to_process = [
-        'flockparsecli.py',
+        "flockparsecli.py",
     ]
 
     total = 0
@@ -79,5 +76,5 @@ def main():
     print(f"\n✨ Total replacements: {total}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -45,17 +45,17 @@ class TestSanitizeXMLEdgeCases:
 class TestRegisterDocumentEdgeCases:
     """Test document registration edge cases"""
 
-    @patch('flockparsecli.chroma_collection.add')
-    @patch('flockparsecli.get_cached_embedding')
-    @patch('flockparsecli.save_document_index')
-    @patch('flockparsecli.load_document_index')
+    @patch("flockparsecli.chroma_collection.add")
+    @patch("flockparsecli.get_cached_embedding")
+    @patch("flockparsecli.save_document_index")
+    @patch("flockparsecli.load_document_index")
     def test_register_document_with_long_chunks(self, mock_load, mock_save, mock_embed, mock_chroma):
         """Test registering with many long chunks"""
         mock_load.return_value = {"documents": []}
         mock_embed.return_value = [0.1] * 1024
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as pdf:
-            with tempfile.NamedTemporaryFile(suffix='.txt', delete=False) as txt:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as pdf:
+            with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as txt:
                 pdf_path = Path(pdf.name)
                 txt_path = Path(txt.name)
 
@@ -76,22 +76,18 @@ class TestRegisterDocumentEdgeCases:
 class TestLoadBalancerVariants:
     """Test load balancer variant handling"""
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_check_model_with_colon_variant(self, mock_client):
         """Test checking model with colon-separated variants"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
         # Mock client with model
         mock_instance = Mock()
-        mock_instance.list.return_value = {
-            "models": [{"name": "llama3.2:1b-instruct"}]
-        }
+        mock_instance.list.return_value = {"models": [{"name": "llama3.2:1b-instruct"}]}
         mock_client.return_value = mock_instance
 
         result = lb._check_model_available(
-            "http://localhost:11434",
-            "llama3.2:1b",
-            acceptable_variants=["llama3.2:1b-instruct", "llama3.2:1b"]
+            "http://localhost:11434", "llama3.2:1b", acceptable_variants=["llama3.2:1b-instruct", "llama3.2:1b"]
         )
 
         # Should match variant
@@ -108,8 +104,7 @@ class TestLoadBalancerVariants:
     def test_get_best_instance_with_scores(self):
         """Test getting best instance based on health scores"""
         lb = OllamaLoadBalancer(
-            instances=["http://localhost:11434", "http://192.168.1.10:11434"],
-            skip_init_checks=True
+            instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True
         )
 
         # Set different health scores
@@ -153,10 +148,10 @@ class TestLoadBalancerSaveLoad:
             # Create new format (list of dicts)
             nodes_data = [
                 {"url": "http://192.168.1.10:11434", "force_cpu": False},
-                {"url": "http://192.168.1.11:11434", "force_cpu": True}
+                {"url": "http://192.168.1.11:11434", "force_cpu": True},
             ]
 
-            with open(nodes_file, 'w') as f:
+            with open(nodes_file, "w") as f:
                 json.dump(nodes_data, f)
 
             lb = OllamaLoadBalancer(instances=[], skip_init_checks=True)
@@ -172,7 +167,7 @@ class TestLoadBalancerSaveLoad:
 class TestEmbedBatchModes:
     """Test embed_batch with different modes"""
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_embed_batch_auto_mode_small(self, mock_client):
         """Test embed_batch auto mode with small batch"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -190,7 +185,7 @@ class TestEmbedBatchModes:
 
         assert len(results) == 2
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_embed_batch_auto_mode_large(self, mock_client):
         """Test embed_batch auto mode with large batch"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)

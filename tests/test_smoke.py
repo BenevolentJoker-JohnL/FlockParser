@@ -21,6 +21,7 @@ class TestImports:
         import pdf2image
         import pytesseract
         import streamlit
+
         assert True
 
     def test_import_cli_module(self):
@@ -128,25 +129,29 @@ class TestDependencies:
     def test_chromadb_version(self):
         """Test that ChromaDB is available"""
         import chromadb
+
         # Just verify it imports and has basic attributes
-        assert hasattr(chromadb, 'Client')
+        assert hasattr(chromadb, "Client")
 
     def test_requests_available(self):
         """Test that requests library works"""
         import requests
+
         # Test a basic request to verify it's functional
-        assert hasattr(requests, 'get')
-        assert hasattr(requests, 'post')
+        assert hasattr(requests, "get")
+        assert hasattr(requests, "post")
 
     def test_pdf_dependencies(self):
         """Test that PDF processing dependencies are available"""
         import pdf2image
         import pytesseract
-        assert hasattr(pdf2image, 'convert_from_path')
+
+        assert hasattr(pdf2image, "convert_from_path")
 
     def test_pathlib_available(self):
         """Test that pathlib is available for path handling"""
         from pathlib import Path
+
         test_path = Path(__file__)
         assert test_path.exists()
         assert test_path.is_file()

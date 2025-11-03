@@ -4,7 +4,7 @@ import os
 import sys
 
 # Use development SOLLOL code instead of installed package
-sys.path.insert(0, '/home/joker/SOLLOL/src')
+sys.path.insert(0, "/home/joker/SOLLOL/src")
 
 # CRITICAL: Configure NetworkObserver BEFORE any SOLLOL imports
 # NetworkObserver is a singleton initialized on first import, so this MUST come first
@@ -14,12 +14,13 @@ os.environ.setdefault("SOLLOL_ROUTING_LOG", "true")  # Ensure routing decisions 
 
 # Force unbuffered output for stdout and stderr
 # This prevents output buffering that can make the CLI appear frozen
-os.environ['PYTHONUNBUFFERED'] = '1'
+os.environ["PYTHONUNBUFFERED"] = "1"
 sys.stdout.reconfigure(line_buffering=True)
 sys.stderr.reconfigure(line_buffering=True)
 
 # CRITICAL: Configure logging BEFORE importing SOLLOL to prevent Dask logging deadlocks
 from logging_config import setup_logging
+
 logger = setup_logging()
 
 # Pre-flight Redis connectivity check so observability issues are logged before SOLLOL loads
@@ -45,6 +46,7 @@ import ollama
 # Set SOLLOL app name for logging context
 os.environ["SOLLOL_APP_NAME"] = "FlockParser"
 
+
 # Helper function to ensure prompts are visible
 def visible_input(prompt):
     """Input with automatic stdout/stderr flushing to ensure prompt is visible."""
@@ -59,6 +61,8 @@ def visible_input(prompt):
     sys.stderr.flush()
     # Read from stdin
     return sys.stdin.readline().strip()
+
+
 from pathlib import Path
 from PyPDF2 import PdfReader
 import docx
@@ -197,6 +201,7 @@ chroma_collection = chroma_client.get_or_create_collection(
 # Global reference (will be initialized in setup_load_balancer())
 load_balancer = None
 
+
 def setup_load_balancer():
     """Initialize SOLLOL pool with auto-discovery and dashboard.
 
@@ -209,11 +214,16 @@ def setup_load_balancer():
     # This ensures OllamaPool gets a properly configured routing logger with Redis
     from sollol.routing_logger import get_routing_logger, enable_console_routing_log
     import redis as redis_lib
+
     try:
-        routing_redis = redis_lib.from_url(os.getenv("SOLLOL_REDIS_URL", "redis://localhost:6379"), decode_responses=True)
+        routing_redis = redis_lib.from_url(
+            os.getenv("SOLLOL_REDIS_URL", "redis://localhost:6379"), decode_responses=True
+        )
         routing_redis.ping()  # Test connection
         routing_logger = get_routing_logger(redis_client=routing_redis, console_output=False)
-        logger.info(f"✅ Routing logger pre-initialized (enabled={routing_logger.enabled}, redis_available={routing_logger.redis_available})")
+        logger.info(
+            f"✅ Routing logger pre-initialized (enabled={routing_logger.enabled}, redis_available={routing_logger.redis_available})"
+        )
         logger.info(f"   📡 Publishing routing decisions to: sollol:routing_events")
     except Exception as e:
         logger.warning(f"⚠️  Routing logger Redis configuration failed: {e}")
@@ -235,11 +245,12 @@ def setup_load_balancer():
         enable_gpu_redis=True,  # Required for SOLLOL metrics publisher (latency, routing logs)
         redis_host=os.getenv("SOLLOL_REDIS_HOST", "localhost"),
         redis_port=int(os.getenv("SOLLOL_REDIS_PORT", "6379")),
-        register_with_dashboard=False  # Delay registration until after dashboard starts (see setup_dashboard)
+        register_with_dashboard=False,  # Delay registration until after dashboard starts (see setup_dashboard)
     )
 
     # DEBUG: Check observer configuration for dashboard activity logging
     from sollol.network_observer import get_observer
+
     observer = get_observer()
     logger.info(f"🔍 Observer Redis configured: {observer.redis_client is not None}")
     logger.info(f"🔍 Observer total events so far: {observer.get_stats()['total_events']}")
@@ -247,29 +258,32 @@ def setup_load_balancer():
     # Force immediate flush of any pending dashboard events for real-time updates
     if observer.redis_client:
         observer._flush_dashboard_batch()
-        logger.info(f"✅ Dashboard event flushing enabled (batch_size={observer.batch_size}, timeout={observer.batch_timeout}s)")
+        logger.info(
+            f"✅ Dashboard event flushing enabled (batch_size={observer.batch_size}, timeout={observer.batch_timeout}s)"
+        )
 
     # Load primed performance stats if available
     primed_stats_file = _SCRIPT_DIR / "sollol_primed_stats.json"
     if primed_stats_file.exists():
         try:
             import json
-            with open(primed_stats_file, 'r') as f:
+
+            with open(primed_stats_file, "r") as f:
                 primed_data = json.load(f)
 
-            if primed_data.get('priming_complete'):
+            if primed_data.get("priming_complete"):
                 # Merge primed stats into SOLLOL pool
-                if 'node_performance' in primed_data:
-                    load_balancer.stats['node_performance'] = primed_data['node_performance']
+                if "node_performance" in primed_data:
+                    load_balancer.stats["node_performance"] = primed_data["node_performance"]
                     logger.info("✅ Loaded primed performance stats (optimized distribution)")
 
                     # Show distribution preview
-                    node_perf = primed_data['node_performance']
+                    node_perf = primed_data["node_performance"]
                     if node_perf:
-                        total_throughput = sum(p.get('batch_throughput', 0.5) for p in node_perf.values())
+                        total_throughput = sum(p.get("batch_throughput", 0.5) for p in node_perf.values())
                         logger.info("📊 Configured workload distribution:")
                         for node_key, perf in node_perf.items():
-                            throughput = perf.get('batch_throughput', 0.5)
+                            throughput = perf.get("batch_throughput", 0.5)
                             pct = (throughput / total_throughput) * 100
                             logger.info(f"   {node_key}: {pct:.1f}%")
         except Exception as e:
@@ -288,10 +302,13 @@ def setup_load_balancer():
 
     return load_balancer
 
+
 # Dashboard configuration (read from environment)
 import os
+
 _dashboard_enabled = os.getenv("FLOCKPARSER_DASHBOARD", "true").lower() in ("true", "1", "yes", "on")
 _dashboard_port = int(os.getenv("FLOCKPARSER_DASHBOARD_PORT", "8080"))
+
 
 def setup_dashboard():
     """Start SOLLOL unified dashboard after pool creation.
@@ -299,14 +316,13 @@ def setup_dashboard():
     Must be called from within if __name__ == '__main__': to avoid
     multiprocessing issues with Dask worker spawning.
     """
-    global load_balancer
-
     if not _dashboard_enabled:
         logger.info("📊 Dashboard disabled (set FLOCKPARSER_DASHBOARD=true to enable)")
         return
 
     # Install Redis log publisher for distributed log streaming
     from sollol.dashboard_service import install_redis_log_publisher
+
     try:
         install_redis_log_publisher()
         logger.info("📡 Redis log publisher installed - logs streaming to dashboard")
@@ -332,13 +348,23 @@ def setup_dashboard():
 
     if not dashboard_running:
         # Start dashboard_service as subprocess (not daemon thread)
-        dashboard_proc = subprocess.Popen([
-            "python3", "-m", "sollol.dashboard_service",
-            "--port", str(_dashboard_port),
-            "--redis-url", "redis://localhost:6379",
-            "--ray-dashboard-port", "8265",
-            "--dask-dashboard-port", "8787",
-        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        dashboard_proc = subprocess.Popen(
+            [
+                "python3",
+                "-m",
+                "sollol.dashboard_service",
+                "--port",
+                str(_dashboard_port),
+                "--redis-url",
+                "redis://localhost:6379",
+                "--ray-dashboard-port",
+                "8265",
+                "--dask-dashboard-port",
+                "8787",
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
 
         # Wait for dashboard to start
         for attempt in range(10):
@@ -361,6 +387,7 @@ def setup_dashboard():
         try:
             from sollol import DashboardClient
             import socket
+
             hostname = socket.gethostname()
 
             dashboard_client = DashboardClient(
@@ -374,7 +401,7 @@ def setup_dashboard():
                     "enable_dask": True,
                     "enable_gpu_redis": True,
                 },
-                auto_register=True
+                auto_register=True,
             )
             logger.info(f"✅ FlockParser registered with dashboard: {dashboard_client.app_id}")
         except Exception as e:
@@ -383,6 +410,7 @@ def setup_dashboard():
         logger.info(f"📊 Dashboard: {dashboard_url}")
         logger.info(f"   - Ray Dashboard: http://localhost:8265")
         logger.info(f"   - Dask Dashboard: http://localhost:8787")
+
 
 # 💾 Index file for tracking processed documents
 INDEX_FILE = KB_DIR / "document_index.json"
@@ -466,6 +494,7 @@ def register_document(pdf_path, txt_path, content, chunks=None):
 
     # Get PDF filename for better logging (especially in parallel mode)
     from pathlib import Path
+
     pdf_name = Path(pdf_path).stem if pdf_path else "unknown"
 
     # Generate embeddings and chunks for search
@@ -493,7 +522,9 @@ def register_document(pdf_path, txt_path, content, chunks=None):
 
     # Log cache status explicitly
     if cached_count > 0:
-        logger.info(f"📦 [{pdf_name}] Using {cached_count} cached embeddings, processing {len(uncached_chunks)} fresh chunks")
+        logger.info(
+            f"📦 [{pdf_name}] Using {cached_count} cached embeddings, processing {len(uncached_chunks)} fresh chunks"
+        )
     else:
         logger.info(f"🆕 [{pdf_name}] No cached embeddings - processing all {len(uncached_chunks)} chunks fresh")
 
@@ -502,6 +533,7 @@ def register_document(pdf_path, txt_path, content, chunks=None):
         logger.info(f"🚀 [{pdf_name}] Embedding {len(uncached_chunks)} new chunks...")
 
         import time
+
         start_time = time.time()
 
         # Use SOLLOL's optimized embed_batch with adaptive parallelism
@@ -510,12 +542,15 @@ def register_document(pdf_path, txt_path, content, chunks=None):
         # - Uses connection reuse per node (_embed_batch_sequential)
         # - Processes nodes in parallel
         # - Provides 10-12x speedup over individual requests
-        logger.info(f"   📞 Calling SOLLOL embed_batch with {len(uncached_chunks)} chunks, {len(load_balancer.nodes)} nodes")
+        logger.info(
+            f"   📞 Calling SOLLOL embed_batch with {len(uncached_chunks)} chunks, {len(load_balancer.nodes)} nodes"
+        )
 
         # DEBUG: Check observer before embed_batch
         from sollol.network_observer import get_observer
+
         _obs = get_observer()
-        _before = _obs.get_stats()['total_events']
+        _before = _obs.get_stats()["total_events"]
         logger.info(f"🔍 Observer events BEFORE embed_batch: {_before}")
 
         all_results = load_balancer.embed_batch(
@@ -523,16 +558,17 @@ def register_document(pdf_path, txt_path, content, chunks=None):
             inputs=uncached_chunks,
             priority=7,
             use_adaptive=True,  # Enable adaptive parallelism strategy
-            keep_alive=EMBEDDING_KEEP_ALIVE
+            keep_alive=EMBEDDING_KEEP_ALIVE,
         )
 
         # DEBUG: Check observer after embed_batch
         # CRITICAL: Observer processes events asynchronously in background thread!
         # We need to wait for the event queue to be processed
         import time
+
         time.sleep(0.5)  # Give background thread time to process events
         _obs._flush_dashboard_batch()  # Force flush any batched events
-        _after = _obs.get_stats()['total_events']
+        _after = _obs.get_stats()["total_events"]
         logger.info(f"🔍 Observer events AFTER embed_batch (with 0.5s wait): {_after} (+{_after - _before})")
 
         logger.info(f"   📥 SOLLOL embed_batch returned {len([r for r in all_results if r is not None])} results")
@@ -540,7 +576,9 @@ def register_document(pdf_path, txt_path, content, chunks=None):
         total_time = time.time() - start_time
         successful = len([r for r in all_results if r is not None])
         rate = successful / total_time if total_time > 0 else 0
-        logger.info(f"   ✅ Embedded {successful}/{len(uncached_chunks)} chunks in {total_time:.1f}s ({rate:.1f} chunks/sec)")
+        logger.info(
+            f"   ✅ Embedded {successful}/{len(uncached_chunks)} chunks in {total_time:.1f}s ({rate:.1f} chunks/sec)"
+        )
 
         # Cache the embeddings
         cached_count = 0
@@ -634,7 +672,7 @@ def chunk_text(text, chunk_size=512, overlap=100):
                 words_per_chunk = max(50, words_per_chunk)  # At least 50 words
 
                 for i in range(0, len(words), words_per_chunk):
-                    word_chunk = " ".join(words[i: i + words_per_chunk])
+                    word_chunk = " ".join(words[i : i + words_per_chunk])
                     if word_chunk:
                         chunks.append(word_chunk)
                 continue
@@ -862,7 +900,7 @@ def clean_extracted_text(text):
         return text
 
     # Step 1: Normalize Unicode (convert composed chars to decomposed and back)
-    text = unicodedata.normalize('NFKC', text)
+    text = unicodedata.normalize("NFKC", text)
 
     # Step 2: Fix common Unicode escape sequences that appear as literal text
     # Replace \uXXXX patterns with actual Unicode characters
@@ -873,33 +911,57 @@ def clean_extracted_text(text):
         except:
             return match.group(0)
 
-    text = re.sub(r'\\u([0-9a-fA-F]{4})', replace_unicode_escapes, text)
-    text = re.sub(r'\\x([0-9a-fA-F]{2})', replace_unicode_escapes, text)
+    text = re.sub(r"\\u([0-9a-fA-F]{4})", replace_unicode_escapes, text)
+    text = re.sub(r"\\x([0-9a-fA-F]{2})", replace_unicode_escapes, text)
 
     # Step 3: Clean up common LaTeX remnants that get corrupted
     # Replace common Greek letter codes with their actual Unicode
     greek_map = {
-        r'\\alpha': 'α', r'\\beta': 'β', r'\\gamma': 'γ', r'\\delta': 'δ',
-        r'\\epsilon': 'ε', r'\\zeta': 'ζ', r'\\eta': 'η', r'\\theta': 'θ',
-        r'\\iota': 'ι', r'\\kappa': 'κ', r'\\lambda': 'λ', r'\\mu': 'μ',
-        r'\\nu': 'ν', r'\\xi': 'ξ', r'\\pi': 'π', r'\\rho': 'ρ',
-        r'\\sigma': 'σ', r'\\tau': 'τ', r'\\upsilon': 'υ', r'\\phi': 'φ',
-        r'\\chi': 'χ', r'\\psi': 'ψ', r'\\omega': 'ω',
+        r"\\alpha": "α",
+        r"\\beta": "β",
+        r"\\gamma": "γ",
+        r"\\delta": "δ",
+        r"\\epsilon": "ε",
+        r"\\zeta": "ζ",
+        r"\\eta": "η",
+        r"\\theta": "θ",
+        r"\\iota": "ι",
+        r"\\kappa": "κ",
+        r"\\lambda": "λ",
+        r"\\mu": "μ",
+        r"\\nu": "ν",
+        r"\\xi": "ξ",
+        r"\\pi": "π",
+        r"\\rho": "ρ",
+        r"\\sigma": "σ",
+        r"\\tau": "τ",
+        r"\\upsilon": "υ",
+        r"\\phi": "φ",
+        r"\\chi": "χ",
+        r"\\psi": "ψ",
+        r"\\omega": "ω",
         # Capital letters
-        r'\\Gamma': 'Γ', r'\\Delta': 'Δ', r'\\Theta': 'Θ', r'\\Lambda': 'Λ',
-        r'\\Xi': 'Ξ', r'\\Pi': 'Π', r'\\Sigma': 'Σ', r'\\Phi': 'Φ',
-        r'\\Psi': 'Ψ', r'\\Omega': 'Ω'
+        r"\\Gamma": "Γ",
+        r"\\Delta": "Δ",
+        r"\\Theta": "Θ",
+        r"\\Lambda": "Λ",
+        r"\\Xi": "Ξ",
+        r"\\Pi": "Π",
+        r"\\Sigma": "Σ",
+        r"\\Phi": "Φ",
+        r"\\Psi": "Ψ",
+        r"\\Omega": "Ω",
     }
 
     for latex, unicode_char in greek_map.items():
         text = text.replace(latex, unicode_char)
 
     # Step 4: Fix spacing issues - add space after periods if missing
-    text = re.sub(r'\.([A-Z])', r'. \1', text)
+    text = re.sub(r"\.([A-Z])", r". \1", text)
 
     # Step 5: Remove excessive whitespace
-    text = re.sub(r'[ \t]+', ' ', text)  # Multiple spaces to single space
-    text = re.sub(r'\n{3,}', '\n\n', text)  # Multiple newlines to double newline
+    text = re.sub(r"[ \t]+", " ", text)  # Multiple spaces to single space
+    text = re.sub(r"\n{3,}", "\n\n", text)  # Multiple newlines to double newline
 
     return text.strip()
 
@@ -912,6 +974,7 @@ def extract_text_from_pdf(pdf_path):
     # Method 1: Try PyMuPDF (fitz) first - better word spacing preservation
     try:
         import fitz  # PyMuPDF
+
         logger.info("🔍 Attempting extraction with PyMuPDF (better word spacing)...")
 
         doc = fitz.open(pdf_path_str)
@@ -1237,6 +1300,7 @@ def chat():
     # INTELLIGENT routing combines model availability + latency + load for optimal selection
     # ROUND_ROBIN distributes evenly (good for batch with all models loaded everywhere)
     from sollol.routing_strategy import RoutingStrategy
+
     original_strategy = load_balancer.routing_strategy
     load_balancer.routing_strategy = RoutingStrategy.INTELLIGENT
     logger.info(f"🎯 Chat routing: INTELLIGENT (model-aware + low-latency selection)")
@@ -1411,6 +1475,7 @@ def chat():
                 # Node .154 cannot load qwen3:8b (insufficient RAM: needs 5.6GB, has 5.0GB)
                 # Only node .15 can run qwen3:8b, so temporarily force routing there
                 import requests
+
                 chat_node = None
                 for node in load_balancer.nodes:
                     node_url = f"http://{node['host']}:{node['port']}"
@@ -1433,8 +1498,11 @@ def chat():
                 if chat_node:
                     payload = {
                         "model": CHAT_MODEL,
-                        "messages": [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_message}],
-                        "stream": False
+                        "messages": [
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": user_message},
+                        ],
+                        "stream": False,
                     }
                     resp = requests.post(f"{chat_node}/api/chat", json=payload, timeout=300)
                     resp.raise_for_status()
@@ -1443,7 +1511,10 @@ def chat():
                     # Fallback to SOLLOL routing
                     response = load_balancer.chat(
                         model=CHAT_MODEL,
-                        messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_message}],
+                        messages=[
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": user_message},
+                        ],
                         keep_alive=CHAT_KEEP_ALIVE,
                         priority=5,
                     )
@@ -1717,7 +1788,11 @@ def cleanup_models():
 def clear_db():
     """Clear the ChromaDB vector store (removes all documents)."""
     try:
-        confirm = visible_input("⚠️  This will DELETE ALL DOCUMENTS from the vector database. Continue? (yes/no): ").strip().lower()
+        confirm = (
+            visible_input("⚠️  This will DELETE ALL DOCUMENTS from the vector database. Continue? (yes/no): ")
+            .strip()
+            .lower()
+        )
         if confirm != "yes":
             logger.error("❌ Operation cancelled")
             return
@@ -1816,9 +1891,10 @@ def setup_api_server():
     # Start API server in background thread
     def run_api():
         import sys
+
         # Suppress uvicorn startup messages
         original_stdout = sys.stdout
-        sys.stdout = open(os.devnull, 'w')
+        sys.stdout = open(os.devnull, "w")
 
         from flock_ai_api import app
         import uvicorn
@@ -1849,8 +1925,6 @@ def setup_api_server():
 
 def main():
     """Command-line interface."""
-    global load_balancer
-
     # Initialize load balancer and dashboard
     setup_load_balancer()
     setup_dashboard()
@@ -1886,6 +1960,7 @@ def main():
             if _dashboard_enabled:
                 logger.info("📊 Dashboard running in background mode - press Ctrl+C to exit")
                 import time
+
                 try:
                     while True:
                         time.sleep(60)
@@ -1963,6 +2038,7 @@ def main():
 if __name__ == "__main__":
     # Required for multiprocessing (Dask, Ray) to work correctly
     import multiprocessing
+
     multiprocessing.freeze_support()
 
     main()

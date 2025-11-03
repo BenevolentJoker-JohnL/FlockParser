@@ -24,17 +24,17 @@ from flockparsecli import (
 class TestRegisterDocumentComplete:
     """Complete coverage of document registration"""
 
-    @patch('flockparsecli.chroma_collection.add')
-    @patch('flockparsecli.get_cached_embedding')
-    @patch('flockparsecli.save_document_index')
-    @patch('flockparsecli.load_document_index')
+    @patch("flockparsecli.chroma_collection.add")
+    @patch("flockparsecli.get_cached_embedding")
+    @patch("flockparsecli.save_document_index")
+    @patch("flockparsecli.load_document_index")
     def test_register_with_chunks_and_embeddings(self, mock_load, mock_save, mock_embed, mock_chroma):
         """Test registering document with chunks and embeddings"""
         mock_load.return_value = {"documents": []}
         mock_embed.return_value = [0.1] * 1024
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as pdf:
-            with tempfile.NamedTemporaryFile(suffix='.txt', delete=False) as txt:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as pdf:
+            with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as txt:
                 pdf_path = Path(pdf.name)
                 txt_path = Path(txt.name)
 
@@ -43,7 +43,7 @@ class TestRegisterDocumentComplete:
                         pdf_path,
                         txt_path,
                         "Test content with multiple words and sentences.",
-                        chunks=["Chunk 1 content", "Chunk 2 content", "Chunk 3 content"]
+                        chunks=["Chunk 1 content", "Chunk 2 content", "Chunk 3 content"],
                     )
 
                     # Should have called embeddings for each chunk
@@ -58,10 +58,10 @@ class TestRegisterDocumentComplete:
 class TestGetSimilarChunksDeep:
     """Deep testing of similarity search"""
 
-    @patch('builtins.open', new_callable=MagicMock)
-    @patch('flockparsecli.Path.exists')
-    @patch('flockparsecli.load_document_index')
-    @patch('flockparsecli.get_cached_embedding')
+    @patch("builtins.open", new_callable=MagicMock)
+    @patch("flockparsecli.Path.exists")
+    @patch("flockparsecli.load_document_index")
+    @patch("flockparsecli.get_cached_embedding")
     def test_similarity_search_with_threshold(self, mock_embed, mock_index, mock_exists, mock_open):
         """Test similarity search with minimum threshold"""
         mock_embed.return_value = [1.0] * 1024
@@ -70,10 +70,7 @@ class TestGetSimilarChunksDeep:
         # Mock chunk files with varying embeddings
         chunks_data = []
         for i in range(5):
-            chunk = {
-                "text": f"Chunk {i} content",
-                "embedding": [float(i) / 5.0] * 1024  # Varying similarity
-            }
+            chunk = {"text": f"Chunk {i} content", "embedding": [float(i) / 5.0] * 1024}  # Varying similarity
             chunks_data.append(chunk)
 
         # Setup mock to return different chunk data for each file
@@ -85,14 +82,13 @@ class TestGetSimilarChunksDeep:
 
         # Mock index with multiple chunks
         mock_index.return_value = {
-            "documents": [{
-                "id": "doc1",
-                "original": "/path/to/test.pdf",
-                "chunks": [
-                    {"file": f"/tmp/chunk{i}.json", "chunk_id": i}
-                    for i in range(5)
-                ]
-            }]
+            "documents": [
+                {
+                    "id": "doc1",
+                    "original": "/path/to/test.pdf",
+                    "chunks": [{"file": f"/tmp/chunk{i}.json", "chunk_id": i} for i in range(5)],
+                }
+            ]
         }
 
         results = get_similar_chunks("test query", top_k=10, min_similarity=0.5)
@@ -106,9 +102,11 @@ class TestLoadBalancerEdgeEdgeCases:
 
     def test_routing_strategy_all_types(self):
         """Test all routing strategies"""
-        lb = OllamaLoadBalancer(instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True)
+        lb = OllamaLoadBalancer(
+            instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True
+        )
 
-        strategies = ['adaptive', 'round_robin', 'least_loaded', 'lowest_latency']
+        strategies = ["adaptive", "round_robin", "least_loaded", "lowest_latency"]
 
         for strategy in strategies:
             lb.set_routing_strategy(strategy)
@@ -135,28 +133,24 @@ class TestLoadBalancerEdgeEdgeCases:
         assert stats["requests"] == 5
         assert stats["errors"] == 2
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_model_check_with_variants(self, mock_client):
         """Test model checking with acceptable variants"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
         # Mock client with specific model
         mock_instance = Mock()
-        mock_instance.list.return_value = {
-            "models": [{"name": "llama3.2:1b"}]
-        }
+        mock_instance.list.return_value = {"models": [{"name": "llama3.2:1b"}]}
         mock_client.return_value = mock_instance
 
         # Check with variants
         result = lb._check_model_available(
-            "http://localhost:11434",
-            "llama3.2:1b",
-            acceptable_variants=["llama3.2", "llama3.2:1b", "llama3.2:3b"]
+            "http://localhost:11434", "llama3.2:1b", acceptable_variants=["llama3.2", "llama3.2:1b", "llama3.2:3b"]
         )
 
         assert result is not None
 
-    @patch('flockparsecli.threading.Thread')
+    @patch("flockparsecli.threading.Thread")
     def test_start_gpu_optimization_thread(self, mock_thread):
         """Test starting GPU optimization thread"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -170,11 +164,10 @@ class TestLoadBalancerEdgeEdgeCases:
     def test_get_available_instances_filters_unavailable(self):
         """Test that get_available_instances filters out unavailable nodes"""
         lb = OllamaLoadBalancer(
-            instances=["http://localhost:11434", "http://192.168.1.10:11434"],
-            skip_init_checks=True
+            instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True
         )
 
-        with patch.object(lb, '_is_node_available') as mock_available:
+        with patch.object(lb, "_is_node_available") as mock_available:
             # First node available, second not
             mock_available.side_effect = [True, False]
 
@@ -189,12 +182,12 @@ class TestEmbeddingCacheEdgeCases:
 
     def test_load_embedding_cache_invalid_json(self):
         """Test loading cache with invalid JSON"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             f.write("not valid json {")
             temp_file = f.name
 
         try:
-            with patch('flockparsecli.EMBEDDING_CACHE_FILE', Path(temp_file)):
+            with patch("flockparsecli.EMBEDDING_CACHE_FILE", Path(temp_file)):
                 cache = load_embedding_cache()
 
                 # Should return empty dict
@@ -222,10 +215,13 @@ class TestChunkTextSpecialCases:
         from flockparsecli import chunk_text
 
         # Mix of short and long paragraphs, code blocks, etc
-        text = """
+        text = (
+            """
         Short paragraph.
 
-        Very long paragraph with lots of content that goes on and on. """ + ("Word " * 500) + """
+        Very long paragraph with lots of content that goes on and on. """
+            + ("Word " * 500)
+            + """
 
         Another short one.
 
@@ -235,6 +231,7 @@ class TestChunkTextSpecialCases:
 
         Final paragraph.
         """
+        )
 
         chunks = chunk_text(text, chunk_size=512, overlap=100)
 

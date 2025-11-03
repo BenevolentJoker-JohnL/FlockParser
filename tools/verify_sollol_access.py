@@ -7,6 +7,7 @@ Tests that the documented paths in FLOCKPARSER_REMOTE_ACCESS.md are correct.
 import json
 from pathlib import Path
 
+
 def verify_local_access():
     """Verify FlockParser files are accessible locally."""
 
@@ -35,11 +36,11 @@ def verify_local_access():
         print(f"❌ Document index not found: {doc_index_path}")
         return False
 
-    with open(doc_index_path, 'r') as f:
+    with open(doc_index_path, "r") as f:
         index_data = json.load(f)
 
-    num_docs = len(index_data.get('documents', []))
-    num_chunks = sum(len(doc.get('chunks', [])) for doc in index_data.get('documents', []))
+    num_docs = len(index_data.get("documents", []))
+    num_chunks = sum(len(doc.get("chunks", [])) for doc in index_data.get("documents", []))
 
     print(f"✅ Document index exists")
     print(f"   📚 Documents: {num_docs}")
@@ -48,12 +49,12 @@ def verify_local_access():
     # Verify chunk file format
     if chunk_files:
         sample_chunk = chunk_files[0]
-        with open(sample_chunk, 'r') as f:
+        with open(sample_chunk, "r") as f:
             chunk_data = json.load(f)
 
-        has_text = 'text' in chunk_data
-        has_embedding = 'embedding' in chunk_data
-        embedding_dim = len(chunk_data.get('embedding', []))
+        has_text = "text" in chunk_data
+        has_embedding = "embedding" in chunk_data
+        embedding_dim = len(chunk_data.get("embedding", []))
 
         print(f"\n📋 Sample chunk format ({sample_chunk.name}):")
         print(f"   {'✅' if has_text else '❌'} Has 'text' field")
@@ -61,7 +62,7 @@ def verify_local_access():
         print(f"   📊 Embedding dimension: {embedding_dim}")
 
         if has_text:
-            text_preview = chunk_data['text'][:100] + "..." if len(chunk_data['text']) > 100 else chunk_data['text']
+            text_preview = chunk_data["text"][:100] + "..." if len(chunk_data["text"]) > 100 else chunk_data["text"]
             print(f"   📝 Text preview: {text_preview}")
 
     print()
@@ -82,6 +83,7 @@ def verify_local_access():
     print("   4. Rsync - Periodic synchronization")
 
     return True
+
 
 if __name__ == "__main__":
     verify_local_access()

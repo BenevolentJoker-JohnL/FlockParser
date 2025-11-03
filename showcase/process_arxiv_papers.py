@@ -23,13 +23,7 @@ from datetime import datetime
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from flockparsecli import (
-    process_pdf,
-    load_document_index,
-    get_similar_chunks,
-    chat_with_documents,
-    load_balancer
-)
+from flockparsecli import process_pdf, load_document_index, get_similar_chunks, chat_with_documents, load_balancer
 
 
 # Example arXiv paper URLs (public domain, CC BY license)
@@ -38,32 +32,32 @@ EXAMPLE_PAPERS = [
         "title": "Attention Is All You Need (Transformers)",
         "arxiv_id": "1706.03762",
         "url": "https://arxiv.org/pdf/1706.03762.pdf",
-        "topic": "Transformers architecture"
+        "topic": "Transformers architecture",
     },
     {
         "title": "BERT: Pre-training of Deep Bidirectional Transformers",
         "arxiv_id": "1810.04805",
         "url": "https://arxiv.org/pdf/1810.04805.pdf",
-        "topic": "Language models"
+        "topic": "Language models",
     },
     {
         "title": "RAG: Retrieval-Augmented Generation",
         "arxiv_id": "2005.11401",
         "url": "https://arxiv.org/pdf/2005.11401.pdf",
-        "topic": "RAG systems"
+        "topic": "RAG systems",
     },
     {
         "title": "Language Models are Few-Shot Learners (GPT-3)",
         "arxiv_id": "2005.14165",
         "url": "https://arxiv.org/pdf/2005.14165.pdf",
-        "topic": "Large language models"
+        "topic": "Large language models",
     },
     {
         "title": "Llama 2: Open Foundation Language Models",
         "arxiv_id": "2307.09288",
         "url": "https://arxiv.org/pdf/2307.09288.pdf",
-        "topic": "Open-source LLMs"
-    }
+        "topic": "Open-source LLMs",
+    },
 ]
 
 
@@ -80,10 +74,10 @@ def download_paper(paper_info, output_dir):
     print(f"⬇️  Downloading: {paper_info['title']}...")
 
     try:
-        response = requests.get(paper_info['url'], timeout=60)
+        response = requests.get(paper_info["url"], timeout=60)
         response.raise_for_status()
 
-        with open(output_path, 'wb') as f:
+        with open(output_path, "wb") as f:
             f.write(response.content)
 
         print(f"✅ Downloaded: {output_path.name} ({len(response.content) / 1024:.1f} KB)")
@@ -110,7 +104,7 @@ def main():
         "papers": [],
         "processing_times": [],
         "total_time": 0,
-        "node_info": []
+        "node_info": [],
     }
 
     # Show load balancer info
@@ -123,11 +117,9 @@ def main():
         gpu_status = "🚀 GPU" if stats.get("has_gpu") else "🐢 CPU"
         print(f"   • {node} - {gpu_status}")
 
-        results["node_info"].append({
-            "url": node,
-            "has_gpu": stats.get("has_gpu"),
-            "gpu_memory_gb": stats.get("gpu_memory_gb", 0)
-        })
+        results["node_info"].append(
+            {"url": node, "has_gpu": stats.get("has_gpu"), "gpu_memory_gb": stats.get("gpu_memory_gb", 0)}
+        )
 
     print()
 
@@ -159,27 +151,31 @@ def main():
 
             print(f"   ✅ Completed in {elapsed:.2f}s")
 
-            results["papers"].append({
-                "title": paper_info["title"],
-                "arxiv_id": paper_info["arxiv_id"],
-                "topic": paper_info["topic"],
-                "processing_time": elapsed,
-                "status": "success"
-            })
+            results["papers"].append(
+                {
+                    "title": paper_info["title"],
+                    "arxiv_id": paper_info["arxiv_id"],
+                    "topic": paper_info["topic"],
+                    "processing_time": elapsed,
+                    "status": "success",
+                }
+            )
             results["processing_times"].append(elapsed)
 
         except Exception as e:
             elapsed = time.time() - start
             print(f"   ❌ Failed: {e}")
 
-            results["papers"].append({
-                "title": paper_info["title"],
-                "arxiv_id": paper_info["arxiv_id"],
-                "topic": paper_info["topic"],
-                "processing_time": elapsed,
-                "status": "failed",
-                "error": str(e)
-            })
+            results["papers"].append(
+                {
+                    "title": paper_info["title"],
+                    "arxiv_id": paper_info["arxiv_id"],
+                    "topic": paper_info["topic"],
+                    "processing_time": elapsed,
+                    "status": "failed",
+                    "error": str(e),
+                }
+            )
 
     total_time = time.time() - overall_start
     results["total_time"] = total_time
@@ -214,11 +210,11 @@ def main():
             print(f"   Found {len(chunks)} relevant chunks:")
 
             for i, chunk in enumerate(chunks[:2], 1):
-                doc_name = chunk['doc_name']
-                similarity = chunk['similarity']
-                text_preview = chunk['text'][:150].replace('\n', ' ')
+                doc_name = chunk["doc_name"]
+                similarity = chunk["similarity"]
+                text_preview = chunk["text"][:150].replace("\n", " ")
                 print(f"   {i}. {doc_name} (similarity: {similarity:.3f})")
-                print(f"      \"{text_preview}...\"")
+                print(f'      "{text_preview}..."')
 
         except Exception as e:
             print(f"   ❌ Error: {e}")
@@ -227,14 +223,14 @@ def main():
 
     # Save results
     results_file = showcase_dir / "results.json"
-    with open(results_file, 'w') as f:
+    with open(results_file, "w") as f:
         json.dump(results, f, indent=2)
 
     print(f"\n💾 Results saved to: {results_file}")
 
     # Generate summary document
     summary_file = showcase_dir / "RESULTS.md"
-    with open(summary_file, 'w') as f:
+    with open(summary_file, "w") as f:
         f.write("# FlockParser Showcase Results\n\n")
         f.write(f"**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
 
@@ -296,5 +292,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n\n❌ Error: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)

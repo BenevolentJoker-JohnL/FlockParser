@@ -41,14 +41,14 @@ class TestLoadBalancerInitialization:
         """Test default routing strategy"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
-        assert hasattr(lb, 'routing_strategy')
-        assert lb.routing_strategy == 'adaptive'  # Default is adaptive
+        assert hasattr(lb, "routing_strategy")
+        assert lb.routing_strategy == "adaptive"  # Default is adaptive
 
 
 class TestNodeManagement:
     """Test adding/removing nodes"""
 
-    @patch('flockparsecli.requests.get')
+    @patch("flockparsecli.requests.get")
     def test_add_node_success(self, mock_get):
         """Test adding a valid node"""
         # Mock successful health check and model check
@@ -66,7 +66,7 @@ class TestNodeManagement:
         if success:
             assert "http://192.168.1.20:11434" in lb.instances
 
-    @patch('flockparsecli.requests.get')
+    @patch("flockparsecli.requests.get")
     def test_add_node_failure(self, mock_get):
         """Test adding an unreachable node"""
         # Mock failed health check
@@ -93,7 +93,9 @@ class TestNodeManagement:
 
     def test_remove_node(self):
         """Test removing a node"""
-        lb = OllamaLoadBalancer(instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True)
+        lb = OllamaLoadBalancer(
+            instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True
+        )
 
         success = lb.remove_node("http://localhost:11434")
 
@@ -132,7 +134,7 @@ class TestRoutingStrategies:
         """Test all valid routing strategies"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
-        valid_strategies = ['adaptive', 'round_robin', 'least_loaded', 'lowest_latency']
+        valid_strategies = ["adaptive", "round_robin", "least_loaded", "lowest_latency"]
 
         for strategy in valid_strategies:
             lb.set_routing_strategy(strategy)
@@ -146,7 +148,7 @@ class TestHealthScoring:
         """Test that nodes get initial health scores"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
-        assert hasattr(lb, 'instance_stats')
+        assert hasattr(lb, "instance_stats")
         assert "http://localhost:11434" in lb.instance_stats
         assert "health_score" in lb.instance_stats["http://localhost:11434"]
 
@@ -192,21 +194,21 @@ class TestBasicAttributes:
         """Test load balancer has required attributes"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
-        assert hasattr(lb, 'instances')
-        assert hasattr(lb, 'instance_stats')
-        assert hasattr(lb, 'routing_strategy')
-        assert hasattr(lb, 'current_index')
-        assert hasattr(lb, 'lock')
+        assert hasattr(lb, "instances")
+        assert hasattr(lb, "instance_stats")
+        assert hasattr(lb, "routing_strategy")
+        assert hasattr(lb, "current_index")
+        assert hasattr(lb, "lock")
 
     def test_has_required_methods(self):
         """Test load balancer has required methods"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
-        assert hasattr(lb, 'add_node')
-        assert hasattr(lb, 'remove_node')
-        assert hasattr(lb, 'set_routing_strategy')
-        assert hasattr(lb, 'get_next_instance')
-        assert hasattr(lb, 'record_request')
+        assert hasattr(lb, "add_node")
+        assert hasattr(lb, "remove_node")
+        assert hasattr(lb, "set_routing_strategy")
+        assert hasattr(lb, "get_next_instance")
+        assert hasattr(lb, "record_request")
 
 
 if __name__ == "__main__":

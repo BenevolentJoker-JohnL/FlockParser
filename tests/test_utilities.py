@@ -22,8 +22,8 @@ from flockparsecli import (
 class TestClearCache:
     """Test cache clearing functionality"""
 
-    @patch('flockparsecli.EMBEDDING_CACHE_FILE')
-    @patch('flockparsecli.load_balancer')
+    @patch("flockparsecli.EMBEDDING_CACHE_FILE")
+    @patch("flockparsecli.load_balancer")
     def test_clear_cache_exists(self, mock_lb, mock_cache_file):
         """Test clearing existing cache"""
         # Mock cache file exists
@@ -35,8 +35,8 @@ class TestClearCache:
         # Should attempt to remove cache file
         assert mock_cache_file.unlink.called or True
 
-    @patch('flockparsecli.EMBEDDING_CACHE_FILE')
-    @patch('flockparsecli.load_balancer')
+    @patch("flockparsecli.EMBEDDING_CACHE_FILE")
+    @patch("flockparsecli.load_balancer")
     def test_clear_cache_not_exists(self, mock_lb, mock_cache_file):
         """Test clearing when cache doesn't exist"""
         # Mock cache file doesn't exist
@@ -51,8 +51,8 @@ class TestClearCache:
 class TestCheckDependencies:
     """Test dependency checking"""
 
-    @patch('flockparsecli.ollama.list')
-    @patch('flockparsecli.load_balancer')
+    @patch("flockparsecli.ollama.list")
+    @patch("flockparsecli.load_balancer")
     def test_check_dependencies_success(self, mock_lb, mock_list):
         """Test dependency check when all dependencies available"""
         # Mock successful ollama connection
@@ -61,14 +61,14 @@ class TestCheckDependencies:
         mock_client.list.return_value = {"models": []}
         mock_lb.get_next_instance.return_value = "http://localhost:11434"
 
-        with patch('flockparsecli.ollama.Client') as mock_client_class:
+        with patch("flockparsecli.ollama.Client") as mock_client_class:
             mock_client_class.return_value = mock_client
             check_dependencies()
 
         # Should complete without error
         assert True
 
-    @patch('flockparsecli.load_balancer')
+    @patch("flockparsecli.load_balancer")
     def test_check_dependencies_no_nodes(self, mock_lb):
         """Test dependency check with no nodes"""
         mock_lb.instances = []

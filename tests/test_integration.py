@@ -23,24 +23,19 @@ from flockparsecli import (
 class TestRegisterDocument:
     """Test document registration in knowledge base"""
 
-    @patch('flockparsecli.save_document_index')
-    @patch('flockparsecli.load_document_index')
+    @patch("flockparsecli.save_document_index")
+    @patch("flockparsecli.load_document_index")
     def test_register_document_basic(self, mock_load, mock_save):
         """Test basic document registration"""
         mock_load.return_value = {"documents": []}
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as pdf:
-            with tempfile.NamedTemporaryFile(suffix='.txt', delete=False) as txt:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as pdf:
+            with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as txt:
                 pdf_path = Path(pdf.name)
                 txt_path = Path(txt.name)
 
                 try:
-                    doc_id = register_document(
-                        pdf_path,
-                        txt_path,
-                        "Test content",
-                        chunks=["chunk1", "chunk2"]
-                    )
+                    doc_id = register_document(pdf_path, txt_path, "Test content", chunks=["chunk1", "chunk2"])
 
                     assert doc_id is not None
                     mock_save.assert_called_once()
@@ -48,23 +43,19 @@ class TestRegisterDocument:
                     pdf_path.unlink(missing_ok=True)
                     txt_path.unlink(missing_ok=True)
 
-    @patch('flockparsecli.save_document_index')
-    @patch('flockparsecli.load_document_index')
+    @patch("flockparsecli.save_document_index")
+    @patch("flockparsecli.load_document_index")
     def test_register_document_no_chunks(self, mock_load, mock_save):
         """Test registering document without chunks"""
         mock_load.return_value = {"documents": []}
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as pdf:
-            with tempfile.NamedTemporaryFile(suffix='.txt', delete=False) as txt:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as pdf:
+            with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as txt:
                 pdf_path = Path(pdf.name)
                 txt_path = Path(txt.name)
 
                 try:
-                    doc_id = register_document(
-                        pdf_path,
-                        txt_path,
-                        "Test content"
-                    )
+                    doc_id = register_document(pdf_path, txt_path, "Test content")
 
                     assert doc_id is not None
                 finally:
@@ -108,7 +99,7 @@ class TestCosineSimilarity:
 class TestLoadBalancerDistributed:
     """Test load balancer distributed operations"""
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_embed_distributed_success(self, mock_client_class):
         """Test distributed embedding"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -123,9 +114,9 @@ class TestLoadBalancerDistributed:
         result = lb.embed_distributed("mxbai-embed-large", "test text")
 
         assert result is not None
-        assert hasattr(result, 'embeddings')
+        assert hasattr(result, "embeddings")
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_chat_distributed_success(self, mock_client_class):
         """Test distributed chat"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -141,7 +132,7 @@ class TestLoadBalancerDistributed:
 
         assert result is not None
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_embed_batch_basic(self, mock_client_class):
         """Test batch embedding"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)

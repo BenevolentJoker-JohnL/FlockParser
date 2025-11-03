@@ -18,15 +18,13 @@ from pydantic import BaseModel
 import uvicorn
 
 # Setup logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
 class QueryRequest(BaseModel):
     """Request model for document query."""
+
     query: str
     query_embedding: List[float]
     top_k: int = 15
@@ -35,6 +33,7 @@ class QueryRequest(BaseModel):
 
 class ChunkResult(BaseModel):
     """Result model for a single chunk."""
+
     text: str
     doc_name: str
     similarity: float
@@ -43,12 +42,14 @@ class ChunkResult(BaseModel):
 
 class QueryResponse(BaseModel):
     """Response model for document query."""
+
     chunks: List[ChunkResult]
     total_found: int
 
 
 class StatsResponse(BaseModel):
     """Response model for statistics."""
+
     available: bool
     documents: int
     chunks: int
@@ -58,12 +59,7 @@ class StatsResponse(BaseModel):
 class FlockParserAPIServer:
     """HTTP API server for FlockParser document index."""
 
-    def __init__(
-        self,
-        flockparser_path: str = "/home/joker/FlockParser",
-        host: str = "0.0.0.0",
-        port: int = 8765
-    ):
+    def __init__(self, flockparser_path: str = "/home/joker/FlockParser", host: str = "0.0.0.0", port: int = 8765):
         """
         Initialize FlockParser API server.
 
@@ -80,9 +76,7 @@ class FlockParserAPIServer:
 
         # Initialize FastAPI
         self.app = FastAPI(
-            title="FlockParser API",
-            description="Remote access to FlockParser document knowledge base",
-            version="1.0.0"
+            title="FlockParser API", description="Remote access to FlockParser document knowledge base", version="1.0.0"
         )
 
         # Enable CORS for remote access
@@ -111,12 +105,7 @@ class FlockParserAPIServer:
         @self.app.get("/")
         async def root():
             """API status endpoint."""
-            return {
-                "service": "FlockParser API",
-                "version": "1.0.0",
-                "status": "running",
-                "available": self.available
-            }
+            return {"service": "FlockParser API", "version": "1.0.0", "status": "running", "available": self.available}
 
         @self.app.get("/health")
         async def health():
@@ -124,33 +113,25 @@ class FlockParserAPIServer:
             return {
                 "status": "healthy",
                 "available": self.available,
-                "document_index_exists": self.document_index_path.exists()
+                "document_index_exists": self.document_index_path.exists(),
             }
 
         @self.app.get("/stats", response_model=StatsResponse)
         async def get_stats():
             """Get statistics about document knowledge base."""
             if not self.available:
-                return StatsResponse(
-                    available=False,
-                    documents=0,
-                    chunks=0,
-                    document_names=[]
-                )
+                return StatsResponse(available=False, documents=0, chunks=0, document_names=[])
 
             try:
-                with open(self.document_index_path, 'r') as f:
+                with open(self.document_index_path, "r") as f:
                     index_data = json.load(f)
 
-                documents = index_data.get('documents', [])
-                total_chunks = sum(len(doc.get('chunks', [])) for doc in documents)
-                doc_names = [Path(doc['original']).name for doc in documents]
+                documents = index_data.get("documents", [])
+                total_chunks = sum(len(doc.get("chunks", [])) for doc in documents)
+                doc_names = [Path(doc["original"]).name for doc in documents]
 
                 return StatsResponse(
-                    available=True,
-                    documents=len(documents),
-                    chunks=total_chunks,
-                    document_names=doc_names
+                    available=True, documents=len(documents), chunks=total_chunks, document_names=doc_names
                 )
             except Exception as e:
                 logger.error(f"Error getting statistics: {e}")
@@ -163,7 +144,7 @@ class FlockParserAPIServer:
                 raise HTTPException(status_code=503, detail="Document index not available")
 
             try:
-                with open(self.document_index_path, 'r') as f:
+                with open(self.document_index_path, "r") as f:
                     index_data = json.load(f)
                 return index_data
             except Exception as e:
@@ -182,7 +163,7 @@ class FlockParserAPIServer:
                 if not chunk_path.exists():
                     raise HTTPException(status_code=404, detail=f"Chunk {chunk_id} not found")
 
-                with open(chunk_path, 'r') as f:
+                with open(chunk_path, "r") as f:
                     chunk_data = json.load(f)
                 return chunk_data
             except HTTPException:
@@ -206,10 +187,10 @@ class FlockParserAPIServer:
                 query_embedding = np.array(request.query_embedding)
 
                 # Load document index
-                with open(self.document_index_path, 'r') as f:
+                with open(self.document_index_path, "r") as f:
                     index_data = json.load(f)
 
-                documents = index_data.get('documents', [])
+                documents = index_data.get("documents", [])
                 if not documents:
                     return QueryResponse(chunks=[], total_found=0)
 
@@ -217,33 +198,32 @@ class FlockParserAPIServer:
                 chunks_with_similarity = []
 
                 for doc in documents:
-                    for chunk_ref in doc.get('chunks', []):
+                    for chunk_ref in doc.get("chunks", []):
                         try:
-                            chunk_file = Path(chunk_ref['file'])
+                            chunk_file = Path(chunk_ref["file"])
                             if chunk_file.exists():
-                                with open(chunk_file, 'r') as f:
+                                with open(chunk_file, "r") as f:
                                     chunk_data = json.load(f)
 
-                                chunk_embedding = chunk_data.get('embedding', [])
+                                chunk_embedding = chunk_data.get("embedding", [])
                                 if chunk_embedding:
-                                    similarity = self._cosine_similarity(
-                                        query_embedding,
-                                        np.array(chunk_embedding)
-                                    )
+                                    similarity = self._cosine_similarity(query_embedding, np.array(chunk_embedding))
 
                                     if similarity >= request.min_similarity:
-                                        chunks_with_similarity.append({
-                                            'text': chunk_data['text'],
-                                            'doc_name': Path(doc['original']).name,
-                                            'similarity': float(similarity),
-                                            'doc_id': doc['id']
-                                        })
+                                        chunks_with_similarity.append(
+                                            {
+                                                "text": chunk_data["text"],
+                                                "doc_name": Path(doc["original"]).name,
+                                                "similarity": float(similarity),
+                                                "doc_id": doc["id"],
+                                            }
+                                        )
                         except Exception as e:
                             logger.debug(f"Error processing chunk: {e}")
 
                 # Sort by similarity and return top k
-                chunks_with_similarity.sort(key=lambda x: x['similarity'], reverse=True)
-                results = chunks_with_similarity[:request.top_k]
+                chunks_with_similarity.sort(key=lambda x: x["similarity"], reverse=True)
+                results = chunks_with_similarity[: request.top_k]
 
                 logger.info(
                     f"Query: '{request.query[:60]}...' -> "
@@ -251,8 +231,7 @@ class FlockParserAPIServer:
                 )
 
                 return QueryResponse(
-                    chunks=[ChunkResult(**chunk) for chunk in results],
-                    total_found=len(chunks_with_similarity)
+                    chunks=[ChunkResult(**chunk) for chunk in results], total_found=len(chunks_with_similarity)
                 )
 
             except Exception as e:
@@ -262,9 +241,9 @@ class FlockParserAPIServer:
     def _count_documents(self) -> int:
         """Count documents in FlockParser knowledge base."""
         try:
-            with open(self.document_index_path, 'r') as f:
+            with open(self.document_index_path, "r") as f:
                 index = json.load(f)
-            return len(index.get('documents', []))
+            return len(index.get("documents", []))
         except Exception as e:
             logger.debug(f"Could not count documents: {e}")
             return 0
@@ -287,12 +266,7 @@ class FlockParserAPIServer:
     def run(self):
         """Start the API server."""
         logger.info(f"🚀 Starting FlockParser API server on {self.host}:{self.port}")
-        uvicorn.run(
-            self.app,
-            host=self.host,
-            port=self.port,
-            log_level="info"
-        )
+        uvicorn.run(self.app, host=self.host, port=self.port, log_level="info")
 
 
 def main():
@@ -304,28 +278,14 @@ def main():
         "--path",
         type=str,
         default="/home/joker/FlockParser",
-        help="Path to FlockParser installation (default: /home/joker/FlockParser)"
+        help="Path to FlockParser installation (default: /home/joker/FlockParser)",
     )
-    parser.add_argument(
-        "--host",
-        type=str,
-        default="0.0.0.0",
-        help="Host to bind to (default: 0.0.0.0)"
-    )
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=8765,
-        help="Port to listen on (default: 8765)"
-    )
+    parser.add_argument("--host", type=str, default="0.0.0.0", help="Host to bind to (default: 0.0.0.0)")
+    parser.add_argument("--port", type=int, default=8765, help="Port to listen on (default: 8765)")
 
     args = parser.parse_args()
 
-    server = FlockParserAPIServer(
-        flockparser_path=args.path,
-        host=args.host,
-        port=args.port
-    )
+    server = FlockParserAPIServer(flockparser_path=args.path, host=args.host, port=args.port)
     server.run()
 
 

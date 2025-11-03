@@ -17,6 +17,7 @@ TEST_PDFS = [
     "testpdfs/quantum_decoherence.pdf",
 ]
 
+
 class BenchmarkResults:
     def __init__(self):
         self.results = {}
@@ -27,9 +28,9 @@ class BenchmarkResults:
         self.results[framework][metric] = value
 
     def print_results(self):
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
         print("📊 BENCHMARK RESULTS")
-        print("="*80)
+        print("=" * 80)
 
         for framework, metrics in self.results.items():
             print(f"\n🔹 {framework}")
@@ -37,10 +38,10 @@ class BenchmarkResults:
             for metric, value in metrics.items():
                 print(f"   {metric}: {value}")
 
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
 
     def save_to_file(self, filename="benchmark_results.json"):
-        with open(filename, 'w') as f:
+        with open(filename, "w") as f:
             json.dump(self.results, f, indent=2)
         print(f"\n💾 Results saved to {filename}")
 
@@ -109,9 +110,7 @@ def benchmark_langchain():
 
         # Create vector store (this is where embeddings are generated)
         vectorstore = Chroma.from_documents(
-            documents=all_docs,
-            embedding=embeddings,
-            collection_name="langchain_benchmark"
+            documents=all_docs, embedding=embeddings, collection_name="langchain_benchmark"
         )
 
         processing_time = time.time() - start_time
@@ -131,13 +130,10 @@ def benchmark_langchain():
         return {
             "Status": "❌ Not installed",
             "Error": str(e),
-            "Note": "Install with: pip install langchain langchain-community chromadb"
+            "Note": "Install with: pip install langchain langchain-community chromadb",
         }
     except Exception as e:
-        return {
-            "Status": "❌ Error",
-            "Error": str(e)
-        }
+        return {"Status": "❌ Error", "Error": str(e)}
 
 
 def benchmark_llamaindex():
@@ -187,19 +183,16 @@ def benchmark_llamaindex():
         return {
             "Status": "❌ Not installed",
             "Error": str(e),
-            "Note": "Install with: pip install llama-index llama-index-embeddings-ollama"
+            "Note": "Install with: pip install llama-index llama-index-embeddings-ollama",
         }
     except Exception as e:
-        return {
-            "Status": "❌ Error",
-            "Error": str(e)
-        }
+        return {"Status": "❌ Error", "Error": str(e)}
 
 
 def main():
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("🏁 STARTING BENCHMARK COMPARISON")
-    print("="*80)
+    print("=" * 80)
     print(f"\nTest Dataset: {len(TEST_PDFS)} PDFs")
     print(f"Test Files:")
     for pdf in TEST_PDFS:
@@ -237,9 +230,9 @@ def main():
     results.save_to_file()
 
     # Print winner
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("🏆 ANALYSIS")
-    print("="*80)
+    print("=" * 80)
     print("\n✨ FlockParse Advantages:")
     print("  1. Built-in GPU load balancing across multiple nodes")
     print("  2. Automatic VRAM monitoring and CPU fallback detection")
@@ -252,7 +245,7 @@ def main():
     print("  - GPU awareness")
     print("  - Caching strategies")
     print("  - Load balancing")
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
 
 
 if __name__ == "__main__":

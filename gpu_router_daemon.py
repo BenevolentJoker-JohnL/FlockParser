@@ -49,11 +49,8 @@ class GPURouterDaemon:
 
         logging.basicConfig(
             level=logging.INFO,
-            format='%(asctime)s [%(levelname)s] %(message)s',
-            handlers=[
-                logging.FileHandler(log_dir / "gpu_router_daemon.log"),
-                logging.StreamHandler(sys.stdout)
-            ]
+            format="%(asctime)s [%(levelname)s] %(message)s",
+            handlers=[logging.FileHandler(log_dir / "gpu_router_daemon.log"), logging.StreamHandler(sys.stdout)],
         )
         self.logger = logging.getLogger("GPURouterDaemon")
 
@@ -65,7 +62,7 @@ class GPURouterDaemon:
             self._create_default_config()
 
         try:
-            with open(self.config_path, 'r') as f:
+            with open(self.config_path, "r") as f:
                 config = yaml.safe_load(f)
             self.logger.info(f"✅ Configuration loaded from {self.config_path}")
             return config
@@ -76,20 +73,20 @@ class GPURouterDaemon:
     def _create_default_config(self):
         """Create default configuration file."""
         default_config = {
-            'nodes': [
-                'http://localhost:11434',
+            "nodes": [
+                "http://localhost:11434",
             ],
-            'priority_models': [
-                'mxbai-embed-large',
-                'nomic-embed-text',
+            "priority_models": [
+                "mxbai-embed-large",
+                "nomic-embed-text",
             ],
-            'check_interval': 300,  # 5 minutes
-            'vram_safety_margin': 0.8,
-            'auto_optimize': True,
-            'log_level': 'INFO'
+            "check_interval": 300,  # 5 minutes
+            "vram_safety_margin": 0.8,
+            "auto_optimize": True,
+            "log_level": "INFO",
         }
 
-        with open(self.config_path, 'w') as f:
+        with open(self.config_path, "w") as f:
             yaml.dump(default_config, f, default_flow_style=False)
 
         self.logger.info(f"✅ Default configuration created at {self.config_path}")
@@ -97,7 +94,7 @@ class GPURouterDaemon:
 
     def _initialize_router(self):
         """Initialize the intelligent GPU router."""
-        nodes = self.config.get('nodes', [])
+        nodes = self.config.get("nodes", [])
         if not nodes:
             self.logger.error("❌ No nodes configured")
             sys.exit(1)
@@ -106,7 +103,7 @@ class GPURouterDaemon:
         self.router = IntelligentGPURouter(nodes)
 
         # Update safety margin if configured
-        safety_margin = self.config.get('vram_safety_margin', 0.8)
+        safety_margin = self.config.get("vram_safety_margin", 0.8)
         self.router.vram_safety_margin = safety_margin
 
         self.logger.info(f"✅ Router initialized with {safety_margin*100:.0f}% VRAM safety margin")
@@ -121,9 +118,9 @@ class GPURouterDaemon:
     def start(self):
         """Start the daemon main loop."""
         self.running = True
-        check_interval = self.config.get('check_interval', 300)
-        auto_optimize = self.config.get('auto_optimize', True)
-        priority_models = self.config.get('priority_models', [])
+        check_interval = self.config.get("check_interval", 300)
+        auto_optimize = self.config.get("auto_optimize", True)
+        priority_models = self.config.get("priority_models", [])
 
         self.logger.info("=" * 70)
         self.logger.info("🚀 GPU Router Daemon Starting")
@@ -142,7 +139,9 @@ class GPURouterDaemon:
         while self.running:
             try:
                 iteration += 1
-                self.logger.info(f"\n🔄 Optimization cycle #{iteration} ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')})")
+                self.logger.info(
+                    f"\n🔄 Optimization cycle #{iteration} ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')})"
+                )
 
                 if auto_optimize and priority_models:
                     # Run optimization
@@ -173,19 +172,13 @@ def main():
     """Main entry point."""
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="GPU Router Daemon - Intelligent GPU management for Ollama clusters"
-    )
+    parser = argparse.ArgumentParser(description="GPU Router Daemon - Intelligent GPU management for Ollama clusters")
     parser.add_argument(
-        '--config',
-        default='./gpu_router_config.yaml',
-        help='Path to configuration file (default: ./gpu_router_config.yaml)'
+        "--config",
+        default="./gpu_router_config.yaml",
+        help="Path to configuration file (default: ./gpu_router_config.yaml)",
     )
-    parser.add_argument(
-        '--report-only',
-        action='store_true',
-        help='Print cluster report and exit (no daemon mode)'
-    )
+    parser.add_argument("--report-only", action="store_true", help="Print cluster report and exit (no daemon mode)")
 
     args = parser.parse_args()
 

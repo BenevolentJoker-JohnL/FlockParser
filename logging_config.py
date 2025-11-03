@@ -1,6 +1,7 @@
 """
 Logging configuration for FlockParser
 Provides structured logging with different levels and handlers
+Thread-safe configuration that works with Dask/distributed systems
 """
 
 import logging
@@ -8,12 +9,21 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
+# CRITICAL: Disable Dask's distributed logging to prevent deadlocks in ThreadPoolExecutor
+# Dask's logging handlers try to communicate with the distributed cluster which causes
+# deadlocks when called from worker threads
+import os
 
-def setup_logging(
-    log_level: str = "INFO",
-    log_file: bool = True,
-    log_dir: Path = Path("logs")
-) -> logging.Logger:
+os.environ["DASK_DISTRIBUTED__LOGGING__DISTRIBUTED"] = "false"
+os.environ["DASK_LOGGING__DISTRIBUTED"] = "false"
+
+# Also disable bokeh logging from Dask dashboard
+logging.getLogger("distributed").setLevel(logging.WARNING)
+logging.getLogger("tornado").setLevel(logging.WARNING)
+logging.getLogger("bokeh").setLevel(logging.WARNING)
+
+
+def setup_logging(log_level: str = "INFO", log_file: bool = True, log_dir: Path = Path("logs")) -> logging.Logger:
     """
     Configure structured logging for FlockParser
 
@@ -35,16 +45,15 @@ def setup_logging(
 
     # Create formatters
     detailed_formatter = logging.Formatter(
-        fmt='%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
+        fmt="%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    simple_formatter = logging.Formatter(
-        fmt='%(levelname)s - %(message)s'
-    )
+    simple_formatter = logging.Formatter(fmt="%(levelname)s - %(message)s")
 
     # Console handler (user-friendly output)
-    console_handler = logging.StreamHandler(sys.stdout)
+    # Use sys.stderr instead of sys.stdout to avoid interfering with prompts
+    console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(simple_formatter)
     logger.addHandler(console_handler)

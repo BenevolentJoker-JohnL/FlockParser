@@ -14,12 +14,13 @@ KNOWLEDGE_BASE_PATH = Path("/home/joker/FlockParser/knowledge_base")
 OUTPUT_PATH = Path("/home/joker/FlockParser/document_index.json")
 TESTPDFS_PATH = Path("/home/joker/FlockParser/testpdfs")
 
+
 def get_document_chunks():
     """Scan knowledge_base and group chunks by document ID."""
     documents = {}
 
     # Find all chunk files
-    chunk_pattern = re.compile(r'doc_(\d+)_chunk_(\d+)\.json')
+    chunk_pattern = re.compile(r"doc_(\d+)_chunk_(\d+)\.json")
 
     for chunk_file in KNOWLEDGE_BASE_PATH.glob("doc_*_chunk_*.json"):
         match = chunk_pattern.match(chunk_file.name)
@@ -30,16 +31,14 @@ def get_document_chunks():
             if doc_id not in documents:
                 documents[doc_id] = []
 
-            documents[doc_id].append({
-                'chunk_num': chunk_num,
-                'file': str(chunk_file.absolute())
-            })
+            documents[doc_id].append({"chunk_num": chunk_num, "file": str(chunk_file.absolute())})
 
     # Sort chunks by chunk number
     for doc_id in documents:
-        documents[doc_id].sort(key=lambda x: x['chunk_num'])
+        documents[doc_id].sort(key=lambda x: x["chunk_num"])
 
     return documents
+
 
 def get_pdf_files():
     """Get list of PDF files from testpdfs directory."""
@@ -48,17 +47,14 @@ def get_pdf_files():
         pdfs = sorted([str(p) for p in TESTPDFS_PATH.glob("*.pdf")])
     return pdfs
 
+
 def create_document_index():
     """Create the document index JSON file."""
     document_chunks = get_document_chunks()
     pdf_files = get_pdf_files()
 
     # Build index
-    index = {
-        "documents": [],
-        "created": "2025-10-04",
-        "version": "1.0"
-    }
+    index = {"documents": [], "created": "2025-10-04", "version": "1.0"}
 
     for doc_id in sorted(document_chunks.keys()):
         chunks = document_chunks[doc_id]
@@ -73,25 +69,20 @@ def create_document_index():
             "id": f"doc_{doc_id}",
             "original": original_pdf,
             "chunk_count": len(chunks),
-            "chunks": [
-                {
-                    "chunk_id": c['chunk_num'],
-                    "file": c['file']
-                }
-                for c in chunks
-            ]
+            "chunks": [{"chunk_id": c["chunk_num"], "file": c["file"]} for c in chunks],
         }
 
         index["documents"].append(doc_entry)
 
     # Write index
-    with open(OUTPUT_PATH, 'w') as f:
+    with open(OUTPUT_PATH, "w") as f:
         json.dump(index, f, indent=2)
 
     print(f"✅ Created document index at {OUTPUT_PATH}")
     print(f"   Documents: {len(index['documents'])}")
-    for doc in index['documents']:
+    for doc in index["documents"]:
         print(f"   - {doc['id']}: {doc['chunk_count']} chunks from {Path(doc['original']).name}")
+
 
 if __name__ == "__main__":
     create_document_index()

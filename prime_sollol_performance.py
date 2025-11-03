@@ -17,6 +17,7 @@ from pathlib import Path
 # Setup logging before SOLLOL import
 sys.path.insert(0, str(Path(__file__).parent))
 from logging_config import setup_logging
+
 logger = setup_logging()
 
 # Import SOLLOL
@@ -33,9 +34,9 @@ def prime_performance_stats(pool):
     so it doesn't start with equal distribution (0.5 chunks/sec default for all).
     """
 
-    logger.info("\n" + "="*70)
+    logger.info("\n" + "=" * 70)
     logger.info("⚖️  PRIMING SOLLOL PERFORMANCE STATS")
-    logger.info("="*70)
+    logger.info("=" * 70)
 
     # Discover nodes to identify laptop vs desktop
     logger.info("\nDiscovered nodes:")
@@ -48,9 +49,9 @@ def prime_performance_stats(pool):
         logger.info("Proceeding anyway...")
 
     # Ask user to identify which is laptop and which is desktop
-    logger.info("\n" + "="*70)
+    logger.info("\n" + "=" * 70)
     logger.info("Identify your nodes:")
-    logger.info("="*70)
+    logger.info("=" * 70)
 
     from flockparsecli import visible_input
 
@@ -116,9 +117,9 @@ def prime_performance_stats(pool):
     laptop_pct = (laptop_throughput / total_throughput) * 100
     desktop_pct = (desktop_throughput / total_throughput) * 100
 
-    logger.info("\n" + "="*70)
+    logger.info("\n" + "=" * 70)
     logger.info("📊 PERFORMANCE CONFIGURATION")
-    logger.info("="*70)
+    logger.info("=" * 70)
     logger.info(f"\nLaptop:  {laptop_key}")
     logger.info(f"  Throughput: {laptop_throughput:.1f} chunks/sec")
     logger.info(f"  Workload:   {laptop_pct:.1f}%")
@@ -127,31 +128,31 @@ def prime_performance_stats(pool):
     logger.info(f"  Workload:   {desktop_pct:.1f}%")
 
     # Set the stats
-    if 'node_performance' not in pool.stats:
-        pool.stats['node_performance'] = {}
+    if "node_performance" not in pool.stats:
+        pool.stats["node_performance"] = {}
 
     # Prime laptop stats
-    pool.stats['node_performance'][laptop_key] = {
-        'batch_throughput': laptop_throughput,
-        'avg_response_time': 1.0 / laptop_throughput,  # Inverse of throughput
-        'total_requests': 10,  # Enough to trigger adaptive logic
-        'successful_requests': 10,
-        'failed_requests': 0,
-        'latency_ms': (1.0 / laptop_throughput) * 1000,
-        'available': True,
-        'primed': True  # Mark as manually configured
+    pool.stats["node_performance"][laptop_key] = {
+        "batch_throughput": laptop_throughput,
+        "avg_response_time": 1.0 / laptop_throughput,  # Inverse of throughput
+        "total_requests": 10,  # Enough to trigger adaptive logic
+        "successful_requests": 10,
+        "failed_requests": 0,
+        "latency_ms": (1.0 / laptop_throughput) * 1000,
+        "available": True,
+        "primed": True,  # Mark as manually configured
     }
 
     # Prime desktop stats
-    pool.stats['node_performance'][desktop_key] = {
-        'batch_throughput': desktop_throughput,
-        'avg_response_time': 1.0 / desktop_throughput,
-        'total_requests': 10,
-        'successful_requests': 10,
-        'failed_requests': 0,
-        'latency_ms': (1.0 / desktop_throughput) * 1000,
-        'available': True,
-        'primed': True
+    pool.stats["node_performance"][desktop_key] = {
+        "batch_throughput": desktop_throughput,
+        "avg_response_time": 1.0 / desktop_throughput,
+        "total_requests": 10,
+        "successful_requests": 10,
+        "failed_requests": 0,
+        "latency_ms": (1.0 / desktop_throughput) * 1000,
+        "available": True,
+        "primed": True,
     }
 
     logger.info("\n✅ Performance stats primed successfully!")
@@ -159,7 +160,7 @@ def prime_performance_stats(pool):
     logger.info(f"   - Laptop gets ~{laptop_pct:.0f}% of chunks")
     logger.info(f"   - Desktop gets ~{desktop_pct:.0f}% of chunks")
     logger.info("\n🚀 Process PDFs to see the optimized distribution in action!")
-    logger.info("="*70 + "\n")
+    logger.info("=" * 70 + "\n")
 
 
 def main():
@@ -177,7 +178,7 @@ def main():
         enable_ray=False,
         enable_dask=False,
         enable_gpu_redis=False,
-        register_with_dashboard=False
+        register_with_dashboard=False,
     )
 
     if not pool.nodes:
@@ -189,14 +190,12 @@ def main():
 
     # Save stats to file for FlockParser to load
     import json
+
     stats_file = Path(__file__).parent / "sollol_primed_stats.json"
 
-    primed_stats = {
-        'node_performance': pool.stats.get('node_performance', {}),
-        'priming_complete': True
-    }
+    primed_stats = {"node_performance": pool.stats.get("node_performance", {}), "priming_complete": True}
 
-    with open(stats_file, 'w') as f:
+    with open(stats_file, "w") as f:
         json.dump(primed_stats, f, indent=2)
 
     logger.info(f"💾 Stats saved to {stats_file}")
@@ -207,4 +206,5 @@ def main():
 
 if __name__ == "__main__":
     import sys
+
     sys.exit(main())

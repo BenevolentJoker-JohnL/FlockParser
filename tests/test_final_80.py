@@ -46,7 +46,7 @@ class TestChunkTextFinalEdgeCases:
 class TestPDFPageIteration:
     """Test PDF page iteration edge cases"""
 
-    @patch('flockparsecli.PdfReader')
+    @patch("flockparsecli.PdfReader")
     def test_extract_with_many_pages(self, mock_pypdf2):
         """Test extraction with many pages to hit iteration paths"""
         # Create many pages to ensure all iteration paths are hit
@@ -66,7 +66,7 @@ class TestPDFPageIteration:
         mock_pdf.pages = pages
         mock_pypdf2.return_value = mock_pdf
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             pdf_path = tmp.name
 
         try:
@@ -80,7 +80,7 @@ class TestPDFPageIteration:
 class TestLoadBalancerNodeChecks:
     """Test node checking edge cases"""
 
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.ollama.Client")
     def test_check_model_exception_handling(self, mock_client):
         """Test exception handling in model checking"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -95,7 +95,7 @@ class TestLoadBalancerNodeChecks:
         # Should handle exception gracefully
         assert result is False or result is None or isinstance(result, tuple)
 
-    @patch('flockparsecli.requests.get')
+    @patch("flockparsecli.requests.get")
     def test_measure_latency_http_error(self, mock_get):
         """Test latency measurement with HTTP error"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -110,7 +110,7 @@ class TestLoadBalancerNodeChecks:
         # Should handle error
         assert latency is None or isinstance(latency, (int, float))
 
-    @patch('flockparsecli.requests.get')
+    @patch("flockparsecli.requests.get")
     def test_is_node_available_exception(self, mock_get):
         """Test node availability with exception"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -123,7 +123,7 @@ class TestLoadBalancerNodeChecks:
         # Should return False on error
         assert result is False
 
-    @patch('flockparsecli.requests.get')
+    @patch("flockparsecli.requests.get")
     def test_detect_gpu_exception(self, mock_get):
         """Test GPU detection with exception"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -140,11 +140,11 @@ class TestLoadBalancerNodeChecks:
 class TestSimilarChunksIterationPaths:
     """Test similarity search iteration paths"""
 
-    @patch('flockparsecli.cosine_similarity')
-    @patch('builtins.open')
-    @patch('flockparsecli.Path.exists')
-    @patch('flockparsecli.load_document_index')
-    @patch('flockparsecli.get_cached_embedding')
+    @patch("flockparsecli.cosine_similarity")
+    @patch("builtins.open")
+    @patch("flockparsecli.Path.exists")
+    @patch("flockparsecli.load_document_index")
+    @patch("flockparsecli.get_cached_embedding")
     def test_similarity_multiple_documents(self, mock_embed, mock_index, mock_exists, mock_open_file, mock_cosine):
         """Test similarity search across multiple documents"""
         mock_embed.return_value = [0.5] * 1024
@@ -159,14 +159,13 @@ class TestSimilarChunksIterationPaths:
         # Multiple documents with chunks
         docs = []
         for i in range(5):
-            docs.append({
-                "id": f"doc{i}",
-                "original": f"/test{i}.pdf",
-                "chunks": [
-                    {"file": f"/tmp/chunk{i}_{j}.json", "chunk_id": j}
-                    for j in range(3)
-                ]
-            })
+            docs.append(
+                {
+                    "id": f"doc{i}",
+                    "original": f"/test{i}.pdf",
+                    "chunks": [{"file": f"/tmp/chunk{i}_{j}.json", "chunk_id": j} for j in range(3)],
+                }
+            )
 
         mock_index.return_value = {"documents": docs}
 
@@ -175,10 +174,10 @@ class TestSimilarChunksIterationPaths:
         # Should iterate through all documents
         assert isinstance(results, list)
 
-    @patch('builtins.open')
-    @patch('flockparsecli.Path.exists')
-    @patch('flockparsecli.load_document_index')
-    @patch('flockparsecli.get_cached_embedding')
+    @patch("builtins.open")
+    @patch("flockparsecli.Path.exists")
+    @patch("flockparsecli.load_document_index")
+    @patch("flockparsecli.get_cached_embedding")
     def test_similarity_chunk_file_not_exist(self, mock_embed, mock_index, mock_exists, mock_open_file):
         """Test similarity when chunk file doesn't exist"""
         mock_embed.return_value = [0.5] * 1024
@@ -192,15 +191,17 @@ class TestSimilarChunksIterationPaths:
         mock_open_file.return_value = mock_handle
 
         mock_index.return_value = {
-            "documents": [{
-                "id": "doc1",
-                "original": "/test.pdf",
-                "chunks": [
-                    {"file": "/tmp/chunk1.json", "chunk_id": 0},
-                    {"file": "/tmp/chunk2.json", "chunk_id": 1},
-                    {"file": "/tmp/chunk3.json", "chunk_id": 2},
-                ]
-            }]
+            "documents": [
+                {
+                    "id": "doc1",
+                    "original": "/test.pdf",
+                    "chunks": [
+                        {"file": "/tmp/chunk1.json", "chunk_id": 0},
+                        {"file": "/tmp/chunk2.json", "chunk_id": 1},
+                        {"file": "/tmp/chunk3.json", "chunk_id": 2},
+                    ],
+                }
+            ]
         }
 
         results = get_similar_chunks("test", top_k=5)
@@ -215,8 +216,7 @@ class TestLoadBalancerRoundRobinPath:
     def test_round_robin_wraps_around(self):
         """Test that round robin index wraps around"""
         lb = OllamaLoadBalancer(
-            instances=["http://localhost:11434", "http://192.168.1.10:11434"],
-            skip_init_checks=True
+            instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True
         )
 
         lb.set_routing_strategy("round_robin")
@@ -235,10 +235,10 @@ class TestLoadBalancerRoundRobinPath:
 class TestAdaptiveTopKAllCases:
     """Test all adaptive top-k cases"""
 
-    @patch('builtins.open')
-    @patch('flockparsecli.Path.exists')
-    @patch('flockparsecli.load_document_index')
-    @patch('flockparsecli.get_cached_embedding')
+    @patch("builtins.open")
+    @patch("flockparsecli.Path.exists")
+    @patch("flockparsecli.load_document_index")
+    @patch("flockparsecli.get_cached_embedding")
     def test_adaptive_topk_large_db(self, mock_embed, mock_index, mock_exists, mock_open_file):
         """Test adaptive top-k with large database (>1000 chunks)"""
         mock_embed.return_value = [0.5] * 1024
@@ -251,18 +251,16 @@ class TestAdaptiveTopKAllCases:
 
         # Large DB (>= 1000 chunks) -> should use top_k=30
         chunks = [{"file": f"/tmp/chunk{i}.json", "chunk_id": i} for i in range(1200)]
-        mock_index.return_value = {
-            "documents": [{"id": "doc1", "original": "/test.pdf", "chunks": chunks}]
-        }
+        mock_index.return_value = {"documents": [{"id": "doc1", "original": "/test.pdf", "chunks": chunks}]}
 
         results = get_similar_chunks("test")
 
         assert isinstance(results, list)
 
-    @patch('builtins.open')
-    @patch('flockparsecli.Path.exists')
-    @patch('flockparsecli.load_document_index')
-    @patch('flockparsecli.get_cached_embedding')
+    @patch("builtins.open")
+    @patch("flockparsecli.Path.exists")
+    @patch("flockparsecli.load_document_index")
+    @patch("flockparsecli.get_cached_embedding")
     def test_adaptive_topk_small_medium_db(self, mock_embed, mock_index, mock_exists, mock_open_file):
         """Test adaptive top-k with small-medium database (50-200 chunks)"""
         mock_embed.return_value = [0.5] * 1024
@@ -275,9 +273,7 @@ class TestAdaptiveTopKAllCases:
 
         # Small-medium DB (50-200 chunks) -> should use top_k=10
         chunks = [{"file": f"/tmp/chunk{i}.json", "chunk_id": i} for i in range(120)]
-        mock_index.return_value = {
-            "documents": [{"id": "doc1", "original": "/test.pdf", "chunks": chunks}]
-        }
+        mock_index.return_value = {"documents": [{"id": "doc1", "original": "/test.pdf", "chunks": chunks}]}
 
         results = get_similar_chunks("test")
 

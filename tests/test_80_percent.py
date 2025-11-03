@@ -26,10 +26,10 @@ from flockparsecli import (
 class TestPDFExtractionFallbacks:
     """Test all PDF extraction fallback paths"""
 
-    @patch('flockparsecli.pytesseract.image_to_string')
-    @patch('pdf2image.convert_from_path')
-    @patch('flockparsecli.subprocess.run')
-    @patch('flockparsecli.PdfReader')
+    @patch("flockparsecli.pytesseract.image_to_string")
+    @patch("pdf2image.convert_from_path")
+    @patch("flockparsecli.subprocess.run")
+    @patch("flockparsecli.PdfReader")
     def test_ocr_with_multiple_pages(self, mock_pypdf2, mock_subprocess, mock_convert, mock_ocr):
         """Test OCR extraction with multiple pages"""
         # PyPDF2 returns minimal text
@@ -47,7 +47,7 @@ class TestPDFExtractionFallbacks:
         mock_convert.return_value = mock_images
         mock_ocr.side_effect = ["Page 1 OCR text content", "Page 2 OCR text content", "Page 3 OCR text content"]
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             pdf_path = tmp.name
 
         try:
@@ -57,7 +57,7 @@ class TestPDFExtractionFallbacks:
         finally:
             Path(pdf_path).unlink(missing_ok=True)
 
-    @patch('flockparsecli.PdfReader')
+    @patch("flockparsecli.PdfReader")
     def test_extract_with_page_warnings(self, mock_pypdf2):
         """Test extraction with some pages failing"""
         # Mix of successful and failing pages
@@ -74,7 +74,7 @@ class TestPDFExtractionFallbacks:
         mock_pdf.pages = pages
         mock_pypdf2.return_value = mock_pdf
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             pdf_path = tmp.name
 
         try:
@@ -88,10 +88,10 @@ class TestPDFExtractionFallbacks:
 class TestProcessPDFComplete:
     """Complete process_pdf workflow"""
 
-    @patch('flockparsecli.docx.Document')
-    @patch('flockparsecli.register_document')
-    @patch('flockparsecli.chunk_text')
-    @patch('flockparsecli.extract_text_from_pdf')
+    @patch("flockparsecli.docx.Document")
+    @patch("flockparsecli.register_document")
+    @patch("flockparsecli.chunk_text")
+    @patch("flockparsecli.extract_text_from_pdf")
     def test_process_pdf_with_page_markers(self, mock_extract, mock_chunk, mock_register, mock_docx):
         """Test processing PDF that has page markers"""
         # Text with page markers that should be removed
@@ -114,7 +114,7 @@ Third page content"""
         mock_doc = Mock()
         mock_docx.return_value = mock_doc
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             tmp_path = Path(tmp.name)
 
         try:
@@ -124,10 +124,10 @@ Third page content"""
         finally:
             tmp_path.unlink(missing_ok=True)
 
-    @patch('flockparsecli.docx.Document')
-    @patch('flockparsecli.register_document')
-    @patch('flockparsecli.chunk_text')
-    @patch('flockparsecli.extract_text_from_pdf')
+    @patch("flockparsecli.docx.Document")
+    @patch("flockparsecli.register_document")
+    @patch("flockparsecli.chunk_text")
+    @patch("flockparsecli.extract_text_from_pdf")
     def test_process_pdf_saves_all_formats(self, mock_extract, mock_chunk, mock_register, mock_docx):
         """Test that all output formats are created"""
         mock_extract.return_value = "Test PDF content with enough text to be meaningful"
@@ -139,7 +139,7 @@ Third page content"""
         mock_doc.save = Mock()
         mock_docx.return_value = mock_doc
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             tmp_path = Path(tmp.name)
 
         try:
@@ -196,12 +196,14 @@ class TestChunkTextComplete:
 class TestSimilarChunksComplete:
     """Complete similarity search coverage"""
 
-    @patch('flockparsecli.cosine_similarity')
-    @patch('builtins.open', new_callable=MagicMock)
-    @patch('flockparsecli.Path.exists')
-    @patch('flockparsecli.load_document_index')
-    @patch('flockparsecli.get_cached_embedding')
-    def test_similarity_search_adaptive_topk_scaling(self, mock_embed, mock_index, mock_exists, mock_open_file, mock_cosine):
+    @patch("flockparsecli.cosine_similarity")
+    @patch("builtins.open", new_callable=MagicMock)
+    @patch("flockparsecli.Path.exists")
+    @patch("flockparsecli.load_document_index")
+    @patch("flockparsecli.get_cached_embedding")
+    def test_similarity_search_adaptive_topk_scaling(
+        self, mock_embed, mock_index, mock_exists, mock_open_file, mock_cosine
+    ):
         """Test adaptive top-k scaling based on database size"""
         mock_embed.return_value = [0.5] * 1024
         mock_exists.return_value = True
@@ -215,18 +217,16 @@ class TestSimilarChunksComplete:
 
         # Test different database sizes
         test_cases = [
-            (30, 5),    # < 50 chunks: should use min(30, 5) = 5
+            (30, 5),  # < 50 chunks: should use min(30, 5) = 5
             (150, 10),  # < 200 chunks: should use 10
             (500, 20),  # < 1000 chunks: should use 20
-            (1500, 30), # >= 1000 chunks: should use 30
+            (1500, 30),  # >= 1000 chunks: should use 30
         ]
 
         for total_chunks, expected_k in test_cases:
             # Create index with specified number of chunks
             chunks_refs = [{"file": f"/tmp/chunk{i}.json", "chunk_id": i} for i in range(total_chunks)]
-            mock_index.return_value = {
-                "documents": [{"id": "doc1", "original": "/test.pdf", "chunks": chunks_refs}]
-            }
+            mock_index.return_value = {"documents": [{"id": "doc1", "original": "/test.pdf", "chunks": chunks_refs}]}
 
             # Call without specifying top_k
             results = get_similar_chunks("test query")
@@ -234,10 +234,10 @@ class TestSimilarChunksComplete:
             # Should adapt based on size
             assert isinstance(results, list)
 
-    @patch('builtins.open')
-    @patch('flockparsecli.Path.exists')
-    @patch('flockparsecli.load_document_index')
-    @patch('flockparsecli.get_cached_embedding')
+    @patch("builtins.open")
+    @patch("flockparsecli.Path.exists")
+    @patch("flockparsecli.load_document_index")
+    @patch("flockparsecli.get_cached_embedding")
     def test_similarity_search_error_handling(self, mock_embed, mock_index, mock_exists, mock_open_file):
         """Test error handling in chunk processing"""
         mock_embed.return_value = [0.5] * 1024
@@ -248,19 +248,16 @@ class TestSimilarChunksComplete:
             {"file": "/tmp/chunk1.json", "chunk_id": 0},
             {"file": "/tmp/chunk2.json", "chunk_id": 1},
         ]
-        mock_index.return_value = {
-            "documents": [{"id": "doc1", "original": "/test.pdf", "chunks": chunks_refs}]
-        }
+        mock_index.return_value = {"documents": [{"id": "doc1", "original": "/test.pdf", "chunks": chunks_refs}]}
 
         # First file succeeds, second raises error
         mock_handles = [
             MagicMock(),
             MagicMock(),
         ]
-        mock_handles[0].__enter__.return_value.read.return_value = json.dumps({
-            "text": "Good chunk",
-            "embedding": [0.5] * 1024
-        })
+        mock_handles[0].__enter__.return_value.read.return_value = json.dumps(
+            {"text": "Good chunk", "embedding": [0.5] * 1024}
+        )
         mock_handles[1].__enter__.side_effect = Exception("File error")
 
         mock_open_file.side_effect = mock_handles
@@ -275,24 +272,18 @@ class TestSimilarChunksComplete:
 class TestRegisterDocumentComplete:
     """Complete document registration coverage"""
 
-    @patch('flockparsecli.chroma_collection.add')
-    @patch('flockparsecli.get_cached_embedding')
-    @patch('flockparsecli.save_document_index')
-    @patch('flockparsecli.load_document_index')
+    @patch("flockparsecli.chroma_collection.add")
+    @patch("flockparsecli.get_cached_embedding")
+    @patch("flockparsecli.save_document_index")
+    @patch("flockparsecli.load_document_index")
     def test_register_updates_existing_doc(self, mock_load, mock_save, mock_embed, mock_chroma):
         """Test updating an existing document"""
         # Mock existing document with same ID
-        mock_load.return_value = {
-            "documents": [{
-                "id": "existing_doc",
-                "original": "/path/to/test.pdf",
-                "chunks": []
-            }]
-        }
+        mock_load.return_value = {"documents": [{"id": "existing_doc", "original": "/path/to/test.pdf", "chunks": []}]}
         mock_embed.return_value = [0.1] * 1024
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as pdf:
-            with tempfile.NamedTemporaryFile(suffix='.txt', delete=False) as txt:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as pdf:
+            with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as txt:
                 pdf_path = Path(pdf.name)
                 txt_path = Path(txt.name)
 
@@ -325,7 +316,7 @@ class TestLoadBalancerDeep:
         assert stats["requests"] == 5
         assert stats["total_time"] >= 0
 
-    @patch('flockparsecli.requests.get')
+    @patch("flockparsecli.requests.get")
     def test_measure_latency_timeout(self, mock_get):
         """Test latency measurement with timeout"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)

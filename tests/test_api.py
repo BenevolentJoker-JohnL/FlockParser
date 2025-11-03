@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 # Import after path is set
 try:
     from flock_ai_api import app, API_KEY
+
     API_AVAILABLE = True
 except ImportError:
     API_AVAILABLE = False
@@ -42,11 +43,7 @@ class TestAPIAuthentication:
         client = TestClient(app)
 
         headers = {"X-API-Key": "wrong-key"}
-        response = client.post(
-            "/upload_pdf/",
-            files={"file": ("test.pdf", b"fake pdf content")},
-            headers=headers
-        )
+        response = client.post("/upload_pdf/", files={"file": ("test.pdf", b"fake pdf content")}, headers=headers)
 
         assert response.status_code in [401, 403], "Should reject invalid API key"
 
@@ -57,12 +54,8 @@ class TestAPIAuthentication:
         headers = {"X-API-Key": API_KEY}
 
         # Mock PDF processing
-        with patch('flock_ai_api.process_pdf'):
-            response = client.post(
-                "/upload_pdf/",
-                files={"file": ("test.pdf", b"fake pdf")},
-                headers=headers
-            )
+        with patch("flock_ai_api.process_pdf"):
+            response = client.post("/upload_pdf/", files={"file": ("test.pdf", b"fake pdf")}, headers=headers)
 
             # Should accept the request (may fail on processing, but auth should pass)
             assert response.status_code != 401 and response.status_code != 403
@@ -81,7 +74,7 @@ class TestUploadEndpoint:
         fake_pdf = b"%PDF-1.4\n%fake content"
         files = {"file": ("test.pdf", io.BytesIO(fake_pdf), "application/pdf")}
 
-        with patch('flock_ai_api.process_pdf') as mock_process:
+        with patch("flock_ai_api.process_pdf") as mock_process:
             mock_process.return_value = None  # Simulate successful processing
 
             response = client.post("/upload_pdf/", files=files, headers=headers)
@@ -140,17 +133,13 @@ class TestSearchEndpoint:
         client = TestClient(app)
         headers = {"X-API-Key": API_KEY}
 
-        with patch('flock_ai_api.get_similar_chunks') as mock_search:
+        with patch("flock_ai_api.get_similar_chunks") as mock_search:
             mock_search.return_value = [
                 {"text": "Result 1", "doc_name": "doc1.pdf", "similarity": 0.95},
-                {"text": "Result 2", "doc_name": "doc2.pdf", "similarity": 0.85}
+                {"text": "Result 2", "doc_name": "doc2.pdf", "similarity": 0.85},
             ]
 
-            response = client.post(
-                "/search/",
-                json={"query": "test query", "top_k": 5},
-                headers=headers
-            )
+            response = client.post("/search/", json={"query": "test query", "top_k": 5}, headers=headers)
 
             assert response.status_code == 200
             data = response.json()
@@ -161,11 +150,7 @@ class TestSearchEndpoint:
         client = TestClient(app)
         headers = {"X-API-Key": API_KEY}
 
-        response = client.post(
-            "/search/",
-            json={"query": "", "top_k": 5},
-            headers=headers
-        )
+        response = client.post("/search/", json={"query": "", "top_k": 5}, headers=headers)
 
         # Should return error or empty results
         assert response.status_code in [200, 400]
@@ -175,11 +160,7 @@ class TestSearchEndpoint:
         client = TestClient(app)
         headers = {"X-API-Key": API_KEY}
 
-        response = client.post(
-            "/search/",
-            json={"query": "test", "top_k": -5},
-            headers=headers
-        )
+        response = client.post("/search/", json={"query": "test", "top_k": -5}, headers=headers)
 
         # Should return error for negative top_k
         assert response.status_code >= 400 or response.status_code == 200
@@ -189,14 +170,10 @@ class TestSearchEndpoint:
         client = TestClient(app)
         headers = {"X-API-Key": API_KEY}
 
-        with patch('flock_ai_api.get_similar_chunks') as mock_search:
+        with patch("flock_ai_api.get_similar_chunks") as mock_search:
             mock_search.return_value = []
 
-            response = client.post(
-                "/search/",
-                json={"query": "nonexistent query", "top_k": 5},
-                headers=headers
-            )
+            response = client.post("/search/", json={"query": "nonexistent query", "top_k": 5}, headers=headers)
 
             assert response.status_code == 200
             data = response.json()
@@ -212,14 +189,10 @@ class TestChatEndpoint:
         client = TestClient(app)
         headers = {"X-API-Key": API_KEY}
 
-        with patch('flock_ai_api.chat_with_documents') as mock_chat:
+        with patch("flock_ai_api.chat_with_documents") as mock_chat:
             mock_chat.return_value = "This is a test response"
 
-            response = client.post(
-                "/chat/",
-                json={"query": "What is this about?"},
-                headers=headers
-            )
+            response = client.post("/chat/", json={"query": "What is this about?"}, headers=headers)
 
             assert response.status_code == 200
             data = response.json()
@@ -230,11 +203,7 @@ class TestChatEndpoint:
         client = TestClient(app)
         headers = {"X-API-Key": API_KEY}
 
-        response = client.post(
-            "/chat/",
-            json={"query": ""},
-            headers=headers
-        )
+        response = client.post("/chat/", json={"query": ""}, headers=headers)
 
         # Should handle empty query gracefully
         assert response.status_code in [200, 400]
@@ -275,11 +244,7 @@ class TestErrorHandling:
         client = TestClient(app)
         headers = {"X-API-Key": API_KEY, "Content-Type": "application/json"}
 
-        response = client.post(
-            "/search/",
-            data="{ malformed json }",
-            headers=headers
-        )
+        response = client.post("/search/", data="{ malformed json }", headers=headers)
 
         # Should return 400 or 422 for malformed JSON
         assert response.status_code >= 400
@@ -289,11 +254,7 @@ class TestErrorHandling:
         client = TestClient(app)
         headers = {"X-API-Key": API_KEY}
 
-        response = client.post(
-            "/search/",
-            json={},  # Missing query field
-            headers=headers
-        )
+        response = client.post("/search/", json={}, headers=headers)  # Missing query field
 
         # Should return validation error
         assert response.status_code >= 400
@@ -332,11 +293,7 @@ class TestRateLimiting:
         # Make 10 rapid requests
         responses = []
         for i in range(10):
-            response = client.post(
-                "/search/",
-                json={"query": f"test {i}", "top_k": 5},
-                headers=headers
-            )
+            response = client.post("/search/", json={"query": f"test {i}", "top_k": 5}, headers=headers)
             responses.append(response.status_code)
 
         # All should succeed or some might be rate-limited (429)

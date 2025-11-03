@@ -22,8 +22,8 @@ from flockparsecli import (
 class TestExtractTextFromPDFComplete:
     """Complete coverage of PDF extraction"""
 
-    @patch('flockparsecli.subprocess.run')
-    @patch('flockparsecli.PdfReader')
+    @patch("flockparsecli.subprocess.run")
+    @patch("flockparsecli.PdfReader")
     def test_extract_with_pdftotext_success(self, mock_pypdf2, mock_subprocess):
         """Test extraction with pdftotext when PyPDF2 fails"""
         # PyPDF2 returns empty
@@ -38,18 +38,18 @@ class TestExtractTextFromPDFComplete:
         mock_result.returncode = 0
         mock_subprocess.return_value = mock_result
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             pdf_path = tmp.name
 
         try:
-            with patch('builtins.open', create=True) as mock_open:
+            with patch("builtins.open", create=True) as mock_open:
                 mock_open.return_value.__enter__.return_value.read.return_value = "Extracted via pdftotext"
                 result = extract_text_from_pdf(pdf_path)
         finally:
             Path(pdf_path).unlink(missing_ok=True)
 
-    @patch('flockparsecli.subprocess.run')
-    @patch('flockparsecli.PdfReader')
+    @patch("flockparsecli.subprocess.run")
+    @patch("flockparsecli.PdfReader")
     def test_extract_pdftotext_error(self, mock_pypdf2, mock_subprocess):
         """Test extraction when pdftotext errors"""
         # PyPDF2 returns empty
@@ -65,7 +65,7 @@ class TestExtractTextFromPDFComplete:
         mock_result.stderr = "Error"
         mock_subprocess.return_value = mock_result
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             pdf_path = tmp.name
 
         try:
@@ -73,7 +73,7 @@ class TestExtractTextFromPDFComplete:
         finally:
             Path(pdf_path).unlink(missing_ok=True)
 
-    @patch('flockparsecli.PdfReader')
+    @patch("flockparsecli.PdfReader")
     def test_extract_page_by_page(self, mock_pypdf2):
         """Test extraction processes each page"""
         # Mock multiple pages with varying content
@@ -87,7 +87,7 @@ class TestExtractTextFromPDFComplete:
         mock_pdf.pages = pages
         mock_pypdf2.return_value = mock_pdf
 
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
             pdf_path = tmp.name
 
         try:
@@ -101,7 +101,7 @@ class TestExtractTextFromPDFComplete:
 class TestProcessDirectoryComplete:
     """Complete coverage of directory processing"""
 
-    @patch('flockparsecli.process_pdf')
+    @patch("flockparsecli.process_pdf")
     def test_process_directory_with_stats(self, mock_process):
         """Test directory processing with statistics"""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -122,7 +122,7 @@ class TestLoadBalancerComplex:
         """Test initial latency measurement"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
-        with patch.object(lb, '_measure_latency') as mock_measure:
+        with patch.object(lb, "_measure_latency") as mock_measure:
             mock_measure.return_value = 0.1
 
             lb._measure_initial_latencies()
@@ -133,8 +133,7 @@ class TestLoadBalancerComplex:
     def test_update_health_score_multiple_nodes(self):
         """Test health score updates for multiple nodes"""
         lb = OllamaLoadBalancer(
-            instances=["http://localhost:11434", "http://192.168.1.10:11434"],
-            skip_init_checks=True
+            instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True
         )
 
         for node in lb.instances:
@@ -151,8 +150,7 @@ class TestLoadBalancerComplex:
     def test_get_next_instance_round_robin(self):
         """Test round robin instance selection"""
         lb = OllamaLoadBalancer(
-            instances=["http://localhost:11434", "http://192.168.1.10:11434"],
-            skip_init_checks=True
+            instances=["http://localhost:11434", "http://192.168.1.10:11434"], skip_init_checks=True
         )
 
         lb.set_routing_strategy("round_robin")
@@ -168,10 +166,7 @@ class TestLoadBalancerComplex:
 
     def test_get_next_instance_adaptive(self):
         """Test adaptive instance selection"""
-        lb = OllamaLoadBalancer(
-            instances=["http://localhost:11434"],
-            skip_init_checks=True
-        )
+        lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
         lb.set_routing_strategy("adaptive")
 
@@ -179,7 +174,7 @@ class TestLoadBalancerComplex:
 
         assert instance in lb.instances or instance is None
 
-    @patch('flockparsecli.requests.get')
+    @patch("flockparsecli.requests.get")
     def test_is_node_available_with_caching(self, mock_get):
         """Test node availability check with caching"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
@@ -198,9 +193,9 @@ class TestLoadBalancerComplex:
         assert isinstance(result1, bool)
         assert isinstance(result2, bool)
 
-    @patch('flockparsecli.socket.gethostname')
-    @patch('flockparsecli.socket.gethostbyname')
-    @patch('flockparsecli.ollama.Client')
+    @patch("flockparsecli.socket.gethostname")
+    @patch("flockparsecli.socket.gethostbyname")
+    @patch("flockparsecli.ollama.Client")
     def test_add_node_localhost_duplicate_detection(self, mock_client, mock_gethost, mock_hostname):
         """Test detection of duplicate localhost nodes"""
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
