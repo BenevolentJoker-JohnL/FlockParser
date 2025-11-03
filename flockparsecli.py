@@ -1233,193 +1233,249 @@ def chat():
         logger.info("📚 No documents in knowledge base yet. Process a PDF first.")
         return
 
-    logger.info("\n💬 Chat with your Documents")
-    logger.info("Type 'exit' to return to main menu")
-    logger.info(f"Knowledge base contains {len(index_data['documents'])} documents")
+    # PERFORMANCE: Switch to intelligent routing for interactive chat
+    # INTELLIGENT routing combines model availability + latency + load for optimal selection
+    # ROUND_ROBIN distributes evenly (good for batch with all models loaded everywhere)
+    from sollol.routing_strategy import RoutingStrategy
+    original_strategy = load_balancer.routing_strategy
+    load_balancer.routing_strategy = RoutingStrategy.INTELLIGENT
+    logger.info(f"🎯 Chat routing: INTELLIGENT (model-aware + low-latency selection)")
+    logger.info(f"   (Batch processing uses ROUND_ROBIN for balanced load distribution)")
 
-    chat_history = []
+    try:
+        logger.info("\n💬 Chat with your Documents")
+        logger.info("Type 'exit' to return to main menu")
+        logger.info(f"Knowledge base contains {len(index_data['documents'])} documents")
 
-    while True:
-        user_query = visible_input("\n🙋 You: ").strip()
+        chat_history = []
 
-        if user_query.lower() == "exit":
-            logger.info("Returning to main menu...")
-            break
+        while True:
+            user_query = visible_input("\n🙋 You: ").strip()
 
-        if not user_query:
-            continue
+            if user_query.lower() == "exit":
+                logger.info("Returning to main menu...")
+                break
 
-        # Start timing
-        response_start_time = time.time()
+            if not user_query:
+                continue
 
-        # Find relevant document chunks
-        logger.info("🔍 Searching knowledge base...")
-        retrieval_start = time.time()
-        relevant_chunks = get_similar_chunks(user_query)
-        retrieval_time = time.time() - retrieval_start
+            # Start timing
+            response_start_time = time.time()
 
-        if not relevant_chunks:
-            logger.error("❌ No relevant information found in the knowledge base.")
-            continue
+            # Find relevant document chunks
+            logger.info("🔍 Searching knowledge base...")
+            retrieval_start = time.time()
+            relevant_chunks = get_similar_chunks(user_query)
+            retrieval_time = time.time() - retrieval_start
 
-        logger.info(f"   ⏱️  Retrieval: {retrieval_time:.2f}s")
+            if not relevant_chunks:
+                logger.error("❌ No relevant information found in the knowledge base.")
+                continue
 
-        # Document-aware intelligent context fitting
-        # Conservative token limits for 2048-4096 context window models
-        # Token estimation: 1 token ≈ 3.5 chars (conservative)
-        # Reserve: system prompt (~100) + query (~150) + response (~1500) + history (~250)
-        # Available for context: ~1500 tokens base, adjusted dynamically
-        BASE_CONTEXT_TOKENS = 1500
+            logger.info(f"   ⏱️  Retrieval: {retrieval_time:.2f}s")
 
-        def estimate_tokens(text):
-            """Conservative token estimation: 1 token ≈ 3.5 chars."""
-            return int(len(text) / 3.5)
+            # Document-aware intelligent context fitting
+            # Multi-pass retrieval strategy for quality + length:
+            # - Each pass retrieves up to 1500 tokens of context
+            # - Multiple passes (2-4) accumulate to 3000-6000 tokens total
+            # - This balances quality (focused per-pass) with comprehensiveness (multiple passes)
+            # Token estimation: 1 token ≈ 3.5 chars (conservative)
+            BASE_CONTEXT_TOKENS = 1500  # Per-pass limit for multi-pass retrieval
 
-        # Group chunks by document
-        from collections import defaultdict
+            def estimate_tokens(text):
+                """Conservative token estimation: 1 token ≈ 3.5 chars."""
+                return int(len(text) / 3.5)
 
-        doc_chunks = defaultdict(list)
-        for chunk in relevant_chunks:
-            doc_chunks[chunk["doc_name"]].append(chunk)
+            # Group chunks by document
+            from collections import defaultdict
 
-        num_docs = len(doc_chunks)
-        logger.info(f"   📚 Chunks span {num_docs} document(s)")
+            doc_chunks = defaultdict(list)
+            for chunk in relevant_chunks:
+                doc_chunks[chunk["doc_name"]].append(chunk)
 
-        # Dynamic strategy based on document count
-        if num_docs == 1:
-            # Single document: prioritize depth - use more chunks from same doc
-            MAX_CONTEXT_TOKENS = BASE_CONTEXT_TOKENS * 1.3  # 1950 tokens
-            min_chunks_per_doc = 3
-            logger.info("   🎯 Strategy: Deep dive (single document)")
-        elif num_docs <= 3:
-            # Few documents: balanced approach
-            MAX_CONTEXT_TOKENS = BASE_CONTEXT_TOKENS * 1.1  # 1650 tokens
-            min_chunks_per_doc = 2
-            logger.info(f"   🎯 Strategy: Balanced coverage ({num_docs} documents)")
-        else:
-            # Many documents: prioritize breadth - sample from each doc
-            MAX_CONTEXT_TOKENS = BASE_CONTEXT_TOKENS  # 1500 tokens
-            min_chunks_per_doc = 1
-            logger.info(f"   🎯 Strategy: Broad coverage ({num_docs} documents)")
+            num_docs = len(doc_chunks)
+            logger.info(f"   📚 Chunks span {num_docs} document(s)")
 
-        # Build context with document-aware selection
-        context_parts = []
-        current_tokens = 0
-        chunks_used = 0
-        docs_included = set()
+            # Multi-pass retrieval: Do multiple passes at 1.5k tokens each for quality
+            if num_docs == 1:
+                # Single document: 4 passes for comprehensive coverage
+                num_passes = 4
+                min_chunks_per_doc = 3
+                logger.info(f"   🎯 Strategy: Deep dive (1 document, {num_passes} passes)")
+            elif num_docs <= 3:
+                # Few documents: 3 passes for balanced coverage
+                num_passes = 3
+                min_chunks_per_doc = 2
+                logger.info(f"   🎯 Strategy: Multi-pass coverage ({num_docs} documents, {num_passes} passes)")
+            else:
+                # Many documents: 2 passes for breadth
+                num_passes = 2
+                min_chunks_per_doc = 1
+                logger.info(f"   🎯 Strategy: Broad coverage ({num_docs} documents, {num_passes} passes)")
 
-        # Phase 1: Ensure minimum representation from each document
-        for doc_name, chunks in sorted(
-            doc_chunks.items(), key=lambda x: max(c["similarity"] for c in x[1]), reverse=True
-        ):
-            doc_chunks_added = 0
-            for chunk in sorted(chunks, key=lambda x: x["similarity"], reverse=True):
-                if doc_chunks_added >= min_chunks_per_doc:
+            MAX_CONTEXT_TOKENS = BASE_CONTEXT_TOKENS * num_passes  # Total across all passes
+
+            # Build context with document-aware selection
+            context_parts = []
+            current_tokens = 0
+            chunks_used = 0
+            docs_included = set()
+
+            # Phase 1: Ensure minimum representation from each document
+            for doc_name, chunks in sorted(
+                doc_chunks.items(), key=lambda x: max(c["similarity"] for c in x[1]), reverse=True
+            ):
+                doc_chunks_added = 0
+                for chunk in sorted(chunks, key=lambda x: x["similarity"], reverse=True):
+                    if doc_chunks_added >= min_chunks_per_doc:
+                        break
+
+                    chunk_text = chunk["text"]
+                    similarity = chunk["similarity"]
+                    formatted_chunk = f"[Doc: {doc_name}, Relevance: {similarity:.2f}]\n{chunk_text}"
+                    chunk_tokens = estimate_tokens(formatted_chunk)
+
+                    if current_tokens + chunk_tokens <= MAX_CONTEXT_TOKENS:
+                        context_parts.append((similarity, formatted_chunk))
+                        current_tokens += chunk_tokens
+                        chunks_used += 1
+                        doc_chunks_added += 1
+                        docs_included.add(doc_name)
+
+            # Phase 2: Fill remaining space with highest relevance chunks
+            remaining_chunks = [chunk for doc_name, chunks in doc_chunks.items() for chunk in chunks]
+            remaining_chunks.sort(key=lambda x: x["similarity"], reverse=True)
+
+            for chunk in remaining_chunks:
+                if chunks_used >= len(relevant_chunks):
                     break
 
                 chunk_text = chunk["text"]
+                doc_name = chunk["doc_name"]
                 similarity = chunk["similarity"]
                 formatted_chunk = f"[Doc: {doc_name}, Relevance: {similarity:.2f}]\n{chunk_text}"
+
+                # Skip if already included
+                if any(formatted_chunk in part[1] for part in context_parts):
+                    continue
+
                 chunk_tokens = estimate_tokens(formatted_chunk)
 
                 if current_tokens + chunk_tokens <= MAX_CONTEXT_TOKENS:
                     context_parts.append((similarity, formatted_chunk))
                     current_tokens += chunk_tokens
                     chunks_used += 1
-                    doc_chunks_added += 1
                     docs_included.add(doc_name)
+                else:
+                    break
 
-        # Phase 2: Fill remaining space with highest relevance chunks
-        remaining_chunks = [chunk for doc_name, chunks in doc_chunks.items() for chunk in chunks]
-        remaining_chunks.sort(key=lambda x: x["similarity"], reverse=True)
+            # Sort final context by relevance
+            context_parts.sort(key=lambda x: x[0], reverse=True)
+            context = "\n\n".join([part[1] for part in context_parts])
 
-        for chunk in remaining_chunks:
-            if chunks_used >= len(relevant_chunks):
-                break
-
-            chunk_text = chunk["text"]
-            doc_name = chunk["doc_name"]
-            similarity = chunk["similarity"]
-            formatted_chunk = f"[Doc: {doc_name}, Relevance: {similarity:.2f}]\n{chunk_text}"
-
-            # Skip if already included
-            if any(formatted_chunk in part[1] for part in context_parts):
-                continue
-
-            chunk_tokens = estimate_tokens(formatted_chunk)
-
-            if current_tokens + chunk_tokens <= MAX_CONTEXT_TOKENS:
-                context_parts.append((similarity, formatted_chunk))
-                current_tokens += chunk_tokens
-                chunks_used += 1
-                docs_included.add(doc_name)
-            else:
-                break
-
-        # Sort final context by relevance
-        context_parts.sort(key=lambda x: x[0], reverse=True)
-        context = "\n\n".join([part[1] for part in context_parts])
-
-        # Show fitting summary
-        logger.info(
-            f"   📄 Selected {chunks_used}/{len(relevant_chunks)} chunks "
-            f"from {len(docs_included)} document(s) (~{current_tokens} tokens)"
-        )
-
-        # Build prompt with context and chat history
-        system_prompt = (
-            "You are FlockParser AI, a helpful assistant that answers questions based on the user's documents. "
-            "Only use information from the provided document context. "
-            "If you don't know or the answer isn't in the context, say so."
-        )
-
-        # Build user message with context and optional history
-        user_message_parts = []
-
-        if chat_history:
-            history_text = "\n".join(
-                [f"Previous Q: {q}\nPrevious A: {a}" for q, a in chat_history[-2:]]  # Last 2 exchanges only
-            )
-            user_message_parts.append(f"CHAT HISTORY:\n{history_text}\n")
-
-        user_message_parts.append(f"CONTEXT FROM DOCUMENTS:\n{context}")
-        user_message_parts.append(f"\nQUESTION: {user_query}")
-        user_message = "\n".join(user_message_parts)
-
-        # Generate response using LLM with load balancing
-        logger.info("🤖 Generating response...")
-        generation_start = time.time()
-        try:
-            response = load_balancer.chat(
-                model=CHAT_MODEL,
-                messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_message}],
-                keep_alive=CHAT_KEEP_ALIVE,
-                priority=5,
+            # Show fitting summary
+            logger.info(
+                f"   📄 Selected {chunks_used}/{len(relevant_chunks)} chunks "
+                f"from {len(docs_included)} document(s) (~{current_tokens} tokens, {num_passes} passes × {BASE_CONTEXT_TOKENS} tokens)"
             )
 
-            generation_time = time.time() - generation_start
-            answer = response["message"]["content"]
+            # Build prompt with context and chat history
+            system_prompt = (
+                "You are FlockParser AI, a helpful assistant that answers questions based on the user's documents. "
+                "IMPORTANT: Extract and cite specific facts, equations, data points, and findings from the documents. "
+                "DO NOT just list chapter titles or section names - provide the actual content and details. "
+                "Include specific values, measurements, formulas, and conclusions when available. "
+                "Only use information from the provided document context. "
+                "If you don't know or the answer isn't in the context, say so."
+            )
 
-            # Display response
-            logger.info(f"\n🤖 AI: {answer}")
+            # Build user message with context and optional history
+            user_message_parts = []
 
-            # Update chat history
-            chat_history.append((user_query, answer))
+            if chat_history:
+                history_text = "\n".join(
+                    [f"Previous Q: {q}\nPrevious A: {a}" for q, a in chat_history[-2:]]  # Last 2 exchanges only
+                )
+                user_message_parts.append(f"CHAT HISTORY:\n{history_text}\n")
 
-            # Show source documents
-            logger.info("\n📚 Sources:")
-            for i, chunk in enumerate(relevant_chunks[:CHUNKS_TO_SHOW]):
-                logger.info(f"  {i+1}. {chunk['doc_name']} (relevance: {chunk['similarity']:.2f})")
+            user_message_parts.append(f"CONTEXT FROM DOCUMENTS:\n{context}")
+            user_message_parts.append(f"\nQUESTION: {user_query}")
+            user_message = "\n".join(user_message_parts)
 
-            # Show timing breakdown
-            total_time = time.time() - response_start_time
-            logger.info("\n⏱️  Response timing:")
-            logger.info(f"   Retrieval: {retrieval_time:.2f}s")
-            logger.info(f"   Generation: {generation_time:.2f}s")
-            logger.info(f"   Total: {total_time:.2f}s")
+            # Generate response using LLM with load balancing
+            logger.info("🤖 Generating response...")
+            generation_start = time.time()
+            try:
+                # WORKAROUND: Explicitly use node that has qwen3:8b loaded
+                # SOLLOL's loaded_models tracking is not syncing from /api/ps (bug)
+                # Node .154 cannot load qwen3:8b (insufficient RAM: needs 5.6GB, has 5.0GB)
+                # Only node .15 can run qwen3:8b, so temporarily force routing there
+                import requests
+                chat_node = None
+                for node in load_balancer.nodes:
+                    node_url = f"http://{node['host']}:{node['port']}"
+                    try:
+                        ps_resp = requests.get(f"{node_url}/api/ps", timeout=2)
+                        if ps_resp.status_code == 200:
+                            loaded = ps_resp.json().get("models", [])
+                            # Check if qwen3:8b is loaded on this node
+                            if any(CHAT_MODEL in m.get("name", "") for m in loaded):
+                                chat_node = node_url
+                                logger.info(f"   ✅ Using {node_url} (has {CHAT_MODEL} loaded)")
+                                break
+                    except:
+                        continue
 
-        except Exception as e:
-            logger.error(f"❌ Error generating response: {e}")
+                if not chat_node:
+                    logger.warning(f"   ⚠️  {CHAT_MODEL} not loaded on any node, using SOLLOL routing")
+
+                # Make direct request to the node with the model loaded
+                if chat_node:
+                    payload = {
+                        "model": CHAT_MODEL,
+                        "messages": [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_message}],
+                        "stream": False
+                    }
+                    resp = requests.post(f"{chat_node}/api/chat", json=payload, timeout=300)
+                    resp.raise_for_status()
+                    response = resp.json()
+                else:
+                    # Fallback to SOLLOL routing
+                    response = load_balancer.chat(
+                        model=CHAT_MODEL,
+                        messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_message}],
+                        keep_alive=CHAT_KEEP_ALIVE,
+                        priority=5,
+                    )
+
+                generation_time = time.time() - generation_start
+                answer = response["message"]["content"]
+
+                # Display response
+                logger.info(f"\n🤖 AI: {answer}")
+
+                # Update chat history
+                chat_history.append((user_query, answer))
+
+                # Show source documents
+                logger.info("\n📚 Sources:")
+                for i, chunk in enumerate(relevant_chunks[:CHUNKS_TO_SHOW]):
+                    logger.info(f"  {i+1}. {chunk['doc_name']} (relevance: {chunk['similarity']:.2f})")
+
+                # Show timing breakdown
+                total_time = time.time() - response_start_time
+                logger.info("\n⏱️  Response timing:")
+                logger.info(f"   Retrieval: {retrieval_time:.2f}s")
+                logger.info(f"   Generation: {generation_time:.2f}s")
+                logger.info(f"   Total: {total_time:.2f}s")
+
+            except Exception as e:
+                logger.error(f"❌ Error generating response: {e}")
+
+    finally:
+        # Restore original routing strategy for batch processing
+        load_balancer.routing_strategy = original_strategy
+        logger.info(f"\n🔄 Routing restored to {original_strategy.value} for batch processing")
 
 
 def check_dependencies():
