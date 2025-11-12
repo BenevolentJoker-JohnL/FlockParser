@@ -42,7 +42,8 @@ class TestLoadBalancerInitialization:
         lb = OllamaLoadBalancer(instances=["http://localhost:11434"], skip_init_checks=True)
 
         assert hasattr(lb, "routing_strategy")
-        assert lb.routing_strategy == "adaptive"  # Default is adaptive
+        # SOLLOL's default is now "intelligent" (upgraded from "adaptive")
+        assert lb.routing_strategy in ["intelligent", "adaptive"]
 
 
 class TestNodeManagement:

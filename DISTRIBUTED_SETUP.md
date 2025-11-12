@@ -739,6 +739,6 @@ After setting up your distributed cluster:
 
 ## Need Help?
 
-- 🐛 [Report an issue](https://github.com/BenevolentJoker-JohnL/FlockParser/issues)
-- 💬 [Discussions](https://github.com/BenevolentJoker-JohnL/FlockParser/discussions)
+- 🐛 [Report an issue](https://github.com/B-A-M-N/FlockParser/issues)
+- 💬 [Discussions](https://github.com/B-A-M-N/FlockParser/discussions)
 - 📖 [Full Documentation](README.md)

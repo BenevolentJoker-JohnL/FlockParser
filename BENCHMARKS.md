@@ -436,5 +436,5 @@ All benchmark scripts available in `benchmarks/` directory (coming in v1.1.0).
 ## Questions?
 
 For benchmark requests or to share your own results:
-- Open an issue: https://github.com/BenevolentJoker-JohnL/FlockParser/issues
-- Discussions: https://github.com/BenevolentJoker-JohnL/FlockParser/discussions
+- Open an issue: https://github.com/B-A-M-N/FlockParser/issues
+- Discussions: https://github.com/B-A-M-N/FlockParser/discussions

@@ -366,8 +366,8 @@ def setup_dashboard():
             stderr=subprocess.DEVNULL,
         )
 
-        # Wait for dashboard to start
-        for attempt in range(10):
+        # Wait for dashboard to start (Ray/Dask can take 10-15 seconds to initialize)
+        for attempt in range(30):
             time.sleep(0.5)
             try:
                 response = requests.get(f"{dashboard_url}/api/applications", timeout=1)
@@ -379,7 +379,7 @@ def setup_dashboard():
                 continue
 
         if not dashboard_running:
-            logger.error("❌ Dashboard failed to start - check logs for errors")
+            logger.error("❌ Dashboard failed to start after 15 seconds - check logs for errors")
 
     # Dashboard registration - Register now that dashboard is running
     # Use explicit DashboardClient registration (same as SynapticLlamas)
@@ -2035,10 +2035,147 @@ def main():
             logger.info(COMMANDS)
 
 
-# Compatibility exports for tests
-# Tests import OllamaLoadBalancer which no longer exists as a class
-# Export OllamaPool (which gets wrapped with FlockParser methods via add_flockparser_methods)
-OllamaLoadBalancer = OllamaPool
+# Compatibility wrapper for tests
+# Tests expect old OllamaLoadBalancer API (instances, skip_init_checks, etc.)
+class OllamaLoadBalancer:
+    """Backward-compatible wrapper for SOLLOL's OllamaPool.
+
+    Translates old FlockParser API to new SOLLOL API for tests.
+    """
+
+    def __init__(self, instances=None, skip_init_checks=False, **kwargs):
+        """Create load balancer with old API compatibility.
+
+        Args:
+            instances: Old parameter name for 'nodes' (list of URLs)
+            skip_init_checks: Ignored (SOLLOL handles initialization differently)
+            **kwargs: Additional parameters passed to OllamaPool
+        """
+        # Convert instances parameter to nodes
+        nodes = instances
+
+        # If empty list provided, don't auto-discover
+        if nodes is not None and len(nodes) == 0:
+            nodes = None
+        elif nodes:
+            # Convert URL strings to node dicts if needed
+            formatted_nodes = []
+            for node in nodes:
+                if isinstance(node, str):
+                    # Parse URL format: http://host:port
+                    url = node.replace("http://", "").replace("https://", "")
+                    if ":" in url:
+                        host, port = url.split(":", 1)
+                        formatted_nodes.append({"host": host, "port": int(port)})
+                    else:
+                        formatted_nodes.append({"host": url, "port": 11434})
+                else:
+                    formatted_nodes.append(node)
+            nodes = formatted_nodes
+
+        # Create wrapped OllamaPool instance
+        self._pool = OllamaPool(nodes=nodes, **kwargs)
+
+        # Add FlockParser compatibility methods if KB_DIR is available
+        if KB_DIR and KB_DIR.exists():
+            self._pool = add_flockparser_methods(self._pool, KB_DIR)
+
+    @property
+    def instances(self):
+        """Return nodes in old format (list of URL strings)."""
+        urls = []
+        for node in self._pool.nodes:
+            host = node.get("host", "localhost")
+            port = node.get("port", 11434)
+            urls.append(f"http://{host}:{port}")
+        return urls
+
+    @property
+    def nodes(self):
+        """Direct access to SOLLOL nodes."""
+        return self._pool.nodes
+
+    @property
+    def routing_strategy(self):
+        """Return routing strategy as string (old API expected strings)."""
+        strategy = self._pool.routing_strategy
+        if hasattr(strategy, "value"):
+            return strategy.value
+        return str(strategy)
+
+    @routing_strategy.setter
+    def routing_strategy(self, value):
+        """Set routing strategy."""
+        from sollol.routing_strategy import RoutingStrategy
+
+        if isinstance(value, str):
+            # Convert string to enum
+            value = value.upper().replace("-", "_")
+            if hasattr(RoutingStrategy, value):
+                value = getattr(RoutingStrategy, value)
+
+        self._pool.routing_strategy = value
+
+    def add_node(self, url, save=False, check_models=False, optional=False):
+        """Add node with old API compatibility.
+
+        Args:
+            url: Node URL (http://host:port)
+            save: Ignored (SOLLOL manages persistence)
+            check_models: Ignored (SOLLOL does health checks)
+            optional: If True, don't fail on errors
+
+        Returns:
+            bool: True if node added, False otherwise
+        """
+        # Parse URL
+        url = url.replace("http://", "").replace("https://", "")
+        if ":" in url:
+            host, port = url.split(":", 1)
+        else:
+            host, port = url, "11434"
+
+        # Check if node already exists
+        for node in self._pool.nodes:
+            if node.get("host") == host and node.get("port") == int(port):
+                return False
+
+        try:
+            # Add to pool's nodes list
+            self._pool.nodes.append({"host": host, "port": int(port)})
+            return True
+        except Exception as e:
+            if not optional:
+                raise
+            return False
+
+    def remove_node(self, url):
+        """Remove node by URL.
+
+        Args:
+            url: Node URL to remove
+
+        Returns:
+            bool: True if removed, False if not found
+        """
+        # Parse URL
+        url = url.replace("http://", "").replace("https://", "")
+        if ":" in url:
+            host, port = url.split(":", 1)
+        else:
+            host, port = url, "11434"
+
+        # Find and remove node
+        for i, node in enumerate(self._pool.nodes):
+            if node.get("host") == host and node.get("port") == int(port):
+                self._pool.nodes.pop(i)
+                return True
+
+        return False
+
+    def __getattr__(self, name):
+        """Forward all other attributes to wrapped pool."""
+        return getattr(self._pool, name)
 
 
 if __name__ == "__main__":

@@ -2,12 +2,12 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/flockparser.svg)](https://pypi.org/project/flockparser/)
 [![PyPI downloads](https://img.shields.io/pypi/dm/flockparser.svg)](https://pypi.org/project/flockparser/)
-[![CI Status](https://img.shields.io/github/actions/workflow/status/BenevolentJoker-JohnL/FlockParser/ci.yml?branch=main&label=tests)](https://github.com/BenevolentJoker-JohnL/FlockParser/actions)
-[![codecov](https://codecov.io/gh/BenevolentJoker-JohnL/FlockParser/branch/main/graph/badge.svg)](https://codecov.io/gh/BenevolentJoker-JohnL/FlockParser)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/B-A-M-N/FlockParser/ci.yml?branch=main&label=tests)](https://github.com/B-A-M-N/FlockParser/actions)
+[![codecov](https://codecov.io/gh/B-A-M-N/FlockParser/branch/main/graph/badge.svg)](https://codecov.io/gh/B-A-M-N/FlockParser)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![GitHub Stars](https://img.shields.io/github/stars/BenevolentJoker-JohnL/FlockParser?style=social)](https://github.com/BenevolentJoker-JohnL/FlockParser)
+[![GitHub Stars](https://img.shields.io/github/stars/B-A-M-N/FlockParser?style=social)](https://github.com/B-A-M-N/FlockParser)
 
 > **Distributed document RAG system with intelligent load balancing across heterogeneous hardware.** Auto-discovers Ollama nodes, routes workloads adaptively, and achieves 2x+ speedups through SOLLOL-powered distributed processing. Privacy-first with local/network/cloud interfaces.
 
@@ -20,7 +20,7 @@
 Clone, start a minimal demo, open the UI:
 
 ```bash
-git clone https://github.com/BenevolentJoker-JohnL/FlockParser && cd FlockParser
+git clone https://github.com/B-A-M-N/FlockParser && cd FlockParser
 # option A: docker-compose demo (recommended)
 docker-compose up --build -d
 # open Web UI: http://localhost:8501
@@ -80,12 +80,12 @@ For full setup instructions, see [detailed quickstart below](#-quickstart-3-step
 
 ## **🏛️ Origins & Legacy**
 
-FlockParser's distributed inference architecture originated from **[FlockParser-legacy](https://github.com/BenevolentJoker-JohnL/FlockParser-legacy)**, which pioneered:
+FlockParser's distributed inference architecture originated from **[FlockParser-legacy](https://github.com/B-A-M-N/FlockParser-legacy)**, which pioneered:
 - **Auto-discovery** of Ollama nodes across heterogeneous hardware
 - **Adaptive load balancing** with GPU/CPU awareness
 - **VRAM-aware routing** and automatic failover mechanisms
 
-This core distributed logic from FlockParser-legacy was later extracted and generalized to become **[SOLLOL](https://github.com/BenevolentJoker-JohnL/SOLLOL)** - a standalone distributed inference platform that now powers both FlockParser and **[SynapticLlamas](https://github.com/BenevolentJoker-JohnL/SynapticLlamas)**.
+This core distributed logic from FlockParser-legacy was later extracted and generalized to become **[SOLLOL](https://github.com/B-A-M-N/SOLLOL)** - a standalone distributed inference platform that now powers both FlockParser and **[SynapticLlamas](https://github.com/B-A-M-N/SynapticLlamas)**.
 
 ### **📊 Performance (CPU Cluster Testing)**
 
@@ -317,7 +317,7 @@ print(result["summary"][:250])
 If you want to contribute or modify the code:
 
 ```bash
-git clone https://github.com/BenevolentJoker-JohnL/FlockParser.git
+git clone https://github.com/B-A-M-N/FlockParser.git
 cd FlockParser
 pip install -e .  # Editable install
 ```
@@ -346,7 +346,7 @@ python flockparsecli.py
 
 ```bash
 # Clone and deploy everything
-git clone https://github.com/BenevolentJoker-JohnL/FlockParser.git
+git clone https://github.com/B-A-M-N/FlockParser.git
 cd FlockParser
 docker-compose up -d
 
@@ -439,7 +439,7 @@ graph LR
 docker pull ghcr.io/benevolentjoker-johnl/flockparser:latest
 ```
 
-**View pipeline runs:** https://github.com/BenevolentJoker-JohnL/FlockParser/actions
+**View pipeline runs:** https://github.com/B-A-M-N/FlockParser/actions
 
 ---
 
@@ -556,7 +556,7 @@ Compare FlockParser against LangChain and LlamaIndex on your hardware:
 
 ```bash
 # Clone the repo if you haven't already
-git clone https://github.com/BenevolentJoker-JohnL/FlockParser.git
+git clone https://github.com/B-A-M-N/FlockParser.git
 cd FlockParser
 
 # Install dependencies
@@ -1334,14 +1334,14 @@ This is **presence-based detection**, not utilization monitoring. It detects *if
 - **[⚡ Quick Setup](QUICK_SETUP.md)** - Fast track to getting started
 
 ### Additional Resources
-- **[🏛️ FlockParser-legacy](https://github.com/BenevolentJoker-JohnL/FlockParser-legacy)** - Original distributed inference implementation
+- **[🏛️ FlockParser-legacy](https://github.com/B-A-M-N/FlockParser-legacy)** - Original distributed inference implementation
 - **[📦 Docker Setup](docker-compose.yml)** - Containerized deployment
 - **[⚙️ Environment Config](.env.example)** - Configuration template
 - **[🧪 Tests](tests/)** - Test suite and CI/CD
 
 ## **🔗 Integration with SynapticLlamas & SOLLOL**
 
-FlockParser is designed to work seamlessly with **[SynapticLlamas](https://github.com/BenevolentJoker-JohnL/SynapticLlamas)** (multi-agent orchestration) and **[SOLLOL](https://github.com/BenevolentJoker-JohnL/SOLLOL)** (distributed inference platform) as a unified AI ecosystem.
+FlockParser is designed to work seamlessly with **[SynapticLlamas](https://github.com/B-A-M-N/SynapticLlamas)** (multi-agent orchestration) and **[SOLLOL](https://github.com/B-A-M-N/SOLLOL)** (distributed inference platform) as a unified AI ecosystem.
 
 ### **The Complete Stack**
 
@@ -1439,8 +1439,8 @@ FlockParser v1.0.4 adds **SynapticLlamas-compatible** public endpoints:
 ### **Learn More**
 
 - **[📖 Complete Integration Guide](INTEGRATION_WITH_SYNAPTICLLAMAS.md)** - Full architecture, examples, and setup
-- **[SynapticLlamas Repository](https://github.com/BenevolentJoker-JohnL/SynapticLlamas)** - Multi-agent orchestration
-- **[SOLLOL Repository](https://github.com/BenevolentJoker-JohnL/SOLLOL)** - Distributed inference platform
+- **[SynapticLlamas Repository](https://github.com/B-A-M-N/SynapticLlamas)** - Multi-agent orchestration
+- **[SOLLOL Repository](https://github.com/B-A-M-N/SOLLOL)** - Distributed inference platform
 
 ---
 

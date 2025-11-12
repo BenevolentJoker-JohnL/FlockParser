@@ -363,7 +363,7 @@ Security researchers who responsibly disclose vulnerabilities will be credited h
 ## Questions?
 
 For non-security questions, use:
-- GitHub Discussions: https://github.com/BenevolentJoker-JohnL/FlockParser/discussions
-- GitHub Issues: https://github.com/BenevolentJoker-JohnL/FlockParser/issues
+- GitHub Discussions: https://github.com/B-A-M-N/FlockParser/discussions
+- GitHub Issues: https://github.com/B-A-M-N/FlockParser/issues
 
 For security-sensitive questions, email: benevolentjoker@gmail.com

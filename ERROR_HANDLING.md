@@ -433,7 +433,7 @@ du -sh converted_files/ chroma_db_cli/
 If you encounter an error not covered here:
 
 1. **Search existing issues:**
-   - https://github.com/BenevolentJoker-JohnL/FlockParser/issues
+   - https://github.com/B-A-M-N/FlockParser/issues
 
 2. **Create a new issue with:**
    - Full error message and stack trace

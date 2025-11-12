@@ -193,7 +193,7 @@ if page == "📤 Upload & Process":
                     with st.expander("📋 Error Details"):
                         st.code(f"{type(e).__name__}: {str(e)}")
                         st.caption("If this persists, please report at:")
-                        st.caption("https://github.com/BenevolentJoker-JohnL/FlockParser/issues")
+                        st.caption("https://github.com/B-A-M-N/FlockParser/issues")
                     error_count += 1
                 finally:
                     # Clean up temp file
@@ -306,7 +306,7 @@ elif page == "💬 Chat with Documents":
                     st.error(error_msg)
                     with st.expander("📋 Error Details"):
                         st.code(str(e))
-                        st.caption("Report at: https://github.com/BenevolentJoker-JohnL/FlockParser/issues")
+                        st.caption("Report at: https://github.com/B-A-M-N/FlockParser/issues")
                     st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
 
     # Clear chat button
@@ -430,7 +430,7 @@ elif page == "🔍 Search Documents":
                 st.error(f"❌ **Search Error:** {type(e).__name__}")
                 with st.expander("📋 Error Details"):
                     st.code(str(e))
-                    st.caption("Report at: https://github.com/BenevolentJoker-JohnL/FlockParser/issues")
+                    st.caption("Report at: https://github.com/B-A-M-N/FlockParser/issues")
 
     # Show indexed documents
     st.markdown("---")

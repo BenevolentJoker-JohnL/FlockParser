@@ -14,13 +14,13 @@ Visit: https://codecov.io/
 
 ### 2. Get Your Token
 
-1. Go to: https://codecov.io/gh/BenevolentJoker-JohnL/FlockParser
+1. Go to: https://codecov.io/gh/B-A-M-N/FlockParser
 2. Click "Settings" → "General"
 3. Copy the "Repository Upload Token"
 
 ### 3. Add Token to GitHub Secrets
 
-1. Go to your GitHub repo: https://github.com/BenevolentJoker-JohnL/FlockParser
+1. Go to your GitHub repo: https://github.com/B-A-M-N/FlockParser
 2. Click "Settings" → "Secrets and variables" → "Actions"
 3. Click "New repository secret"
 4. Name: `CODECOV_TOKEN`

@@ -47,7 +47,7 @@ This document honestly documents known limitations, edge cases, and areas for im
 - Start with non-critical use cases
 - Test thoroughly on your specific workload
 - Keep backups of important documents
-- Report issues on GitHub: https://github.com/BenevolentJoker-JohnL/FlockParser/issues
+- Report issues on GitHub: https://github.com/B-A-M-N/FlockParser/issues
 
 ---
 
@@ -596,7 +596,7 @@ NODES = [
 ## Contributing
 
 Found an issue not listed here? Please report it:
-https://github.com/BenevolentJoker-JohnL/FlockParser/issues
+https://github.com/B-A-M-N/FlockParser/issues
 
 Want to help fix these issues?
 - See [CONTRIBUTING.md](CONTRIBUTING.md)
